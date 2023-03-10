@@ -7,9 +7,10 @@ import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import Stack from '@mui/material/Stack';
-import { ThemeProvider } from '@mui/material';
+import { Link, ThemeProvider, Typography } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { purple } from '@mui/material/colors';
+
 
 const NavItem = (props) => {
     const [open, setOpen] = React.useState(false);
@@ -47,31 +48,21 @@ const NavItem = (props) => {
     prevOpen.current = open;
   }, [open]);
 
-  const theme = createTheme({
-    palette: {
-      primary: {
-        // Purple and green play nicely together.
-        main: purple[500],
-      },
-      secondary: {
-        // This is green.A700 as hex.
-        main: '#11cb5f',
-      },
-    },
-  });
+
 
   return (
       <div>
-        <Button
+        <MenuItem
           ref={anchorRef}
           id="composition-button"
           aria-controls={open ? 'composition-menu' : undefined}
           aria-expanded={open ? 'true' : undefined}
           aria-haspopup="true"
           onClick={handleToggle}
+          color='light'
         >
           {title}
-        </Button>
+        </MenuItem>
         <Popper
           open={open}
           anchorEl={anchorRef.current}
@@ -91,8 +82,23 @@ const NavItem = (props) => {
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
                   <Stack spacing={2}>
-                    {cat.map((item,index) => {return(<MenuItem key={index} onClick={handleClose}>{item}</MenuItem>)})}
-                </Stack>    
+                    {cat.subcat1.map((item,index) => {
+                      return(
+                        <Stack spacing={2} key={index}>
+                        <MenuItem key={index} color='light' onClick={handleClose}>
+                          <Typography variant="h5" textAlign="center">{item}</Typography>
+                        </MenuItem>
+                        {cat.subcat2.map((item,index) => {
+                            return(
+                              <MenuItem key={index} color='light' onClick={handleClose}>
+                                <Typography variant="h7" textAlign="center">{item}</Typography>
+                              </MenuItem>
+                            )
+                          }
+                          )}
+                        </Stack>   
+                    )})}
+                  </Stack>
                 </ClickAwayListener>
               </Paper>
             </Grow>
