@@ -13,10 +13,10 @@ const App = () => {
       <MyNavFront/>
       <BrowserRouter>
         <Routes>
-        <Route path="/" element={<Button href='/home'>Click</Button>}/>
+        <Route path="/" element={<>Hello World</>}/>
         <Route path="/home" element={<Home />}/>
        </Routes>
-  </BrowserRouter>
+      </BrowserRouter>
     </div>
   );
 }
