@@ -35,9 +35,9 @@ const Home = () => {
   const [paymentdata, setpaymentdata] = useState([]);
     useEffect(()=>{
       const fetchTodos = async () => {
-        const results1  = await axios.get('http://localhost:8080/customer');
-        const results2  = await axios.get('http://localhost:8080/order');
-        const results3  = await axios.get('http://localhost:8080/payment');
+      const results1  = await axios.get('http://localhost:8080/customer');
+      const results2  = await axios.get('http://localhost:8080/order');
+      const results3  = await axios.get('http://localhost:8080/payment');
 
         try{
             setcusdata(results1.data);

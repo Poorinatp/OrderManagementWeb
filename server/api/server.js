@@ -54,6 +54,13 @@ for (var i = 0; i < tables.length; i++) {
     })(tables[i]);
 }
 
+app.get('/customer', function(req, res) {
+        connection.query('SELECT * FROM customer', function(error, results, fields) {
+        if (error) throw error;
+        return res.send(results);
+    });
+})
+
 // create a new login
 app.post('/login', function (req, res) {
     var login = req.body;
@@ -61,6 +68,18 @@ app.post('/login', function (req, res) {
         return res.status(400).send({ error: true, message: 'Please provide login' });
     }
     connection.query("INSERT INTO login SET ? ", login, function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'New login has been created successfully.' });
+    });
+})
+
+app.post('/customer', function (req, res) {
+    var customer = req.body;
+    if (!customer) {
+        return res.status(400).send({ error: true, message: 'Please provide login' });
+    }
+    connection.excute("INSERT INTO customer (cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode) VALUES (?, ?, ?, ?, ?) ", [req.body.cus_fname, req.body.cus_lname, req.body.cus_phone, req.body.cus_address, req.body.cus_zipcode], 
+    function (error, results, fields) {
         if (error) throw error;
         return res.send({ error: false, data: results, message: 'New login has been created successfully.' });
     });

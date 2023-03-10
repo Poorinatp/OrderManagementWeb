@@ -6,6 +6,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Tooltip, Avatar } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import { Stack } from '@mui/system';
 
 const MyNavFront = () => {
     const [Cat,setCat] =useState(
@@ -97,6 +99,7 @@ const MyNavFront = () => {
     },
   }));
 
+  
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -175,6 +178,7 @@ const MyNavFront = () => {
             {Cat.data.map((item,index) => {return(<NavItem key={index} drt='right-start' Cat={item.subCat} title={item.title}/>)})}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
+            <Stack direction="row" spacing={2}>
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -184,6 +188,17 @@ const MyNavFront = () => {
                 inputProps={{ 'aria-label': 'search' }}
               />
             </Search>
+            <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenNavMenu}
+            color="inherit"
+            >
+              <ShoppingBagIcon />
+            </IconButton>
+            </Stack>
           </Box>
         </Toolbar>
       </Container>
