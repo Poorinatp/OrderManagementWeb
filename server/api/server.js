@@ -23,7 +23,7 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'u330390904_wumff'
+    database: 'data_web'
 });
 
 // connect to database
