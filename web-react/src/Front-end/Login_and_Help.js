@@ -8,6 +8,10 @@ import MyNavFront from './MyNavFront';
 import Front from './Front';
 
 function Login_and_Help() {
+    const token = localStorage.getItem('token');
+    //const token = 'have';
+    console.log("token = "+token);
+    
   return (
     <div>
         <nav>
@@ -16,12 +20,14 @@ function Login_and_Help() {
                     <Link to='/Help'>Help </Link>
                 </li>
                 <li>
-                    <Link to='/Login'>Login </Link>
+                    {!token ? <Link to='/Login'>Login </Link> : <p>profile</p> }
+                    
                 </li>
             </ul>
         </nav>
         <MyNavFront/>
         <Routes>
+            <Route path="/" element={<><Front/></>}/>
             <Route path="/Help" element={<><Help/></>}/>
             <Route path="/Login" element={<><Login/></>}/>
             <Route path="/Front" element={<><Front/></>}/>

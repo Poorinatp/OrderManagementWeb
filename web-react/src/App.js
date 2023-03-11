@@ -6,18 +6,12 @@ import {  BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from './Back-end/Home';
 import { Button, Link } from '@mui/material';
 import MyNavFront from './Front-end/MyNavFront';
-import Front from './Front-end/Front';
+import Login_and_Help from './Front-end/Login_and_Help';
 
 const App = () => {
   return (
     <div>
-      <MyNavFront/>
-      <BrowserRouter>
-        <Routes>
-        <Route path="/" element={<Front/>}/>
-        <Route path="/home" element={<Home />}/>
-       </Routes>
-      </BrowserRouter>
+      <Login_and_Help/>
     </div>
   );
 }

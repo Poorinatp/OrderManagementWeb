@@ -103,7 +103,7 @@ const MyNavFront = () => {
     // delete the token from localStorage
     localStorage.removeItem('token');
     // redirect the user to the login page
-    window.location.href = '/home';
+    window.location.href = '/Front';
   }
   
   return (
@@ -115,7 +115,7 @@ const MyNavFront = () => {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            href="/Front"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -204,7 +204,7 @@ const MyNavFront = () => {
             >
               <ShoppingBagIcon />
             </IconButton>
-            <Button onClick={logout}>
+            <Button color="inherit" onClick={logout}>
               <Typography variant="h6" noWrap sx={{ mr: 1 }}>
                 Log Out
               </Typography>

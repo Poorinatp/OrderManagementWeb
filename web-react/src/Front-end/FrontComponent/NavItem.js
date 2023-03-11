@@ -81,10 +81,10 @@ const NavItem = (props) => {
             >
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
-                  <Stack spacing={2}>
+                  <Stack spacing={1}>
                     {cat.subcat1.map((item,index) => {
                       return(
-                        <Stack spacing={2} key={index}>
+                        <Stack spacing={0} key={index}>
                         <MenuItem key={index} color='light' onClick={handleClose}>
                           <Typography variant="h5" textAlign="center">{item}</Typography>
                         </MenuItem>
