@@ -61,28 +61,36 @@ app.get('/customer', function(req, res) {
     });
 })
 
-// create a new login
 app.post('/login', function (req, res) {
-    var login = req.body;
-    if (!login) {
-        return res.status(400).send({ error: true, message: 'Please provide login' });
-    }
-    connection.query("INSERT INTO login SET ? ", login, function (error, results, fields) {
-        if (error) throw error;
-        return res.send({ error: false, data: results, message: 'New login has been created successfully.' });
-    });
+    console.log(req.body);
+    const username = req.body.username;
+    const password = req.body.password;
+    const email = req.body.email;
+
+    connection.query("INSERT INTO login (username, password, email) VALUES (?, ?, ?) ", [username, password, email], 
+    function (error, results, fields) {
+        if(error) {
+            console.log(error)
+            } 
+            console.log(results)
+        });
 })
 
 app.post('/customer', function (req, res) {
-    var customer = req.body;
-    if (!customer) {
-        return res.status(400).send({ error: true, message: 'Please provide login' });
-    }
-    connection.excute("INSERT INTO customer (cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode) VALUES (?, ?, ?, ?, ?) ", [req.body.cus_fname, req.body.cus_lname, req.body.cus_phone, req.body.cus_address, req.body.cus_zipcode], 
+    console.log(req.body);
+    const fname = req.body.fname;
+    const lname = req.body.lname;
+    const phone = req.body.phone;
+    const address = req.body.address;
+    const zipcode = req.body.zipcode;
+
+    connection.query("INSERT INTO customer (cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode) VALUES (?, ?, ?, ?, ?) ", [fname, lname, phone, address, zipcode], 
     function (error, results, fields) {
-        if (error) throw error;
-        return res.send({ error: false, data: results, message: 'New login has been created successfully.' });
-    });
+        if(error) {
+            console.log(error)
+            } 
+            console.log(results)
+        });
 })
 
     
