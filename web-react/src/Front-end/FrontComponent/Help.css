@@ -1,0 +1,15 @@
+.Box{
+    text-align: center;
+    max-width: 1280;
+}
+.Box h1{
+    color: rgb(162, 7, 7);
+    font-size: 5rem;
+}
+
+.Box p{
+    font-size: 5rem;
+}
+.Box a{
+    font-size: 2rem;
+}
