@@ -19,30 +19,32 @@ const Login = () => {
     const [fname, setfname] = useState("")
     const [lname, setlname] = useState("")
     const [address, setaddress] = useState("")
-    const [phone, setphone] = useState(0)
+    const [phone, setphone] = useState("")
     const [zipcode, setzipcode] = useState(0)
     const [username, setusername] = useState("");
     const [password, setpassword] = useState(0);
     const [email, setemail] = useState("");
     const [isJoinus, setisJoinus] = useState(false);
-
+    
     const handleSubmit = e => {
-        // Prevent the default submit and page reload
+        if(isJoinus){
         e.preventDefault()
         console.log("fname = "+fname, "lname = "+lname, "address = "+address, "phone = "+phone, "zipcode = "+zipcode)
-        // Handle validations
-        axios
-        .post(api+'customer', { fname:fname, lname:lname, address:address, phone:phone, zipcode:zipcode})
-        .then(response => {
-            console.log(response)
-            // Handle response
-        })
-        /*axios
-        .post(api+'/login', { username:username, password:password, email:email})
-        .then(response => {
-            console.log(response)
-            // Handle response
-        })*/
+            axios
+            .post(api+'signup', { username:username, password:password, email:email, fname:fname, lname:lname, address:address, phone:phone, zipcode:zipcode })
+            .then(response => {
+                console.log(response)
+            })
+        }else{
+            console.log("fname = "+fname, "lname = "+lname, "address = "+address, "phone = "+phone, "zipcode = "+zipcode)
+            axios
+            .post(api+'login', { username:username, password:password })
+            .then(response => {
+                const token = response.data.token;
+                localStorage.setItem('token', token);
+                console.log(response)
+            })
+        }
     }
     return (
         <Container component="main" maxWidth="xs">
@@ -57,19 +59,17 @@ const Login = () => {
         >
           <Typography variant="h5">
             Enter your email to
-            <Link>join us</Link>. or <Link>Sign in</Link>.
+            <Link href="#" onClick={e=>setisJoinus(true)}>join us</Link>. or <Link href="#" onClick={e=>setisJoinus(false)}>Sign in</Link>.
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              onChange={e => {setemail(e.target.value)}}
+                margin="normal"
+                required
+                fullWidth
+                name="username"
+                label="username"
+                id="username"
+                onChange={e => {setusername(e.target.value)}}
             />
             <TextField
               margin="normal"
@@ -88,11 +88,13 @@ const Login = () => {
                     margin="normal"
                     required
                     fullWidth
-                    name="username"
-                    label="username"
-                    id="username"
-                    onChange={e => {setusername(e.target.value)}}
-                />
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    autoFocus
+                    onChange={e => {setemail(e.target.value)}}
+                    />
                 <TextField
                     margin="normal"
                     required
@@ -148,9 +150,11 @@ const Login = () => {
             >
               {isJoinus ? "Join us" : "Sign in"}
             </Button>
-            {isJoinus ? 
+            <Typography align='center' variant="h5">
+                {isJoinus ? 
                 <Link href="#" variant="body2" onClick={e=>setisJoinus(false)}>{"Sign in"}</Link>
                 :<Link href="#" variant="body2" onClick={e=>setisJoinus(true)}>{"Join us"} </Link>}
+            </Typography>
           </Box>
         </Box>
       </Container>

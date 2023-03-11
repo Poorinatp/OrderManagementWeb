@@ -3,7 +3,7 @@ import NavItem from './FrontComponent/NavItem';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Tooltip, Avatar } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Tooltip, Avatar, Button } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -99,6 +99,12 @@ const MyNavFront = () => {
     },
   }));
 
+  const logout = () =>{
+    // delete the token from localStorage
+    localStorage.removeItem('token');
+    // redirect the user to the login page
+    window.location.href = '/home';
+  }
   
   return (
     <AppBar position="static">
@@ -198,6 +204,11 @@ const MyNavFront = () => {
             >
               <ShoppingBagIcon />
             </IconButton>
+            <Button onClick={logout}>
+              <Typography variant="h6" noWrap sx={{ mr: 1 }}>
+                Log Out
+              </Typography>
+            </Button>
             </Stack>
           </Box>
         </Toolbar>
