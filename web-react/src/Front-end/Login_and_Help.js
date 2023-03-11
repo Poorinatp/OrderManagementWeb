@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Link, Route, Router,Routes} from 'react-router-dom';
 
 import './Login_and_Help.css'
@@ -8,10 +8,14 @@ import MyNavFront from './MyNavFront';
 import Front from './Front';
 
 function Login_and_Help() {
-    const token = localStorage.getItem('token');
+    const [istoken,setistoken] = useState(localStorage.getItem('token'));
     //const token = 'have';
-    console.log("token = "+token);
-    
+    const logout = () =>{
+        // delete the token from localStorage
+        localStorage.removeItem('token');
+        // redirect the user to the login page
+        window.location.href = '/home';
+      }
   return (
     <div>
         <nav>
@@ -20,9 +24,9 @@ function Login_and_Help() {
                     <Link to='/Help'>Help </Link>
                 </li>
                 <li>
-                    {!token ? <Link to='/Login'>Login </Link> : <p>profile</p> }
-                    
+                    {!istoken ? <Link to='/Login'>Login </Link> : <p>profile</p> }
                 </li>
+                {istoken && <li><Link to='/Front' onClick={logout}> Logout </Link></li>}
             </ul>
         </nav>
         <MyNavFront/>

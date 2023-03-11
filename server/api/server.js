@@ -89,28 +89,21 @@ app.post('/signup', function (req, res) {
 app.post('/login', function (req, res) {
     const username = req.body.username;
     const password = req.body.password;
-    const hashedPassword = bcrypt.hashSync(password, 10);
     const token = jwt.sign({ username }, secret, { expiresIn: '1h' });
-    connection.query("SELECT * FROM login WHERE username = ? AND password = ?", [username, hashedPassword], 
+    connection.query("SELECT * FROM login WHERE username = ?", [username], 
     function (error, results, fields) {
-        if(error) {
-            console.log(error)
-        } 
-        console.log(results)
-        if (results.length > 0) {
+        if(results.length > 0) {
             const hashedPassword = results[0].password;
             const passwordMatch = bcrypt.compareSync(password, hashedPassword); // Compare the hashed password with the entered password
             if (passwordMatch) {
-                console.log("Login successful");
-                
+                res.json({ token });
             } else {
-                console.log("Login failed");
+                res.status(401).send({passwordMatch:passwordMatch,password:password,hashedPassword:hashedPassword,message: "Invalid password" });
             }
-        } else {
-            console.log("user not found");
+        }else{
+            res.status(401).send({results:results, username:username,password:password,hashedPassword:hashedPassword,message: "Invalid password" });
         }
     });
-    res.json({ token });
 })
 // log out process: clear token cookie
 app.post('/logout', function(req, res) {

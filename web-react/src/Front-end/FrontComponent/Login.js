@@ -3,12 +3,8 @@ import axios from 'axios'
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useNavigate } from "react-router-dom";
@@ -24,7 +20,7 @@ const Login = () => {
     const [phone, setphone] = useState("")
     const [zipcode, setzipcode] = useState(0)
     const [username, setusername] = useState("");
-    const [password, setpassword] = useState(0);
+    const [password, setpassword] = useState("");
     const [email, setemail] = useState("");
     const [isJoinus, setisJoinus] = useState(false);
     
@@ -32,9 +28,8 @@ const navigate = useNavigate();
 const [check, setCheck] = useState(false);
 
     const handleSubmit = e => {
+        e.preventDefault();
         if(isJoinus){
-        e.preventDefault()
-        console.log("fname = "+fname, "lname = "+lname, "address = "+address, "phone = "+phone, "zipcode = "+zipcode)
             axios//สมัคร
             .post(api+'signup', { username:username, password:password, email:email, fname:fname, lname:lname, address:address, phone:phone, zipcode:zipcode })
             .then(response => {
@@ -42,24 +37,19 @@ const [check, setCheck] = useState(false);
             })
             navigate('/Login');
         }else{
-            console.log("fname = "+fname, "lname = "+lname, "address = "+address, "phone = "+phone, "zipcode = "+zipcode)
             axios//ล็อคอิน
             .post(api+'login', { username:username, password:password })
             .then(response => {
                 const token = response.data.token;
+                console.log(token);
                 localStorage.setItem('token', token);
-                console.log(response)
-                if (localStorage.getItem('token') != null){
-                  setCheck(true) ;
-                }
+                alert("Login successful!");
+                window.location.href = "/Front";
             })
-            
-            if (check){
-              navigate('/Login');
-            }else{
-              navigate('/Front');
-            }
-
+            .catch(error => {
+              alert("Login failed! Your username or password is incorrect.");
+              console.log(error);
+            });
         }
     }
     return (

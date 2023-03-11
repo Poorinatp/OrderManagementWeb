@@ -1,16 +1,14 @@
 // functional component with react for manging sql database
 
 import React, { useState, useEffect } from 'react';
-import { MainListItems, SecondaryListItems } from './MyNav';
-import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container, Grid, Paper, Typography, Badge, Table, TableCell, TableRow, TableHead, TableBody } from '@mui/material';
+import { SecondaryListItems } from './MyNav';
+import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container,Typography, Badge} from '@mui/material';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import {ListItemButton, ListItemIcon, ListItemText, ListSubheader} from '@mui/material/';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
