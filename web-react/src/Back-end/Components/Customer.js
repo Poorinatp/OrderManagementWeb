@@ -23,18 +23,6 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import axios from 'axios';
 
-function createData(cus_id, cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode) {
-
-  return {
-    cus_id,
-    cus_fname,
-    cus_lname,
-    cus_phone,
-    cus_address,
-    cus_zipcode
-  };
-}
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;

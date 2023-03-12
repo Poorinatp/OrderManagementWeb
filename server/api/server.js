@@ -68,22 +68,27 @@ app.post('/signup', function (req, res) {
     const address = req.body.address;
     const zipcode = req.body.zipcode;
     const hashedPassword = bcrypt.hashSync(password, 10);
-
-    connection.query("INSERT INTO login (username, password, email) VALUES (?, ?, ?) ", [username, hashedPassword, email], 
-    function (error, results, fields) {
-        if(error) {
-            console.log(error)
-        } 
-        console.log(results)
-        connection.query("INSERT INTO customer (username, cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode) VALUES (?, ?, ?, ?, ?, ?) ", [username, fname, lname, phone, address, zipcode], 
-        function (error, results, fields) {
-            if(error) {
-                console.log(error)
+    connection.query('SELECT * FROM customer WHERE username = ?',[username],
+    function(error, results, fields){
+        if(results.length > 0) {
+            res.status(401).send({message: "Username already exists" });
+        }else{
+            connection.query("INSERT INTO login (username, password, email) VALUES (?, ?, ?) ", [username, hashedPassword, email], 
+            function (error, results, fields) {
+                if(error) {
+                    res.status(401).send({message: "Username already exists" });
                 } 
-                console.log(results)
+                connection.query("INSERT INTO customer (username, cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode) VALUES (?, ?, ?, ?, ?, ?) ", [username, fname, lname, phone, address, zipcode], 
+                function (error, results, fields) {
+                    if(error) {
+                        res.status(401).send({message: "Username already exists" });
+                    }else{
+                        res.status(200).send({message: "User registered successfully" });
+                    }
+                });
             });
-    }
-    );
+        }
+    });
 })
 // log in process: check if username and password match
 app.post('/login', function (req, res) {
@@ -113,69 +118,28 @@ app.post('/logout', function(req, res) {
     res.json({ message: 'Logged out successfully.' });
 });
 
-    
-/*
-// retrieve all table
-app.get('/login', function (req, res) {
-    connection.query('SELECT * FROM login', function (error, results, fields) {
-        if (error) throw error;
-        return res.send({ error: false, data: results, message: 'login list.' });
-    });
-})
-app.get('/customer', function (req, res) {
-    connection.query('SELECT * FROM customer', function (error, results, fields) {
-        if (error) throw error;
-        return res.send(results);
-    });
-})*/
-
-// retrieve login with id
-app.get('/login/:cus_id', function (req, res) {
-    
-        let cus_id = req.params.cus_id;
-    
-        if (!cus_id) {
-            return res.status(400).send({ error: true, message: 'cus_id' });
-        }
-    
-        connection.query('SELECT * FROM login where cus_id=?', cus_id, function (error, results, fields) {
-            if (error) throw error;
-            return res.send({ error: false, data: results[0], message: 'login list.' });
-        });
-    
-    })
-
-// update login with id
-app.put('/login', function (req, res) {
-        
-            let login = req.body;
-        
-            if (!login) {
-                return res.status(400).send({ error: login, message: 'Please provide login' });
+// verify action
+app.post('/verify', function (req, res) {
+    const password = req.body.password;
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, secret);
+    const username = req.body.username;
+    connection.query("SELECT * FROM login WHERE username = ?", [username],
+    function (error, results, fields) {
+        if(results.length > 0) {
+            const hashedPassword = results[0].password;
+            const passwordMatch = bcrypt.compareSync(password, hashedPassword); // Compare the hashed password with the entered password
+            if (passwordMatch) {
+                res.json({ passwordMatch });
+            } else {
+                res.status(401).send({passwordMatch:passwordMatch,password:password,hashedPassword:hashedPassword,message: "Invalid password" });
             }
-        
-            connection.query("UPDATE login SET username = ?, dateCreate = ?, password = ?, email = ? WHERE cus_id", [login.username, login.dateCreate, login.password, login.email, login.cus_id], function (error, results, fields) {
-                if (error) throw error;
-                return res.send({ error: false, data: results, message: 'login has been updated successfully.' });
-            });
-        
+        }else{
+            res.status(401).send({results:results, username:username,password:password,hashedPassword:hashedPassword,message: "Invalid password" });
         }
-)
-
-// delete login
-app.delete('/login', function (req, res) { 
-    let login = req.body;
-
-    if (!login) {
-        return res.status(400).send({ error: login, message: 'Please provide login' });
-    }
-
-    connection.query("DELETE FROM login WHERE cus_id = ?", [login.cus_id], function (error, results, fields) {
-        if (error) throw error;
-        return res.send({ error: false, data: results, message: 'loginlogin has been deleted successfully.' });
     });
-
 })
+
 
 // listen to port
 app.listen(8080, function () {

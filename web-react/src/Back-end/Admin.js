@@ -18,10 +18,12 @@ import MuiAppBar from '@mui/material/AppBar';
 import Customer from './Components/Customer';
 import Order from './Components/Order';
 import Product from './Components/Product';
+import MyTable from './Components/MyTable';
 import Payment from './Components/Payment';
 import axios from 'axios';
+import MyOption from './Components/MyOption';
 
-const Home = () => {
+const Admin = () => {
   const [isOrder,setIsOrder] = useState(true);
   const [isCustomer, setIsCustomer] = useState(true);
   const [isProduct, setIsProduct] = useState(false);
@@ -56,7 +58,7 @@ const Home = () => {
     setOpen(!open);
   };
   const Page = (page)=>{
-    if(page === "Home" || page === "Customer"){
+    if(page === "Admin" || page === "Customer"){
       setIsCustomer(true);
       setIsOrder(false);
       setIsPayment(false);
@@ -80,7 +82,7 @@ const Home = () => {
     
   }
 
-  const menuName = ["Home", "Order", "Product", "Customer", "Payment"]
+  const menuName = ["Admin", "Order", "Product", "Customer", "Payment"]
   const menuIcon = [<DashboardIcon/>, <ShoppingCartIcon/>, <LayersIcon/>, <PeopleIcon/>,<PaymentsIcon/>]
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -193,6 +195,7 @@ const Home = () => {
             <Divider sx={{ my: 1 }} />
             <SecondaryListItems />
             </React.Fragment>
+            <MyOption/>
           </List>
         </Drawer>
         
@@ -239,7 +242,7 @@ const Home = () => {
             {isOrder&& (<Order data = {orderdata}/>)}
             {isCustomer&& (<Customer data = {cusdata}/>)}
             {isPayment&& (<Payment data = {paymentdata}/>)}
-            {isProduct&& (<Customer data = {cusdata}/>)}
+            {isProduct&& (<MyTable data = {cusdata}/>)}
           </Container>
         </Box>
       </Box>
@@ -247,5 +250,5 @@ const Home = () => {
   );
 }
 
-export default Home;
+export default Admin;
 

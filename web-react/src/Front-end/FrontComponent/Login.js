@@ -33,9 +33,16 @@ const [check, setCheck] = useState(false);
             axios//สมัคร
             .post(api+'signup', { username:username, password:password, email:email, fname:fname, lname:lname, address:address, phone:phone, zipcode:zipcode })
             .then(response => {
-                console.log(response)
+              if(response.status === 200){
+                alert(response.data.message);
+                setisJoinus(false);
+              }else{
+                alert(response.data.message);
+              }
             })
-            navigate('/Login');
+            .catch(error => {
+              alert(error.response.data.message);
+            });
         }else{
             axios//ล็อคอิน
             .post(api+'login', { username:username, password:password })
@@ -48,7 +55,6 @@ const [check, setCheck] = useState(false);
             })
             .catch(error => {
               alert("Login failed! Your username or password is incorrect.");
-              console.log(error);
             });
         }
     }
