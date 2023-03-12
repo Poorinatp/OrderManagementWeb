@@ -13,9 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useNavigate } from "react-router-dom";
 
-
 const api = 'http://localhost:8080/';
-
 
 const Login = () => {
     const [fname, setfname] = useState("")
@@ -27,39 +25,46 @@ const Login = () => {
     const [password, setpassword] = useState(0);
     const [email, setemail] = useState("");
     const [isJoinus, setisJoinus] = useState(false);
+
+    // console.log(username,password);
     
-const navigate = useNavigate();
-const [check, setCheck] = useState(false);
+    const navigate = useNavigate();
+    const [check, setCheck] = useState(false);
 
     const handleSubmit = e => {
+      console.log(isJoinus);
         if(isJoinus){
         e.preventDefault()
         console.log("fname = "+fname, "lname = "+lname, "address = "+address, "phone = "+phone, "zipcode = "+zipcode)
-            axios//สมัคร
+            axios
             .post(api+'signup', { username:username, password:password, email:email, fname:fname, lname:lname, address:address, phone:phone, zipcode:zipcode })
             .then(response => {
                 console.log(response)
             })
             navigate('/Login');
         }else{
-            console.log("fname = "+fname, "lname = "+lname, "address = "+address, "phone = "+phone, "zipcode = "+zipcode)
-            axios//ล็อคอิน
+            console.log("username = "+username, "password = "+password)
+            e.preventDefault();
+            axios
             .post(api+'login', { username:username, password:password })
             .then(response => {
                 const token = response.data.token;
                 localStorage.setItem('token', token);
                 console.log(response)
+
                 if (localStorage.getItem('token') != null){
-                  setCheck(true) ;
+                  setCheck(true) ; //มีจริง
+                  console.log("AAAA");
                 }
             })
             
-            if (check){
-              navigate('/Login');
+            if (check){//ถ้ามีจริง
+             window.location.reload(false);
+              navigate('/Front');//ไปหน้าแรก
             }else{
-              navigate('/Front');
+              navigate('/Login');
+             window.location.reload(false);
             }
-
         }
     }
     return (
