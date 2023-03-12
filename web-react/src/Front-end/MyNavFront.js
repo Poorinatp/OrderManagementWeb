@@ -8,6 +8,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { Stack } from '@mui/system';
+import './MyNavFront.css';
 
 const MyNavFront = () => {
     const [Cat,setCat] =useState(
@@ -75,6 +76,7 @@ const MyNavFront = () => {
   const SearchIconWrapper = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 2),
     height: '100%',
+    width: 'auto',
     position: 'absolute',
     pointerEvents: 'none',
     display: 'flex',
@@ -99,12 +101,12 @@ const MyNavFront = () => {
     },
   }));
 
-  const logout = () =>{
-    // delete the token from localStorage
-    localStorage.removeItem('token');
-    // redirect the user to the login page
-    window.location.href = '/Front';
-  }
+  // const logout = () =>{
+  //   // delete the token from localStorage
+  //   localStorage.removeItem('token');
+  //   // redirect the user to the login page
+  //   window.location.href = '/Front';
+  // }
   
   return (
     <AppBar position="static">
@@ -189,7 +191,8 @@ const MyNavFront = () => {
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
-              <StyledInputBase
+              <StyledInputBase 
+                className='SeachBox'
                 placeholder="Search…"
                 inputProps={{ 'aria-label': 'search' }}
               />
@@ -204,11 +207,11 @@ const MyNavFront = () => {
             >
               <ShoppingBagIcon />
             </IconButton>
-            <Button color="inherit" onClick={logout}>
+            {/* <Button color="inherit" onClick={logout}>
               <Typography variant="h6" noWrap sx={{ mr: 1 }}>
                 Log Out
               </Typography>
-            </Button>
+            </Button> */}
             </Stack>
           </Box>
         </Toolbar>
