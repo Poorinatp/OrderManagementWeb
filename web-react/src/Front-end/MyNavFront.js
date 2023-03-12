@@ -3,7 +3,7 @@ import NavItem from './FrontComponent/NavItem';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -100,13 +100,6 @@ const MyNavFront = () => {
       },
     },
   }));
-
-  // const logout = () =>{
-  //   // delete the token from localStorage
-  //   localStorage.removeItem('token');
-  //   // redirect the user to the login page
-  //   window.location.href = '/Front';
-  // }
   
   return (
     <AppBar position="static">
@@ -128,21 +121,9 @@ const MyNavFront = () => {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            LOGO 2
           </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
+          <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
@@ -157,11 +138,23 @@ const MyNavFront = () => {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: 'flex', md: 'none' },
               }}
             >
             {Cat.data.map((item,index) => {return(<NavItem key={index} Cat={item.subCat} title={item.title}/>)})}
             </Menu>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
@@ -180,39 +173,36 @@ const MyNavFront = () => {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            LOGO 1
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {Cat.data.map((item,index) => {return(<NavItem key={index} drt='right-start' Cat={item.subCat} title={item.title}/>)})}
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Stack direction="row" spacing={2}>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase 
-                className='SeachBox'
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-              />
-            </Search>
+          <Box >
+          <Grid container spacing={2}>
+            <Grid item xs={8}>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ 'aria-label': 'search' }}
+                />
+              </Search>
+            </Grid>
+            <Grid item xs={4}>
             <IconButton
             size="large"
             aria-label="account of current user"
             aria-controls="menu-appbar"
             aria-haspopup="true"
-            onClick={handleOpenNavMenu}
             color="inherit"
             >
               <ShoppingBagIcon />
             </IconButton>
-            {/* <Button color="inherit" onClick={logout}>
-              <Typography variant="h6" noWrap sx={{ mr: 1 }}>
-                Log Out
-              </Typography>
-            </Button> */}
-            </Stack>
+            </Grid>
+          </Grid>
           </Box>
         </Toolbar>
       </Container>
