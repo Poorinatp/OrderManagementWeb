@@ -6,6 +6,7 @@ import Help from './FrontComponent/Help'
 import Login from './FrontComponent/Login';
 import MyNavFront from './MyNavFront';
 import Front from './Front';
+import Profile from './Profile';
 
 function Login_and_Help() {
     const token = localStorage.getItem('token');
@@ -20,8 +21,8 @@ function Login_and_Help() {
                     <Link to='/Help'>Help </Link>
                 </li>
                 <li>
-                    {!token ? <Link to='/Login'>Login </Link> : <p>profile</p> }
-                    
+                    {!token ? <Link to='/Login'>Login </Link> 
+                    :<Link to='/Profile'>Profile</Link> }
                 </li>
             </ul>
         </nav>

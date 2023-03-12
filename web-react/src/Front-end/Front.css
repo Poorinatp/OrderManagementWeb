@@ -1,0 +1,30 @@
+.container {
+    text-align: center;
+    background-color: rgb(255, 255, 255);
+}
+.promotion {
+    width: auto;
+    max-width: 100%;
+    /* padding-top:5px ; */
+  }
+
+.container ul {
+    max-width: 100%;
+    /* background-color: rgb(154, 3, 3); */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.container li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.logo {
+    width: auto;
+    max-width: 120px;
+    text-decoration: none;
+    padding: 20px 20px;
+    transition: all 0.3s ease;
+}
