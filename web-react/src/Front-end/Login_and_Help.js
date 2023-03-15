@@ -14,8 +14,9 @@ function Login_and_Help() {
     const logout = () =>{
         // delete the token from localStorage
         localStorage.removeItem('token');
+        localStorage.removeItem("user");
         // redirect the user to the login page
-        window.location.href = '/home';
+        window.location.href = '/Front';
       }
   return (
     <div >

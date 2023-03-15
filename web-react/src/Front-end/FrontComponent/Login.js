@@ -8,6 +8,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useNavigate } from "react-router-dom";
+import './Login.css';
+
 
 const api = 'http://localhost:8080/';
 
@@ -48,6 +50,8 @@ const [check, setCheck] = useState(false);
                 const token = response.data.token;
                 console.log(token);
                 localStorage.setItem('token', token);
+                localStorage.setItem('user', username);
+                
                 alert("Login successful!");
                 window.location.href = "/Front";
             })

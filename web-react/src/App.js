@@ -10,11 +10,11 @@ import Login from './Front-end/FrontComponent/Login';
 const App = () => {
   return (
     <div>
-      {/*<Login_and_Help/>*/}
-      <Routes>
+      <Login_and_Help/>
+      {/* <Routes>
           <Route path="/" element={<Admin/>}/>
           <Route path="/admin" element={<Admin/>}/>
-      </Routes>
+      </Routes> */}
     </div>
   );
 }
