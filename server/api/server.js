@@ -29,7 +29,7 @@ var connection = mysql.createConnection({
     database: 'data-web'//datakim
 });
 // set mysql table names
-const tables = ["login", "customer", "order", "payment"];
+const tables = ["login", "customer", "order", "payment", "product_datail", "product_inventory", "product_order"];
 // connect to database
 connection.connect(function (err) {
     if (err) throw err
@@ -139,7 +139,90 @@ app.post('/verify', function (req, res) {
         }
     });
 })
+// retrieve data from mysql database by id
+for (var i = 0; i < tables.length; i++) {
+    (function(table) {
+    if(table==="product_datail"||table==="product_inventory"||table==="product_order"){
+        table = table.replace(/_/g, "");
+        console.log(table);
+    }else{}
+    app.get('/' + table + '/:id', function(req, res) {
+        if(table === "order"){
+            connection.query('SELECT * FROM `'+table+'` WHERE '+table+'_id = ?',[req.params.id],
+            function(error, results, fields){
+                if(results.length > 0) {
+                    res.status(200).send(results);
+                }else{
+                    res.status(401).send({message: "User not found" });
+                }
+            });
+        }else if(table === "login"){
+            res.status(401).send({message: "User not found" });
+        }else if(table === "customer"){
+            connection.query('SELECT * FROM '+table+' WHERE cus_id = ?',[req.params.id],
+            function(error, results, fields){
+                if(results.length > 0) {
+                    res.status(200).send(results);
+                }else{
+                    res.status(401).send({message: "User not found" });
+                }
+            });
+        }else if(table === "productdatail"){
+            connection.query('SELECT * FROM product_datail WHERE product_id = ?',[req.params.id],
+            function(error, results, fields){
+                if(results.length > 0) {
+                    res.status(200).send(results);
+                }else{
+                    res.status(401).send({message: "Product not found" });
+                }
+            });
+        }else if(table === "productinventory"){
+            connection.query('SELECT * FROM product_inventory WHERE product_id = ?',[req.params.id],
+            function(error, results, fields){
+                if(results.length > 0) {
+                    res.status(200).send(results);
+                }else{
+                    res.status(401).send({message: "Product not found" });
+                }
+            });
+        }else if(table === "productorder"){
+            connection.query('SELECT * FROM product_order WHERE order_id = ?',[req.params.id],
+            function(error, results, fields){
+                if(results.length > 0) {
+                    res.status(200).send(results);
+                }else{
+                    res.status(401).send({message: "Product not found" });
+                }
+            });
+        }else{
+            connection.query('SELECT * FROM '+table+' WHERE '+table+'_id = ?',[req.params.id],
+            function(error, results, fields){
+                if(results.length > 0) {
+                    res.status(200).send(results);
+                }else{
+                    res.status(401).send({message: "User not found" });
+                }
+            });
+        }
+    })
+    })(tables[i]);
+}
 
+// retrieve product data from mysql database by id
+
+app.get('/productinventory/:id', function(req, res) {
+    const product_id = parseInt(req.params.id);
+    connection.query('SELECT * FROM product_inventory WHERE product_id = ?',[product_id],
+    function(error, results, fields){
+        if(results.length > 0) {
+            res.status(200).send(results);
+        }else{
+            res.status(401).send({message: "Product not found" });
+        }
+    });
+})
+
+// delete product from mysql database by id
 
 // listen to port
 app.listen(8080, function () {

@@ -1,5 +1,3 @@
-// functional component with react for manging sql database
-
 import React, { useState, useEffect } from 'react';
 import { SecondaryListItems } from './MyNav';
 import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container,Typography, Badge} from '@mui/material';
@@ -18,7 +16,6 @@ import MuiAppBar from '@mui/material/AppBar';
 import Customer from './Components/Customer';
 import Order from './Components/Order';
 import Product from './Components/Product';
-import MyTable from './Components/MyTable';
 import Payment from './Components/Payment';
 import axios from 'axios';
 import MyOption from './Components/MyOption';
@@ -33,16 +30,27 @@ const Admin = () => {
   const [cusdata, setcusdata] = useState([]);
   const [orderdata, setorderdata] = useState([]);
   const [paymentdata, setpaymentdata] = useState([]);
+  const [productdata, setproductdata] = useState([]);
+  const [productorderdata, setproductorderdata] = useState([]);
+  const [productinventorydata, setproductinventorydata] = useState([]);
+
     useEffect(()=>{
       const fetchTodos = async () => {
       const results1  = await axios.get('http://localhost:8080/customer');
       const results2  = await axios.get('http://localhost:8080/order');
       const results3  = await axios.get('http://localhost:8080/payment');
+      const results4  = await axios.get('http://localhost:8080/product_datail');
+      const results5  = await axios.get('http://localhost:8080/product_inventory');
+      const results6  = await axios.get('http://localhost:8080/product_order');
 
         try{
             setcusdata(results1.data);
             setorderdata(results2.data);
             setpaymentdata(results3.data);
+            setproductdata(results4.data);
+            setproductinventorydata(results5.data);
+            setproductorderdata(results6.data);
+
         }catch(err){
             console.log(err);
         }
@@ -195,7 +203,7 @@ const Admin = () => {
             <Divider sx={{ my: 1 }} />
             <SecondaryListItems />
             </React.Fragment>
-            <MyOption/>
+            {/*<MyOption/>*/}
           </List>
         </Drawer>
         
@@ -242,7 +250,7 @@ const Admin = () => {
             {isOrder&& (<Order data = {orderdata}/>)}
             {isCustomer&& (<Customer data = {cusdata}/>)}
             {isPayment&& (<Payment data = {paymentdata}/>)}
-            {isProduct&& (<MyTable data = {cusdata}/>)}
+            {isProduct&& (<Product data = {productdata} order={productorderdata} inventory={productinventorydata}/>)}
           </Container>
         </Box>
       </Box>
