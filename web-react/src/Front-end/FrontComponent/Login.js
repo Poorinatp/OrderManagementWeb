@@ -8,10 +8,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useNavigate } from "react-router-dom";
-
+import './Login.css';
 
 const api = 'http://localhost:8080/';
-
 
 const Login = () => {
     const [fname, setfname] = useState("")
@@ -55,12 +54,14 @@ const [check, setCheck] = useState(false);
             })
             .catch(error => {
               alert("Login failed! Your username or password is incorrect.");
+              
             });
         }
     }
     return (
         <Container component="main" maxWidth="xs">
         <CssBaseline />
+        
         <Box
           sx={{
             marginTop: 8,
@@ -71,7 +72,7 @@ const [check, setCheck] = useState(false);
         >
           <Typography variant="h5">
             Enter your email to
-            <Link href="#" onClick={e=>setisJoinus(true)}>join us</Link>. or <Link href="#" onClick={e=>setisJoinus(false)}>Sign in</Link>.
+            <Link href="#" onClick={e=>setisJoinus(true)}> join us </Link> or <Link href="#" onClick={e=>setisJoinus(false)}> Sign in </Link>
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -164,8 +165,8 @@ const [check, setCheck] = useState(false);
             </Button>
             <Typography align='center' variant="h5">
                 {isJoinus ? 
-                <Link href="#" variant="body2" onClick={e=>setisJoinus(false)}>{"Sign in"}</Link>
-                :<Link href="#" variant="body2" onClick={e=>setisJoinus(true)}>{"Join us"} </Link>}
+                <Link href="/#" variant="body2" onClick={e=>setisJoinus(false)}>{"Sign in"}</Link>
+                :<Link href="/#" variant="body2" onClick={e=>setisJoinus(true)}>{"Join us"} </Link>}
             </Typography>
           </Box>
         </Box>

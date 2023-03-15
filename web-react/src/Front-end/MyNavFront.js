@@ -186,6 +186,7 @@ const MyNavFront = () => {
                   <SearchIcon />
                 </SearchIconWrapper>
                 <StyledInputBase
+                  className='SeachBox'
                   placeholder="Search…"
                   inputProps={{ 'aria-label': 'search' }}
                 />
