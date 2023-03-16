@@ -28,7 +28,7 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'data-web'//datakim
+    database: 'WebAppDB'//datakim
 });
 // set mysql table names
 const tables = ["login", "customer", "order", "payment", "product_datail", "product_inventory", "product_order"];
@@ -229,6 +229,26 @@ for (var i = 0; i < tables.length; i++) {
     })(tables[i]);
 }
 
+// retrieve customer data from mysql database by username
+app.get('/profile/:username', function(req, res) {
+    const username = req.params.username;
+    console.log('username:', username);
+    connection.query('SELECT * FROM customer WHERE username = ?', [username],
+      function(error, results, fields){
+        if (error) {
+          console.log('Error:', error);
+          res.status(200).send({ message: 'Server error' });
+          return;
+        }
+        if (results.length > 0) {
+          res.status(200).send(results);
+        } else {
+          res.status(200).send({ message: 'User not found', username: username });
+        }
+      }
+    );
+  });
+
 // retrieve product data from mysql database by id
 
 app.get('/productinventory/:id', function(req, res) {
@@ -243,20 +263,24 @@ app.get('/productinventory/:id', function(req, res) {
     });
 })
 
+
 // update customer data from mysql database by id
-app.put('/customer/:id', function(req, res) {
+app.put('/profile/:id', function(req, res) {
     const cus_id = parseInt(req.params.id);
     const { cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode } = req.body;
     connection.query('UPDATE customer SET cus_fname = ?, cus_lname = ?, cus_phone = ?, cus_address = ?, cus_zipcode = ? WHERE cus_id = ?',
     [cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode, cus_id],
-    function(error, results, fields){
-        if(results.affectedRows > 0) {
-            res.status(200).send({message: "Customer updated successfully" });
-        }else{
-            res.status(401).send({message: "Customer not found" });
+    function(error, results, fields) {
+        if (error) {
+        res.status(500).send({ message: "Error updating customer data" });
+        } else if (results.affectedRows > 0) {
+        res.status(200).send({ message: "Customer updated successfully" });
+        } else {
+        res.status(401).send({ message: "Customer not found" });
         }
-    });
-})
+    }
+    );
+});
 
 // delete product from mysql database by id
 
@@ -277,7 +301,6 @@ app.get('/taxinvoice/:id', function(req, res) {
         }
     });
 })
-
 
 // listen to port
 app.listen(8080, function () {

@@ -6,15 +6,14 @@ const api = 'http://localhost:8080/';
 
 function Profile() {
   const user = localStorage.getItem('user');
-  const [customer, setCustomer] = useState({});
+  const [customer, setCustomer] = useState([]);
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    axios.get(api + 'customer')
+    axios.get(api + 'profile/'+user)
       .then(response => {
-        const customerData = response.data;
-        const foundCustomer = customerData.find(cus => cus.username === user);
-        setCustomer(foundCustomer);
+        const cusdata = response.data[0];
+        setCustomer(cusdata);
       })
       .catch(error => {
         console.log(error);
@@ -26,9 +25,8 @@ function Profile() {
   }
 
   const handleSaveClick = () => {
-    axios.put(api + 'customer', customer)
+    axios.put(api + 'profile/'+customer.cus_id, customer)
       .then(response => {
-
         console.log(response);
         setEditMode(false);
       })
