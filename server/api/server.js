@@ -28,7 +28,7 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'WebAppDB'
+    database: 'data-web'//datakim
 });
 // set mysql table names
 const tables = ["login", "customer", "order", "payment", "product_datail", "product_inventory", "product_order"];

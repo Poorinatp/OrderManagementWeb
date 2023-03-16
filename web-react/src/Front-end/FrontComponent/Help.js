@@ -9,6 +9,18 @@ function Help() {
         <p>its for Help</p>
         <p>its for Help</p>
         <a>its for Help</a>
+        <h1>its for Help</h1>
+        <p>its for Help</p>
+        <p>its for Help</p>
+        <a>its for Help</a>
+        <h1>its for Help</h1>
+        <p>its for Help</p>
+        <p>its for Help</p>
+        <a>its for Help</a>
+        <h1>its for Help</h1>
+        <p>its for Help</p>
+        <p>its for Help</p>
+        <a>its for Help</a>
     </div>
   )
 }
