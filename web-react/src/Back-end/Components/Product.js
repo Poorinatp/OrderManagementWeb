@@ -1,4 +1,5 @@
-import React, { useState,useEffect } from "react"
+import React, { useState,useEffect,useContext } from "react"
+import { useNavigate } from "react-router-dom"
 import { alpha, Box, Button, Checkbox, Collapse, FormControl, FormControlLabel, Grid, IconButton, Paper, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from "@mui/material"
 import MyOption from "./MyOption"
 import visuallyHidden from "@mui/utils/visuallyHidden"
@@ -10,6 +11,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AddIcon from '@mui/icons-material/Add';
 import axios from "axios";
 import VerifyButton from "./VerifyButton";
+import { MyContext } from "../../MyContext"
 
 const AddProduct = (props) => {
   const [product_price, setProduct_price] = useState("");
@@ -18,13 +20,16 @@ const AddProduct = (props) => {
   const [product_description, setProduct_description] = useState("");
   const [product_image, setProduct_image] = useState("");
   const [product_discount, setProduct_discount] = useState("");
-
-  const handleAdd = () => {
-    axios.post("http://localhost:8080/product_datail", { product_price:product_price, product_type:product_type, product_brand:product_brand, product_description:product_description, product_image:product_image, product_discount:product_discount })
+  const navigate = useNavigate();
+  const { setShowAlert } = useContext(MyContext);
+  const handleAdd = (e) => {
+    axios.post("http://localhost:8080/addproduct", { product_price:product_price, product_type:product_type, product_brand:product_brand, product_description:product_description, product_image:product_image, product_discount:product_discount })
     .then((res) => {
-      console.log(res);
-      console.log(res.data);
-    })
+      const timestamp = new Date();
+        navigate('/admin', { state: { message: "Product Added Successful At "+timestamp.toLocaleString() } });
+        setShowAlert(true);
+        alert("Product Added!");
+      })
     .catch((err) => {
       console.log(err);
     });
@@ -32,7 +37,7 @@ const AddProduct = (props) => {
 
 
   return (
-    <FormControl fullWidth margin="normal">
+    <FormControl fullWidth margin="1" style={{ padding: '20px' }}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField required
@@ -141,8 +146,6 @@ const EditProduct = (props) => {
   );
 }
 
-
-
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
       return -1;
@@ -228,12 +231,25 @@ SelectedItem.propTypes = {
 };
 function SelectedTool(props) {
     const { numSelected } = props;
+    const selected = props.selected;
     const [showFilters, setShowFilters] = useState(false);
 
     const handleShowFilters = () => {
       setShowFilters(!showFilters);
     };
-
+    const handleDelete = () => {
+      console.log(selected);
+      axios.delete("http://localhost:8080/productinventory/deletemultiple", { data:{ product_id_list: selected }})
+      .then((res) => {
+        const timestamp = new Date();
+        console.log(res.data.array);
+        alert("Product Deleted!"+res.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    };
+    
     return (
       <Toolbar
         sx={{
@@ -271,8 +287,8 @@ function SelectedTool(props) {
               <AddIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete Product">
-            <IconButton>
+          <Tooltip title="Delete Product" onClick={handleDelete}>
+            <IconButton >
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -366,6 +382,18 @@ const Product = (props) => {
         setDense(event.target.checked);
     };
 
+    const handleDelete = (event) => {
+      console.log(selected);
+      axios.delete("http://localhost:8080/productinventory/delete", { data:{ product_id: event.target.id }})
+      .then((res) => {
+        const timestamp = new Date();
+        alert("Product Deleted!");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    };
+
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     const emptyRows =
@@ -421,7 +449,7 @@ const Product = (props) => {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <Button variant="contained" onClick={() => setOpenAdd(!openAdd)}>
-          Add Product
+          {openAdd ? 'Close' : 'Add Product'}
         </Button>
         {/*<Button variant="contained" onClick={() => setOpenEdit(!openEdit)}>
           Edit Product
@@ -429,7 +457,7 @@ const Product = (props) => {
         {openEdit&&<EditProduct open={openEdit} setOpen={setOpenEdit} />}
         </Stack>
         {openAdd&&<AddProduct/>}
-        <SelectedTool numSelected={selected.length} />
+        <SelectedTool numSelected={selected.length} selected={selected}/>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -492,6 +520,7 @@ const Product = (props) => {
                       <TableCell>
                         <img src={img} style={dense ? { width: '50px' } : { width: '100px' }}/>
                       </TableCell>
+                      <TableCell align='center'><Button id={row.product_id} onClick={handleDelete}>delete</Button></TableCell>
                     </TableRow>
                     {open ? (
                       <TableRow>

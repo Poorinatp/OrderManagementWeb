@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { SecondaryListItems } from './MyNav';
-import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container,Typography, Badge} from '@mui/material';
+import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container,Typography, Badge, Alert} from '@mui/material';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import {ListItemButton, ListItemIcon, ListItemText, ListSubheader} from '@mui/material/';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -18,14 +19,16 @@ import Order from './Components/Order';
 import Product from './Components/Product';
 import Payment from './Components/Payment';
 import axios from 'axios';
-import MyOption from './Components/MyOption';
 
 const Admin = () => {
-  const [isOrder,setIsOrder] = useState(true);
-  const [isCustomer, setIsCustomer] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(true);
+  const [isOrder,setIsOrder] = useState(false);
+  const [isCustomer, setIsCustomer] = useState(false);
   const [isProduct, setIsProduct] = useState(false);
   const [isPayment, setIsPayment] = useState(false);
-
+  const location = useLocation();
+  const message = location.state && location.state.message;
+  const [showAlert, setShowAlert] = useState(false);
   // fetch data from database
   const [cusdata, setcusdata] = useState([]);
   const [orderdata, setorderdata] = useState([]);
@@ -33,7 +36,6 @@ const Admin = () => {
   const [productdata, setproductdata] = useState([]);
   const [productorderdata, setproductorderdata] = useState([]);
   const [productinventorydata, setproductinventorydata] = useState([]);
-
     useEffect(()=>{
       const fetchTodos = async () => {
       const results1  = await axios.get('http://localhost:8080/customer');
@@ -50,7 +52,6 @@ const Admin = () => {
             setproductdata(results4.data);
             setproductinventorydata(results5.data);
             setproductorderdata(results6.data);
-
         }catch(err){
             console.log(err);
         }
@@ -66,7 +67,14 @@ const Admin = () => {
     setOpen(!open);
   };
   const Page = (page)=>{
-    if(page === "Admin" || page === "Customer"){
+    if(page === "Admin"){
+      setIsAdmin(true)
+      setIsCustomer(false);
+      setIsOrder(false);
+      setIsPayment(false);
+      setIsProduct(false);
+    }
+    else if(page === "Customer"){
       setIsCustomer(true);
       setIsOrder(false);
       setIsPayment(false);
@@ -247,6 +255,7 @@ const Admin = () => {
                 ))}
               </TableBody>
             </Table>*/}
+            {isAdmin&& (<Alert severity="success">{message}</Alert>)}
             {isOrder&& (<Order data = {orderdata}/>)}
             {isCustomer&& (<Customer data = {cusdata}/>)}
             {isPayment&& (<Payment data = {paymentdata}/>)}

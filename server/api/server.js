@@ -84,7 +84,7 @@ app.post('/signup', function (req, res) {
                 VALUES (?, ?, ?, ?, ?, ?) ", [username, fname, lname, phone, address, zipcode], 
                 function (error, results, fields) {
                     if(error) {
-                        res.status(401).send({message: /*error.message + */" Username already exists 3"});
+                        res.status(401).send({message: error.message +" Username already exists 3"});
                     }else{
                         res.status(200).send({message: "User registered successfully" });
                     }
@@ -148,8 +148,8 @@ app.post('/addproduct', function (req, res) {
     const product_description = req.body.product_description;
     const product_price = req.body.product_price;
     const product_image = req.body.product_image;
-    connection.query("INSERT INTO product_datail (product_type, product_brand, product_description, product_price, product_image) \
-    VALUES (?, ?, ?, ?) ", [product_type, product_brand, product_description,product_price, product_image],
+    connection.query("INSERT INTO product_datail (product_type, product_brand, product_description, product_price, product_urlimg) \
+    VALUES (?, ?, ?, ?, ?) ", [product_type, product_brand, product_description,product_price, product_image],
     function (error, results, fields) {
         if(error) {
             res.status(401).send({message: error.message + " Username already exists 3"});
@@ -301,6 +301,40 @@ app.get('/taxinvoice/:id', function(req, res) {
         }
     });
 })
+
+// delete product from mysql database by id
+app.delete('/productinventory/delete', function(req, res) {
+    const product_id = req.body.product_id;
+    connection.query('DELETE FROM product_datail WHERE product_id = ?',[product_id],
+    function(error, results, fields){
+        if(results.affectedRows > 0) {
+            res.status(200).send({message: "Product deleted successfully" });
+        }else{
+            res.status(401).send({message: "Product not found" });
+        }
+    });
+})
+
+// delete list of product from mysql database by id
+app.delete('/productinventory/deletemultiple', function(req, res) {
+    const array = req.body.product_id_list;
+    if (!array || array.length === 0) {
+      return res.status(200).send({ message: 'Invalid product IDs', array });
+    }
+    const placeholders = array.map(() => '?').join(',');
+    const sql = `DELETE FROM product_datail WHERE product_id IN (${placeholders})`;
+    
+    connection.query(sql, array, function(error, results, fields) {
+      if (error) {
+        return res.status(500).send({ message: 'Internal server error' });
+      }
+      // check if any rows were deleted
+      if (results.affectedRows > 0) {
+        return res.status(200).send({ message: 'Products deleted successfully' });
+      }
+      return res.status(200).send({ message: 'No products found with the specified IDs' });
+    });
+  });
 
 // listen to port
 app.listen(8080, function () {
