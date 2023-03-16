@@ -1,10 +1,147 @@
 import React, { useState,useEffect } from "react"
-import { alpha, Box, Button, Checkbox, FormControlLabel, IconButton, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from "@mui/material"
+import { alpha, Box, Button, Checkbox, Collapse, FormControl, FormControlLabel, Grid, IconButton, Paper, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from "@mui/material"
 import MyOption from "./MyOption"
 import visuallyHidden from "@mui/utils/visuallyHidden"
 import PropTypes from 'prop-types';
 import FilterListIcon from "@mui/icons-material/FilterList";
 import DeleteIcon from "@mui/icons-material/Delete";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import AddIcon from '@mui/icons-material/Add';
+import axios from "axios";
+import VerifyButton from "./VerifyButton";
+
+const AddProduct = (props) => {
+  const [product_price, setProduct_price] = useState("");
+  const [product_type, setProduct_type] = useState("");
+  const [product_brand, setProduct_brand] = useState("");
+  const [product_description, setProduct_description] = useState("");
+  const [product_image, setProduct_image] = useState("");
+  const [product_discount, setProduct_discount] = useState("");
+
+  const handleAdd = () => {
+    axios.post("http://localhost:8080/product_datail", { product_price:product_price, product_type:product_type, product_brand:product_brand, product_description:product_description, product_image:product_image, product_discount:product_discount })
+    .then((res) => {
+      console.log(res);
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  };
+
+
+  return (
+    <FormControl fullWidth margin="normal">
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <TextField required
+            id="product_type"
+            label="Product Type"
+            value={product_type}
+            onChange={(e) => setProduct_type(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField required
+            id="product_brand"
+            label="Product Brand"
+            value={product_brand}
+            onChange={(e) => setProduct_brand(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={10}>
+          <TextField required
+            id="product_description"
+            label="Product Description"
+            value={product_description}
+            onChange={(e) => setProduct_description(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+        </Grid>
+        <Grid item xs={12} sm={2}>
+          <TextField required
+            id="product_price"
+            label="Product Price"
+            value={product_price}
+            onChange={(e) => setProduct_price(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+        </Grid>
+      </Grid>
+      <TextField required
+        id="product_image"
+        label="Product Image"
+        value={product_image}
+        onChange={(e) => setProduct_image(e.target.value)}
+        margin="normal"
+      />
+      <Button variant="contained" onClick={handleAdd}>
+        Add
+      </Button>
+    </FormControl>
+  );
+}
+
+const EditProduct = (props) => {
+  const [product_price, setProduct_price] = useState("");
+  const [product_description, setProduct_description] = useState("");
+  const [product_category, setProduct_category] = useState("");
+  const [product_image, setProduct_image] = useState("");
+  const [product_status, setProduct_status] = useState("");
+  const [product_discount, setProduct_discount] = useState("");
+  return (
+    <Box
+      component="form"
+      sx={{
+        '& .MuiTextField-root': { m: 1, width: '25ch' },
+      }}
+      noValidate
+      autoComplete="off"
+    >
+      <div>
+        <TextField
+          required
+          id="product_price"
+          label="Product Price"
+          value={product_price}
+          onChange={(e) => setProduct_price(e.target.value)}
+        />
+        <TextField
+          required
+          id="product_description"
+          label="Product Description"
+          value={product_description}
+          onChange={(e) => setProduct_description(e.target.value)}
+        />
+        <TextField
+          required
+          id="product_category"
+          label="Product Category"
+          value={product_category}
+          onChange={(e) => setProduct_category(e.target.value)}
+        />
+        <TextField
+          required
+          id="product_image"
+          label="Product Image"
+          value={product_image}
+          onChange={(e) => setProduct_image(e.target.value)}
+        />
+      </div>
+    </Box>
+  );
+}
+
+
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -52,13 +189,15 @@ function SelectedItem(props) {
               }}
             />
           </TableCell>
+          <TableCell>
+          </TableCell>
           {props.headCells.map((headCell) => (
             <TableCell
               key={headCell.id}
-              align={headCell.numeric ? 'right' : 'left'}
+              align='left'
               padding={headCell.disablePadding ? 'none' : 'normal'}
               sortDirection={orderBy === headCell.id ? order : false}
-              sx={{ maxWidth: '100px' }}
+              sx={{ maxWidth: '200px' }}
             >
               <TableSortLabel
                 active={orderBy === headCell.id}
@@ -126,11 +265,18 @@ function SelectedTool(props) {
           </Typography>
         )}
         {numSelected > 0 ? (
-          <Tooltip title="Delete">
+          <Stack direction="row" spacing={2}>
+          <Tooltip title="Add Stock">
+            <IconButton>
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete Product">
             <IconButton>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
+          </Stack>
         ) : (
           <Tooltip title="Filter list">
             <IconButton onClick={handleShowFilters}>
@@ -148,6 +294,8 @@ SelectedTool.propTypes = {
 
 const Product = (props) => {
     const rows = props.data;
+    const inventory = props.inventory;
+    const product_order = props.product_order;
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('product_id'); 
     const [selected, setSelected] = useState([]);
@@ -155,6 +303,11 @@ const Product = (props) => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(0);
+    const [open, setOpen] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [openAdd, setOpenAdd] = useState(false);
+
 
     const filteredRows = searchQuery === "" ? rows : rows.filter((row) => {
       const productDescription = row.product_description.toLowerCase();
@@ -260,12 +413,22 @@ const Product = (props) => {
     return(
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
+        <Stack direction="row" spacing={2} sx={{ p: 2 }}>
         <TextField
           fullWidth
           label="Search Product Name or Brand"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+        <Button variant="contained" onClick={() => setOpenAdd(!openAdd)}>
+          Add Product
+        </Button>
+        {/*<Button variant="contained" onClick={() => setOpenEdit(!openEdit)}>
+          Edit Product
+    </Button>*/}
+        {openEdit&&<EditProduct open={openEdit} setOpen={setOpenEdit} />}
+        </Stack>
+        {openAdd&&<AddProduct/>}
         <SelectedTool numSelected={selected.length} />
         <TableContainer>
           <Table
@@ -290,25 +453,29 @@ const Product = (props) => {
                   const isItemSelected = isSelected(row.product_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   const img = row.product_urlimg.replace(/\//g, "/");
-
                   return (
+                    <>
                     <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.product_id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.product_id}
-                      selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
                           color="primary"
                           checked={isItemSelected}
+                          onClick={(event) => {handleClick(event, row.product_id);}}
                           inputProps={{
                             'aria-labelledby': labelId,
                           }}
                         />
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          size="small"
+                          onClick={() => setOpen(!open)}
+                        >
+                          {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                        </IconButton>
                       </TableCell>
                       <TableCell
                         component="th"
@@ -318,14 +485,55 @@ const Product = (props) => {
                       >
                         {row.product_id}
                       </TableCell>
-                      <TableCell><Typography textAlign='center'>{row.product_type}</Typography></TableCell>
-                      <TableCell><Typography textAlign='center'>{row.product_brand}</Typography></TableCell>
-                      <TableCell><Typography textAlign='center'>{row.product_description}</Typography></TableCell>
-                      <TableCell><Typography textAlign='center'>{row.product_price}</Typography></TableCell>
+                      <TableCell align='left'><Typography >{row.product_type}</Typography></TableCell>
+                      <TableCell align='left'><Typography >{row.product_brand}</Typography></TableCell>
+                      <TableCell align='left'><Typography >{row.product_description}</Typography></TableCell>
+                      <TableCell align='left'><Typography >{row.product_price}</Typography></TableCell>
                       <TableCell>
                         <img src={img} style={dense ? { width: '50px' } : { width: '100px' }}/>
                       </TableCell>
                     </TableRow>
+                    {open ? (
+                      <TableRow>
+                      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                        {inventory.length === 0 ? (
+                                <Typography variant="h3" color="text.secondary">Out of stock</Typography>
+                            ) : (
+                              <Collapse in={open} timeout="auto" unmountOnExit>
+                                <Box sx={{ margin: 1 }}>
+                                  <Typography variant="h6" gutterBottom component="div">
+                                    Stock
+                                  </Typography>
+                                <Table sx={{ backgroundColor: "#8249" }} size={dense ? 'small' : 'medium'} aria-label="stock">
+                                <TableHead sx={{ backgroundColor: "#8244" }}>
+                                  <TableRow>
+                                    <TableCell>ID</TableCell>
+                                    <TableCell>Size</TableCell>
+                                    <TableCell>Quantity</TableCell>
+                                    <TableCell>Added Date</TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                              {inventory.map((item) => {
+                                if(item.product_id === row.product_id)
+                                return (
+                                  <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+                                    <TableCell align="left"><Typography>{item.product_id}</Typography></TableCell>
+                                    <TableCell align="left"><Typography>{item.product_size}</Typography></TableCell>
+                                    <TableCell align="left"><TextField value={item.product_quantity}></TextField></TableCell>
+                                    <TableCell align="left"><Typography>{item.product_dateadd}</Typography></TableCell>
+                                  </TableRow>
+                                );})
+                                }
+                                </TableBody>
+                              </Table>
+                                </Box>
+                              </Collapse>
+                            )}
+                            </TableCell>
+                          </TableRow>
+                        ) : null}
+                    </>
                   );
                 })}
               {emptyRows > 0 && (

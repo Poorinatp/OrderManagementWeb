@@ -130,6 +130,7 @@ const [check, setCheck] = useState(false);
                     id="phone"
                     label="phone"
                     name="phone"
+                    type="text"
                     onChange={e => {setphone(e.target.value)}}
                 />
                 <TextField

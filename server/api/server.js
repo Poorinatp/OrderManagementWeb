@@ -19,6 +19,8 @@ app.use(bodyParser.json());
 var bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const secret = 'mysecret';
+const PDFDocument = require('pdfkit');
+
 // set server port
 var port = 8080;
 // create mysql connection
@@ -71,17 +73,18 @@ app.post('/signup', function (req, res) {
     connection.query('SELECT * FROM customer WHERE username = ?',[username],
     function(error, results, fields){
         if(results.length > 0) {
-            res.status(401).send({message: "Username already exists" });
+            res.status(401).send({message: "Username already exists 1" });
         }else{
             connection.query("INSERT INTO login (username, password, email) VALUES (?, ?, ?) ", [username, hashedPassword, email], 
             function (error, results, fields) {
                 if(error) {
-                    res.status(401).send({message: "Username already exists" });
+                    res.status(401).send({message: "Username already exists 2" });
                 } 
-                connection.query("INSERT INTO customer (username, cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode) VALUES (?, ?, ?, ?, ?, ?) ", [username, fname, lname, phone, address, zipcode], 
+                connection.query("INSERT INTO customer (username, cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode) \
+                VALUES (?, ?, ?, ?, ?, ?) ", [username, fname, lname, phone, address, zipcode], 
                 function (error, results, fields) {
                     if(error) {
-                        res.status(401).send({message: "Username already exists" });
+                        res.status(401).send({message: /*error.message + */" Username already exists 3"});
                     }else{
                         res.status(200).send({message: "User registered successfully" });
                     }
@@ -90,6 +93,7 @@ app.post('/signup', function (req, res) {
         }
     });
 })
+
 // log in process: check if username and password match
 app.post('/login', function (req, res) {
     const username = req.body.username;
@@ -119,10 +123,8 @@ app.post('/logout', function(req, res) {
 });
 
 // verify action
-app.post('/verify', function (req, res) {
+app.get('/verify', function (req, res) {
     const password = req.body.password;
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, secret);
     const username = req.body.username;
     connection.query("SELECT * FROM login WHERE username = ?", [username],
     function (error, results, fields) {
@@ -139,6 +141,25 @@ app.post('/verify', function (req, res) {
         }
     });
 })
+// add product to database
+app.post('/addproduct', function (req, res) {
+    const product_type = req.body.product_type;
+    const product_brand = req.body.product_brand;
+    const product_description = req.body.product_description;
+    const product_price = req.body.product_price;
+    const product_image = req.body.product_image;
+    connection.query("INSERT INTO product_datail (product_type, product_brand, product_description, product_price, product_image) \
+    VALUES (?, ?, ?, ?) ", [product_type, product_brand, product_description,product_price, product_image],
+    function (error, results, fields) {
+        if(error) {
+            res.status(401).send({message: error.message + " Username already exists 3"});
+        }else{
+            res.status(200).send({message: "Added" });
+        }
+    });
+})
+
+
 // retrieve data from mysql database by id
 for (var i = 0; i < tables.length; i++) {
     (function(table) {
@@ -217,12 +238,46 @@ app.get('/productinventory/:id', function(req, res) {
         if(results.length > 0) {
             res.status(200).send(results);
         }else{
-            res.status(401).send({message: "Product not found" });
+            res.status(200).send({message: "Product sold out" });
+        }
+    });
+})
+
+// update customer data from mysql database by id
+app.put('/customer/:id', function(req, res) {
+    const cus_id = parseInt(req.params.id);
+    const { cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode } = req.body;
+    connection.query('UPDATE customer SET cus_fname = ?, cus_lname = ?, cus_phone = ?, cus_address = ?, cus_zipcode = ? WHERE cus_id = ?',
+    [cus_fname, cus_lname, cus_phone, cus_address, cus_zipcode, cus_id],
+    function(error, results, fields){
+        if(results.affectedRows > 0) {
+            res.status(200).send({message: "Customer updated successfully" });
+        }else{
+            res.status(401).send({message: "Customer not found" });
         }
     });
 })
 
 // delete product from mysql database by id
+
+// generate tax invoice for order by id 
+app.get('/taxinvoice/:id', function(req, res) {
+    const order_id = parseInt(req.params.id);
+    connection.query('SELECT o.*, po.*, pd.*, c.*, p.* FROM `order` o \
+    JOIN product_order po ON o.order_id = po.order_id \
+    JOIN product_datail pd ON po.product_id = pd.product_id \
+    JOIN customer c ON o.cus_id = c.cus_id \
+    JOIN payment p ON o.order_id = p.order_id \
+    WHERE o.order_id = ?',[order_id],
+    function(error, results, fields){
+        if(results.length > 0) {
+            res.status(200).send(results);
+        }else{
+            res.status(401).send({message: "User not found" });
+        }
+    });
+})
+
 
 // listen to port
 app.listen(8080, function () {

@@ -318,7 +318,7 @@ const Customer = (props) => {
                       <TableCell align="right">{row.cus_fname}</TableCell>
                       <TableCell align="right">{row.cus_lname}</TableCell>
                       <TableCell align="right">{row.cus_phone}</TableCell>
-                      <TableCell align="right">{row.address}</TableCell>
+                      <TableCell align="right">{row.cus_address}</TableCell>
                       <TableCell align="right">{row.cus_zipcode}</TableCell>
                     </TableRow>
                   );

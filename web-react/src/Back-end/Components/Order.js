@@ -78,16 +78,16 @@ const headCells = [
     label: 'Customer ID',
   },
   {
-    order_id: 'payment_id',
-    numeric: true,
-    disablePadding: false,
-    label: 'Payment ID',
-  },
-  {
     order_id: 'order_amount',
     numeric: true,
     disablePadding: false,
     label: 'Amount',
+  },
+  {
+    order_id: 'order_price',
+    numeric: true,
+    disablePadding: false,
+    label: 'price',
   },
   {
     order_id: 'order_date',
@@ -335,8 +335,8 @@ const Order = (props) => {
                         {row.order_id}
                       </TableCell>
                       <TableCell align="right">{row.cus_id}</TableCell>
-                      <TableCell align="right">{row.payment_id}</TableCell>
                       <TableCell align="right">{row.order_amount}</TableCell>
+                      <TableCell align="right">{row.order_price}</TableCell>
                       <TableCell align="right">{row.order_date}</TableCell>
                       <TableCell align="right">{row.order_ShipMethod}</TableCell>
                       <TableCell align="right">{row.order_status}</TableCell>
