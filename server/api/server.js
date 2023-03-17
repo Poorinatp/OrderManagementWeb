@@ -336,6 +336,23 @@ app.delete('/productinventory/deletemultiple', function(req, res) {
     });
   });
 
+// add list of product inventory to mysql database
+app.post('/productinventory/addmultiple', function(req, res) {
+    var data = req.body;
+    // loop through each item in the data array and insert into MySQL database
+    data.forEach(function(item) {
+        var sql = `INSERT INTO product_inventory (product_id, product_size, product_quantity) VALUES ('${item.product_id}', '${item.size}', '${item.quantity}')`;
+        connection.query(sql, function(error, results, fields) {
+            if(error) {
+                res.status(401).send({message: error.message + " Username already exists 3"});
+            }else{
+                res.status(200).send({message: "Added" });
+            }
+        });
+    });
+});
+
+
 // listen to port
 app.listen(8080, function () {
     console.log('Node app is running on port ' + port);
