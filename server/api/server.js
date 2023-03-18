@@ -28,10 +28,10 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'WebAppDB'//datakim
+    database: 'webappdb'
 });
 // set mysql table names
-const tables = ["login", "customer", "order", "payment", "product_datail", "product_inventory", "product_order"];
+const tables = ["login", "customer", "order", "payment", "product_detail", "product_inventory", "product_order"];
 // connect to database
 connection.connect(function (err) {
     if (err) throw err
@@ -105,12 +105,13 @@ app.post('/login', function (req, res) {
             const hashedPassword = results[0].password;
             const passwordMatch = bcrypt.compareSync(password, hashedPassword); // Compare the hashed password with the entered password
             if (passwordMatch) {
+                //res.status.send({message: "successfully password"});
                 res.json({ token });
             } else {
-                res.status(401).send({passwordMatch:passwordMatch,password:password,hashedPassword:hashedPassword,message: "Invalid password" });
+                res.status(401).send({message: "Invalid password"+password+" "+hashedPassword });
             }
         }else{
-            res.status(401).send({results:results, username:username,password:password,hashedPassword:hashedPassword,message: "Invalid password" });
+            res.status(401).send({message: "no user Fold" });
         }
     });
 })
@@ -148,7 +149,7 @@ app.post('/addproduct', function (req, res) {
     const product_description = req.body.product_description;
     const product_price = req.body.product_price;
     const product_image = req.body.product_image;
-    connection.query("INSERT INTO product_datail (product_type, product_brand, product_description, product_price, product_image) \
+    connection.query("INSERT INTO product_detail (product_type, product_brand, product_description, product_price, product_image) \
     VALUES (?, ?, ?, ?) ", [product_type, product_brand, product_description,product_price, product_image],
     function (error, results, fields) {
         if(error) {
@@ -163,7 +164,7 @@ app.post('/addproduct', function (req, res) {
 // retrieve data from mysql database by id
 for (var i = 0; i < tables.length; i++) {
     (function(table) {
-    if(table==="product_datail"||table==="product_inventory"||table==="product_order"){
+    if(table==="product_detail"||table==="product_inventory"||table==="product_order"){
         table = table.replace(/_/g, "");
         console.log(table);
     }else{}
@@ -188,8 +189,8 @@ for (var i = 0; i < tables.length; i++) {
                     res.status(401).send({message: "User not found" });
                 }
             });
-        }else if(table === "productdatail"){
-            connection.query('SELECT * FROM product_datail WHERE product_id = ?',[req.params.id],
+        }else if(table === "productdetail"){
+            connection.query('SELECT * FROM product_detail WHERE product_id = ?',[req.params.id],
             function(error, results, fields){
                 if(results.length > 0) {
                     res.status(200).send(results);
@@ -289,7 +290,7 @@ app.get('/taxinvoice/:id', function(req, res) {
     const order_id = parseInt(req.params.id);
     connection.query('SELECT o.*, po.*, pd.*, c.*, p.* FROM `order` o \
     JOIN product_order po ON o.order_id = po.order_id \
-    JOIN product_datail pd ON po.product_id = pd.product_id \
+    JOIN product_detail pd ON po.product_id = pd.product_id \
     JOIN customer c ON o.cus_id = c.cus_id \
     JOIN payment p ON o.order_id = p.order_id \
     WHERE o.order_id = ?',[order_id],
