@@ -13,6 +13,8 @@ function Profile() {
     axios.get(api + 'profile/'+user)
       .then(response => {
         const cusdata = response.data[0];
+        console.log(localStorage);
+        console.log(cusdata);
         setCustomer(cusdata);
       })
       .catch(error => {
@@ -34,8 +36,10 @@ function Profile() {
         console.log(error);
       });
   }
-  
-  
+
+  const handleCancelClick = () => {
+    setEditMode(false);
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -47,9 +51,13 @@ function Profile() {
 
   return (
     <div>
+      <div className='bannerProfile'>
+        <img src='.\img\bannerProfile.png'></img>
+      </div>
+
       {customer && (
-        <div>
-          <p>Username: {customer.username}</p>
+        <div className='profile'>
+          {/* <p>Username: {customer.username}</p> */}
           {editMode ? (
             <div>
               <label>First Name:</label>
@@ -67,10 +75,11 @@ function Profile() {
               <label>Zipcode:</label>
               <input type="text" name="cus_zipcode" value={customer.cus_zipcode} onChange={handleInputChange} />
               <br />
+              <button className='CancelButton' onClick={handleCancelClick}>Cancel</button>
               <button onClick={handleSaveClick}>Save</button>
             </div>
           ) : (
-            <div>
+            <div className='showProfile'>
               <p>First Name: {customer.cus_fname}</p>
               <p>Last Name: {customer.cus_lname}</p>
               <p>Address: {customer.cus_address}</p>
@@ -85,4 +94,5 @@ function Profile() {
   );
 }
 
-export default Profile
+export default Profile;
+

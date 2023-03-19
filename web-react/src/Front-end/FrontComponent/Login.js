@@ -48,10 +48,12 @@ const [check, setCheck] = useState(false);
                 const token = response.data.token;
                 console.log(token);
                 localStorage.setItem('token', token);
+                localStorage.setItem('user', username);
                 alert("Login successful!");
                 window.location.href = "/Front";
             })
             .catch(error => {
+              console.log(error);
               alert("Login failed! Your username or password is incorrect.");
             });
         }

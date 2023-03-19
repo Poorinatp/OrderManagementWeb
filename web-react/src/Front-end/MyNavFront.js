@@ -10,7 +10,10 @@ import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { Stack } from '@mui/system';
 import './MyNavFront.css';
 
+import Login_and_Help from './Login_and_Help';
+
 const MyNavFront = () => {
+  
     const [Cat,setCat] =useState(
     {
       data:[{
@@ -42,7 +45,7 @@ const MyNavFront = () => {
     });
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-  
+
     const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
     };
@@ -102,7 +105,8 @@ const MyNavFront = () => {
   }));
   
   return (
-    <AppBar position="static">
+    <AppBar position="sticky"  style={{ background: '#B8AD93' }}  >
+      <Login_and_Help/>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -141,7 +145,12 @@ const MyNavFront = () => {
                 display: { xs: 'flex', md: 'none' },
               }}
             >
-            {Cat.data.map((item,index) => {return(<NavItem key={index} Cat={item.subCat} title={item.title}/>)})}
+            {Cat.data.map((item,index) => {
+              return(<NavItem key={index} 
+              Cat={item.subCat} 
+              title={item.title}
+              />)})}
+
             </Menu>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -161,7 +170,7 @@ const MyNavFront = () => {
             variant="h5"
             noWrap
             component="a"
-            href=""
+            href="/Front"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -176,7 +185,11 @@ const MyNavFront = () => {
             LOGO 1
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {Cat.data.map((item,index) => {return(<NavItem key={index} drt='right-start' Cat={item.subCat} title={item.title}/>)})}
+            {Cat.data.map((item,index) => {
+              return(<NavItem key={index} drt='right-start' 
+              Cat={item.subCat} 
+              title={item.title}
+              />)})}
           </Box>
           <Box >
           <Grid container spacing={2}>
