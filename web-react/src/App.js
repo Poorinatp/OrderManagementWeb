@@ -12,8 +12,8 @@ import Payment from './Back-end/Components/Payment';
 const App = () => {
   return (
     <div>
-      <Login_and_Help/>
-       {/*<Routes>
+      {/*<Login_and_Help/>*/}
+       <Routes>
           <Route path="/" element={<Admin/>}/>
           <Route path="/admin" element={<Admin/>}>
             <Route path="product" element={<Product />} />
@@ -21,7 +21,7 @@ const App = () => {
             <Route path="order" element={<Order />} />
             <Route path="payment" element={<Payment />} />
           </Route>
-      </Routes>*/}
+      </Routes>
     </div>
   );
 }
