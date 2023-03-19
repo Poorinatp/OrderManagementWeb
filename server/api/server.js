@@ -146,12 +146,13 @@ app.get('/verify', function (req, res) {
 // add product to database
 app.post('/addproduct', function (req, res) {
     const product_type = req.body.product_type;
+    const product_gender = req.body.product_gender;
     const product_brand = req.body.product_brand;
     const product_description = req.body.product_description;
     const product_price = req.body.product_price;
     const product_image = req.body.product_image;
-    connection.query("INSERT INTO product_datail (product_type, product_brand, product_description, product_price, product_urlimg) \
-    VALUES (?, ?, ?, ?, ?) ", [product_type, product_brand, product_description,product_price, product_image],
+    connection.query("INSERT INTO product_detail (product_type, product_gender, product_brand, product_description, product_price, product_urlimg) \
+    VALUES (?, ?, ?, ?, ?) ", [product_type, product_gender, product_brand, product_description,product_price, product_image],
     function (error, results, fields) {
         if(error) {
             res.status(401).send({message: error.message + " Username already exists 3"});
@@ -398,7 +399,7 @@ app.get('/taxinvoice/:id', function(req, res) {
 // delete product from mysql database by id
 app.delete('/productinventory/delete', function(req, res) {
     const product_id = req.body.product_id;
-    connection.query('DELETE FROM product_datail WHERE product_id = ?',[product_id],
+    connection.query('DELETE FROM product_detail WHERE product_id = ?',[product_id],
     function(error, results, fields){
         if(results.affectedRows > 0) {
             res.status(200).send({message: "Product deleted successfully" });
@@ -415,7 +416,7 @@ app.delete('/productinventory/deletemultiple', function(req, res) {
       return res.status(200).send({ message: 'Invalid product IDs', array });
     }
     const placeholders = array.map(() => '?').join(',');
-    const sql = `DELETE FROM product_datail WHERE product_id IN (${placeholders})`;
+    const sql = `DELETE FROM product_detail WHERE product_id IN (${placeholders})`;
     
     connection.query(sql, array, function(error, results, fields) {
       if (error) {

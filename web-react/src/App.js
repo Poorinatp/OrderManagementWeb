@@ -7,9 +7,6 @@ import Help from './Front-end/FrontComponent/Help';
 import Login from './Front-end/FrontComponent/Login';
 import Profile from './Front-end/Profile';
 import ProductTable from './Front-end/FrontComponent/ProductTable';
-
-import MyNavFront from './Front-end/MyNavFront';
-
 import Admin from './Back-end/Admin';
 import Product from './Back-end/Components/Product';
 import Customer from './Back-end/Components/Customer';
@@ -29,6 +26,11 @@ const App = () => {
             <Route path="order" element={<Order />} />
             <Route path="payment" element={<Payment />} />
           </Route>
+          <Route path="/Help" element={<><Help/></>}/>
+          <Route path="/Login" element={<><Login/></>}/>
+          <Route path="/Front" element={<><Front/></>}/>
+          <Route path="/Profile" element={<><Profile/></>}/>
+          <Route path="/ProductTable" element={<><ProductTable/></>}/>
       </Routes>
     </div>
   );

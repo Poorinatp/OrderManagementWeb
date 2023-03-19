@@ -43,7 +43,7 @@ const Admin = () => {
       const results1  = await axios.get('http://localhost:8080/customer');
       const results2  = await axios.get('http://localhost:8080/order');
       const results3  = await axios.get('http://localhost:8080/payment');
-      const results4  = await axios.get('http://localhost:8080/product_datail');
+      const results4  = await axios.get('http://localhost:8080/product_detail');
       const results5  = await axios.get('http://localhost:8080/product_inventory');
       const results6  = await axios.get('http://localhost:8080/product_order');
 
