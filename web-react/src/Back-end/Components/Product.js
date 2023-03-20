@@ -187,8 +187,9 @@ function SelectedTool(props) {
       axios.post("http://localhost:8080/productinventory/addmultiple", data)
       .then((res) => {
         const timestamp = new Date();
-        navigate('/admin/product', { state: { status:'success', action:'add', message: "Product Stock Added Successful At "+timestamp.toLocaleString() } });
-        window.location.reload();
+        //navigate('/admin/product', { state: { status:'success', action:'add', message: "Product Stock Added Successful At "+timestamp.toLocaleString() } });
+        //window.location.reload();
+        console.log(res.array);
         alert("Product Stock Added!");
         setOpen(false);
         setProductSizes({});
@@ -461,7 +462,7 @@ const Product = (props) => {
                       <TableCell align='center'><Button id={row.product_id} onClick={handleDelete}>delete</Button></TableCell>
                     </TableRow>
                     {openstockList[index] ? (
-                      <TableRow>
+                      <TableRow key={row.product_id+" "+row.product_size}>
                       <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                         {inventory.length === 0 ? (
                                 <Typography variant="h3" color="text.secondary">Out of stock</Typography>

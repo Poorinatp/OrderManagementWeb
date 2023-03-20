@@ -8,7 +8,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mysql = require('mysql');
-
+const pdfService = require('./pdf-service');
 // create express app
 var app = express();
 var cors = require('cors')
@@ -20,7 +20,8 @@ var bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const secret = 'mysecret';
 const PDFDocument = require('pdfkit');
-
+const nodemailer = require('nodemailer');
+const fs = require('fs');
 // set server port
 var port = 8080;
 // create mysql connection
@@ -296,12 +297,103 @@ app.get('/taxinvoice/:id', function(req, res) {
     WHERE o.order_id = ?',[order_id],
     function(error, results, fields){
         if(results.length > 0) {
-            res.status(200).send(results);
-        }else{
-            res.status(401).send({message: "User not found" });
+            //res.status(200).send(results);
+          // Extract necessary information from results
+          const customerName = results[0].cus_fname+' '+results[0].cus_lname;
+          const customerAddress = results[0].cus_address;
+          const date = results[0].order_date;
+          const orderDate = date.toISOString().slice(0, 10).split('T')[0];
+          const productDetails = results.map(row => ({
+            brand:row.product_brand,
+            name: row.product_description,
+            price: row.product_price,
+            quantity: row.product_amount,
+            subtotal: row.product_price * row.product_amount
+          }));
+          console.log(productDetails[0].name);
+          const subtotal = productDetails.reduce((sum, product) => sum + product.subtotal, 0);
+          const taxRate = 0.1; // Assuming a 10% tax rate
+          const taxAmount = subtotal * taxRate;
+          const total = subtotal + taxAmount;
+          // Create new PDF document
+          const doc = new PDFDocument();
+          const fileName = `taxinvoice_${order_id}.pdf`;
+          const stream = res.writeHead(200, {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment;filename="taxinvoice_${order_id}.pdf"`,
+          });
+          pdfService.buildPDF(
+            (chunk) => stream.write(chunk),
+            () => stream.end(),
+            customerName,
+            customerAddress,
+            orderDate,
+            productDetails,
+            subtotal,
+            taxRate,
+            taxAmount,
+            total
+          )
+          // Set response headers to indicate PDF content type
+          /*res.set('Content-Type', 'application/pdf');
+          res.set('Content-Disposition', `attachment; filename="taxinvoice_${order_id}.pdf"`);*/
+          // Pipe PDF document to response
+        /*doc.on('data', (chunk) => stream.write(chunk));
+            doc.on('end', () => stream.end());
+          // Format into tax invoice template
+          doc.font('Helvetica-Bold').fontSize(24).text('Tax Invoice', {align: 'center'});
+          doc.moveDown();
+          doc.fontSize(14).text(`Customer Name: ${customerName}\nCustomer Address: ${customerAddress}`, {align: 'left'});
+          doc.moveDown();
+          doc.fontSize(14).text(`Date: ${orderDate}`, {align: 'left'});
+          doc.moveDown();
+          doc.fontSize(14).text('Product Details:', {align: 'left'});
+          doc.moveDown();
+          const tableHeaders = ['Product Name', 'Quantity', 'Price', 'Subtotal'];
+          const tableRows = productDetails.map(product => [product.name, product.quantity, product.price.toFixed(2), product.subtotal.toFixed(2)]);
+          doc.table([tableHeaders, ...tableRows], {align: ['left', 'right', 'right', 'right'], width: doc.page.width - 100, rowHeight: 20});
+          doc.moveDown();
+          doc.fontSize(14).text(`Subtotal: $${subtotal.toFixed(2)}`, {align: 'right'});
+          doc.moveDown();
+          doc.fontSize(14).text(`Tax (${taxRate * 100}%): $${taxAmount.toFixed(2)}`, {align: 'right'});
+          doc.moveDown();
+          doc.font('Helvetica-Bold').fontSize(16).text(`Total: $${total.toFixed(2)}`, {align: 'right'});
+          // Finalize PDF document
+          
+          doc.end();
+          
+
+          const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            auth: {
+              user: 's6404062630511@email.kmutnb.ac.th',
+              pass: '0957421530Pp!'
+            }
+          });
+          
+          const mailOptions = {
+            from: 's6404062630511@email.kmutnb.ac.th',
+            to: 'poorinat.p@gmail.com',
+            subject: 'Tax Invoice',
+            text: 'Please find attached your tax invoice',
+            attachments: [
+              { filename: fileName, path: `./${fileName}` }
+            ]
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });*/
+        } else {
+          res.status(401).send({message: "User not found"});
         }
-    });
-})
+      });
+  })
 
 // delete product from mysql database by id
 app.delete('/productinventory/delete', function(req, res) {
@@ -339,15 +431,15 @@ app.delete('/productinventory/deletemultiple', function(req, res) {
 
 // add list of product inventory to mysql database
 app.post('/productinventory/addmultiple', function(req, res) {
-    var data = req.body;
+    const data = req.body;
     // loop through each item in the data array and insert into MySQL database
     data.forEach(function(item) {
-        var sql = `INSERT INTO product_inventory (product_id, product_size, product_quantity) VALUES ('${item.product_id}', '${item.size}', '${item.quantity}')`;
+        const sql = `INSERT INTO product_inventory (product_id, product_size, product_quantity) VALUES ('${item.product_id}', '${item.size}', '${item.quantity}')`;
         connection.query(sql, function(error, results, fields) {
             if(error) {
                 res.status(401).send({message: error.message + " Username already exists 3"});
             }else{
-                res.status(200).send({message: "Added" });
+                res.status(200).send({message: "Added" ,array:data});
             }
         });
     });

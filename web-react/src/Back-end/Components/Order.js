@@ -22,6 +22,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import axios from 'axios';
+import { Button } from '@mui/material';
+import { Document, Page } from 'react-pdf';
 
 function createData(order_id, cus_id, payment_id, order_amount, order_date, order_ShipMethod, order_status) {
   return {
@@ -282,10 +284,36 @@ const Order = (props) => {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  const [pdfData, setPdfData] = useState(null);
+
+  const downloadPdf = (orderId) => {
+    axios.get(`http://localhost:8080/taxinvoice/${orderId}`, { responseType: 'blob' })
+      .then((response) => {
+        console.log(response.data);
+        
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <SelectedTool numSelected={selected.length} />
+        <Paper>
+            {pdfData && (
+            <div style={{ width: '100%', height: '800px' }}>
+              <Document
+                file={{ data: pdfData, type: 'application/pdf' }}
+                options={{ workerSrc: '/pdf.worker.js' }}
+              >
+                <Page pageNumber={1} />
+              </Document>
+            </div>
+          )}
+        </Paper>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -310,7 +338,6 @@ const Order = (props) => {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.order_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -321,6 +348,7 @@ const Order = (props) => {
                         <Checkbox
                           color="primary"
                           checked={isItemSelected}
+                          onClick={(event) => handleClick(event, row.order_id)}
                           inputProps={{
                             'aria-labelledby': labelId,
                           }}
@@ -340,6 +368,7 @@ const Order = (props) => {
                       <TableCell align="right">{row.order_date}</TableCell>
                       <TableCell align="right">{row.order_ShipMethod}</TableCell>
                       <TableCell align="right">{row.order_status}</TableCell>
+                      <Button onClick={downloadPdf(row.order_id)}>Generate Tax Invoice</Button>
                     </TableRow>
                   );
                 })}
