@@ -7,6 +7,7 @@ import Help from './Front-end/FrontComponent/Help';
 import Login from './Front-end/FrontComponent/Login';
 import Profile from './Front-end/Profile';
 import ProductTable from './Front-end/FrontComponent/ProductTable';
+import ProductPage from './Front-end/ProductPage';
 
 import MyNavFront from './Front-end/MyNavFront';
 
@@ -20,7 +21,7 @@ const App = () => {
 
   return (
     <div>
-      {/* <MyNavFront/> */}
+      <MyNavFront/>
       <Routes>
           <Route path="/" element={<><Front/></>}/>
           <Route path="/Help" element={<><Help/></>}/>
@@ -28,6 +29,7 @@ const App = () => {
           <Route path="/Front" element={<><Front/></>}/>
           <Route path="/Profile" element={<><Profile/></>}/>
           <Route path="/ProductTable" element={<><ProductTable/></>}/>
+          <Route path="/ProductPage" element={<><ProductPage/></>}/>
 
           <Route path="/admin" element={<Admin/>}/>
           <Route path="/product" element={<Product/>}/>
