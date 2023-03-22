@@ -31,11 +31,12 @@ const App = () => {
           <Route path="/ProductTable" element={<><ProductTable/></>}/>
           <Route path="/ProductPage" element={<><ProductPage/></>}/>
 
-          <Route path="/admin" element={<Admin/>}/>
-          <Route path="/product" element={<Product/>}/>
-          <Route path="/customer" element={<Customer/>}/>
-          <Route path="/order" element={<Order/>}/>
-          <Route path="/payment" element={<Payment/>}/>
+          <Route path="/admin" element={<Admin/>}>
+            <Route path="product" element={<Product/>}/>
+            <Route path="customer" element={<Customer/>}/>
+            <Route path="order" element={<Order/>}/>
+            <Route path="payment" element={<Payment/>}/>
+          </Route>
       </Routes>
     </div>
   );

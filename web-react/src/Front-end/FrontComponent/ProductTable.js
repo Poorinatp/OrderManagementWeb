@@ -1,75 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import'./ProductTable.css';
+import { Box, Button, Grid, MenuItem, Paper, Select, Stack, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Typography } from "@mui/material";
 
-// const ProductTable = () => {
-//   const [products, setProducts] = useState([]);
-//   const [sortedProducts, setSortedProducts] = useState([]);
-//   const [sortOrder, setSortOrder] = useState("asc");
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       const result = await axios("http://localhost:8080/product_detail");
-//       setProducts(result.data);
-//       setSortedProducts(result.data);
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   const handleSort = (order) => {
-//     if (order === "asc") {
-//       const sorted = [...sortedProducts].sort((a, b) => a.product_price - b.product_price);
-//       setSortedProducts(sorted);
-//       setSortOrder("asc");
-//     } else if (order === "desc") {
-//       const sorted = [...sortedProducts].sort((a, b) => b.product_price - a.product_price);
-//       setSortedProducts(sorted);
-//       setSortOrder("desc");
-//     }
-//   };
-
-//   return (
-//     <div className="product-container">
-//       <div className="sort-container">
-//         <label htmlFor="sort">Sort By:</label>
-//         <select id="sort" onChange={(e) => handleSort(e.target.value)}>
-//           <option value="asc">Price (Low to High)</option>
-//           <option value="desc">Price (High to Low)</option>
-//         </select>
-//       </div>
-//       <div className="product-table">
-//         {sortedProducts.map((product) => (
-//           <div key={product.product_id} className="product-card">
-//             <img className="product-img" src={product.product_urlimg} alt={product.product_descropton} />
-//             <div className="product-name">{product.product_description}</div>
-//             <div className="product-price">{product.product_price}</div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProductTable;
-
-const ProductTable = ({ selectedFilter }) => {
-  const [products, setProducts] = useState([]);
+const ProductTable = (props) => {
+  const products = props.product;
   const [sortedProducts, setSortedProducts] = useState([]);
   const [sortOrder, setSortOrder] = useState("asc");
+  
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios("http://localhost:8080/product_detail");
-      setProducts(result.data);
-    };
-
-    fetchData();
-  }, []);
-
+  /*
   useEffect(() => {
     let filteredProducts = [...products];
-
+    
     if (selectedFilter.productGender) {
       console.log(selectedFilter.productGender);
       filteredProducts = filteredProducts.filter(
@@ -94,12 +37,12 @@ const ProductTable = ({ selectedFilter }) => {
     if (selectedFilter.productPromotion) {
       console.log(selectedFilter.productPromotion);
       filteredProducts = filteredProducts.filter(
-        (product) => product.product_promotion === selectedFilter.productPromotion
+        (product) => product.promotion_id === selectedFilter.productPromotion
       );
     }
 
     setSortedProducts(filteredProducts);
-  }, [selectedFilter, products]);
+  }, [selectedFilter, products]);*/
 
   const handleSort = (order) => {
     if (order === "asc") {
@@ -111,10 +54,55 @@ const ProductTable = ({ selectedFilter }) => {
       setSortedProducts(sorted);
       setSortOrder("desc");
     }
+    console.log(order)
   };
-
+  
   return (
-    <div className="product-container">
+    <Box sx={{ textColor:"primary" }}>
+        
+        <Paper sx={{ p: 2, display: "flex", flexDirection: "column",alignItems:'center',elevation:10 }}>
+          <img src="/img/Fad.jpg" width='80%' alt="Fad" />
+        </Paper>
+        <Paper sx={{ mt:5, elevation: 10, marginBottom: 2 }}>
+            <Grid container p={3} justifyContent="space-between" alignItems="center">
+              <Grid item  sx={{ justifyContent: "flex-start" }}>
+                <img src="/img/logoAdidas.png" width="100px" alt="logoAdidas" />
+              </Grid>
+              <Grid item  sx={{ justifyContent: "flex-end" }}>
+              <Stack direction="row" alignItems="center">
+                <Typography>Sort by</Typography>
+                <Select onChange={e=>handleSort(e.target.value)}>
+                  <MenuItem value="asc">Low to high</MenuItem>
+                  <MenuItem value="desc">High to low</MenuItem>
+                </Select>
+              </Stack>
+              </Grid>
+            </Grid>
+          </Paper>
+      <Box sx={{padding:'100px'}}>
+      <Stack spacing={2} >
+      <Typography variant="h3">
+        All Item
+      </Typography>
+      <Grid container spacing={1} >
+        {products.map((row) => (
+          <Grid item xs={12} sm={6} md={4} lg={4}>
+            <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+              <img style={{ width: '100%',maxHeight:'500px' }} src={row.product_urlimg} alt={row.product_descropton} />
+              <Typography variant="h8" component="h7">
+                {row.product_description}
+              </Typography>
+              <Typography>{row.product_price}</Typography>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+      </Stack>
+        </Box>
+        <div>
+          
+        </div>
+    {/*<div className="product-container">
       <div className="sort-container">
         <label htmlFor="sort">Sort By:</label>
         <select id="sort" onChange={(e) => handleSort(e.target.value)}>
@@ -123,7 +111,7 @@ const ProductTable = ({ selectedFilter }) => {
         </select>
       </div>
       <div className="product-table">
-        {sortedProducts.map((product) => (
+        {filteredRows.map((product) => (
           <div key={product.product_id} className="product-card">
             <img className="product-img" src={product.product_urlimg} alt={product.product_descropton} />
             <div className="product-name">{product.product_description}</div>
@@ -131,7 +119,8 @@ const ProductTable = ({ selectedFilter }) => {
           </div>
         ))}
       </div>
-    </div>
+        </div>*/}
+      </Box>
   );
 };
 

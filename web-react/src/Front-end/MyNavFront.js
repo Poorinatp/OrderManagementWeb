@@ -13,7 +13,7 @@ import './MyNavFront.css';
 import Login_and_Help from './Login_and_Help';
 
 const MyNavFront = () => {
-
+  
     const [Cat,setCat] =useState(
     {
       data:[{
@@ -149,6 +149,7 @@ const MyNavFront = () => {
               return(<NavItem key={index} 
               Cat={item.subCat} 
               title={item.title}
+
               />)})}
 
             </Menu>

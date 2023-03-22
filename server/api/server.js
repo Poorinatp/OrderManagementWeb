@@ -335,61 +335,7 @@ app.get('/taxinvoice/:id', function(req, res) {
             taxAmount,
             total
           )
-          // Set response headers to indicate PDF content type
-          /*res.set('Content-Type', 'application/pdf');
-          res.set('Content-Disposition', `attachment; filename="taxinvoice_${order_id}.pdf"`);*/
-          // Pipe PDF document to response
-        /*doc.on('data', (chunk) => stream.write(chunk));
-            doc.on('end', () => stream.end());
-          // Format into tax invoice template
-          doc.font('Helvetica-Bold').fontSize(24).text('Tax Invoice', {align: 'center'});
-          doc.moveDown();
-          doc.fontSize(14).text(`Customer Name: ${customerName}\nCustomer Address: ${customerAddress}`, {align: 'left'});
-          doc.moveDown();
-          doc.fontSize(14).text(`Date: ${orderDate}`, {align: 'left'});
-          doc.moveDown();
-          doc.fontSize(14).text('Product Details:', {align: 'left'});
-          doc.moveDown();
-          const tableHeaders = ['Product Name', 'Quantity', 'Price', 'Subtotal'];
-          const tableRows = productDetails.map(product => [product.name, product.quantity, product.price.toFixed(2), product.subtotal.toFixed(2)]);
-          doc.table([tableHeaders, ...tableRows], {align: ['left', 'right', 'right', 'right'], width: doc.page.width - 100, rowHeight: 20});
-          doc.moveDown();
-          doc.fontSize(14).text(`Subtotal: $${subtotal.toFixed(2)}`, {align: 'right'});
-          doc.moveDown();
-          doc.fontSize(14).text(`Tax (${taxRate * 100}%): $${taxAmount.toFixed(2)}`, {align: 'right'});
-          doc.moveDown();
-          doc.font('Helvetica-Bold').fontSize(16).text(`Total: $${total.toFixed(2)}`, {align: 'right'});
-          // Finalize PDF document
           
-          doc.end();
-          
-
-          const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            auth: {
-              user: 's6404062630511@email.kmutnb.ac.th',
-              pass: '0957421530Pp!'
-            }
-          });
-          
-          const mailOptions = {
-            from: 's6404062630511@email.kmutnb.ac.th',
-            to: 'poorinat.p@gmail.com',
-            subject: 'Tax Invoice',
-            text: 'Please find attached your tax invoice',
-            attachments: [
-              { filename: fileName, path: `./${fileName}` }
-            ]
-          };
-          
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });*/
         } else {
           res.status(401).send({message: "User not found"});
         }

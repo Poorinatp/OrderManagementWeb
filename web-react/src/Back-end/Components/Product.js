@@ -271,6 +271,7 @@ const Product = (props) => {
         : (searchCat === "") // case 7-8: search by id and brand or id, brand and category
           ? rows.filter((row) => row.product_id.toString().includes(searchID) && row.product_brand.toLowerCase().includes(searchBrand.toLowerCase())) // case 7: search by id and brand
           : rows.filter((row) => row.product_id.toString().includes(searchID) && row.product_brand.toLowerCase().includes(searchBrand.toLowerCase()) && row.product_type.toLowerCase().includes(searchCat.toLowerCase()));// case 8: search by id, brand and category
+    
     const pageRows = filteredRows.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
     const [openimgList, setOpenimgList] = useState(Array(filteredRows.length).fill(false));
     const [openstockList, setOpenstockList] = useState(Array(filteredRows.length).fill(false));

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState,useEffect,useRef } from "react"
 import Button from '@mui/material/Button';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
@@ -7,26 +7,90 @@ import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import Stack from '@mui/material/Stack';
-import { Link, ThemeProvider, Typography } from '@mui/material';
+import { Collapse, Link, Popover, ThemeProvider, Typography } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { purple } from '@mui/material/colors';
-
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const NavItem = (props) => {
-    const [open, setOpen] = React.useState(false);
-    const anchorRef = React.useRef(null);
+    const [open, setOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const anchorRef = useRef(null);
     const title = props.title;
     const cat = props.Cat;
-    const handleToggle = () => {
-        setOpen((prevOpen) => !prevOpen);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const [selectedFilter, setSelectedFilter] = useState(location.state?.selectedFilter || {
+      productType: '',
+      productGender: '',
+      productBrand: '',
+      productPromotion: '',
+    });
+
+    const updateFilter = (propertyName, propertyValue) => {
+      setSelectedFilter((prevFilter) => ({
+        ...prevFilter,
+        [propertyName]: propertyValue,
+      }));
     };
 
+    const goaway = () => {
+      //console.log(selectedFilter);
+      //localStorage.setItem('selectedFilter', JSON.stringify(selectedFilter));
+      navigate('/ProductPage', { state: { selectedFilter } });
+    }
+    const handleClick1 = (gender, type) => {
+      if(gender ==='Men'){
+        updateFilter('productGender', 'Men');
+        updateFilter('productType', type);
+        //console.log(selectedFilter);
+        goaway();
+      }
+      else if(gender ==='Women'){
+        updateFilter('productGender', 'Women');
+        updateFilter('productType', type);
+        //console.log(selectedFilter);
+        goaway();
+      } 
+      else if(gender==='Brand'){
+      }
+      else{
+      };
+    };
+
+    const handleClick2 = (gender, type, detail) => {
+      if(gender ==='Men'){
+        updateFilter('productGender', 'Men');
+        updateFilter('productType', type);
+        updateFilter('productBrand', detail);
+        //console.log(selectedFilter);
+        goaway();
+      }
+      else if(gender ==='Women'){
+        updateFilter('productGender', 'Women');
+        updateFilter('productType', type);
+        updateFilter('productBrand', detail);
+        //console.log(selectedFilter);
+        goaway();
+      } 
+      else if(gender==='Brand'){
+      }
+      else{
+      };
+    };
+  
+
   const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+    if (anchorEl.current && anchorEl.current.contains(event.target)) {
       return;
     }
-
     setOpen(false);
+  };
+
+  const handleToggle = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+    setOpen((prevOpen) => !prevOpen);
   };
 
   function handleListKeyDown(event) {
@@ -39,8 +103,8 @@ const NavItem = (props) => {
   }
 
   // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
+  const prevOpen = useRef(open);
+  useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
@@ -52,7 +116,7 @@ const NavItem = (props) => {
 
   return (
       <div>
-        <MenuItem
+       <MenuItem
           ref={anchorRef}
           id="composition-button"
           aria-controls={open ? 'composition-menu' : undefined}
@@ -70,6 +134,7 @@ const NavItem = (props) => {
           placement="bottom-start"
           transition
           disablePortal
+
         >
           {({ TransitionProps, placement }) => (
             <Grow
@@ -82,16 +147,16 @@ const NavItem = (props) => {
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
                   <Stack spacing={1}>
-                    {cat.subcat1.map((item,index) => {
+                    {cat.subcat1.map((item1,index) => {
                       return(
                         <Stack spacing={0} key={index}>
-                        <MenuItem key={index} color='light' onClick={handleClose}>
-                          <Typography variant="h5" textAlign="center">{item}</Typography>
+                        <MenuItem key={index} color='light' onClick={e=>handleClick1(title,item1)}>
+                          <Typography variant="h5" textAlign="center">{item1}</Typography>
                         </MenuItem>
-                        {cat.subcat2.map((item,index) => {
+                        {cat.subcat2.map((item2,index) => {
                             return(
-                              <MenuItem key={index} color='light' onClick={handleClose}>
-                                <Typography variant="h7" textAlign="center">{item}</Typography>
+                              <MenuItem key={index} color='light' onClick={e=>handleClick2(title,item1,item2)}>
+                                <Typography variant="h7" textAlign="center">{item2}</Typography>
                               </MenuItem>
                             )
                           }

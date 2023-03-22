@@ -84,8 +84,8 @@ const Admin = () => {
     }
   };
 
-  const menuName = ["Admin", "Order", "Product", "Customer", "Payment"]
-  const menuIcon = [<DashboardIcon/>, <ShoppingCartIcon/>, <LayersIcon/>, <PeopleIcon/>,<PaymentsIcon/>]
+  const menuName = ["Admin", "Order", "Product", "Customer", "Payment", "Stock"]
+  const menuIcon = [<DashboardIcon/>, <ShoppingCartIcon/>, <LayersIcon/>, <PeopleIcon/>,<PaymentsIcon/>,<img src="/img/in-stock.png" alt="stock" width="24" height="24"/>]
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
   })(({ theme, open }) => ({
