@@ -43,7 +43,7 @@ const Admin = () => {
       const results1  = await axios.get('http://localhost:8080/customer');
       const results2  = await axios.get('http://localhost:8080/order');
       const results3  = await axios.get('http://localhost:8080/payment');
-      const results4  = await axios.get('http://localhost:8080/product_datail');
+      const results4  = await axios.get('http://localhost:8080/product_detail');
       const results5  = await axios.get('http://localhost:8080/product_inventory');
       const results6  = await axios.get('http://localhost:8080/product_order');
 
@@ -84,8 +84,8 @@ const Admin = () => {
     }
   };
 
-  const menuName = ["Admin", "Order", "Product", "Customer", "Payment"]
-  const menuIcon = [<DashboardIcon/>, <ShoppingCartIcon/>, <LayersIcon/>, <PeopleIcon/>,<PaymentsIcon/>]
+  const menuName = ["Admin", "Order", "Product", "Customer", "Payment", "Stock"]
+  const menuIcon = [<DashboardIcon/>, <ShoppingCartIcon/>, <LayersIcon/>, <PeopleIcon/>,<PaymentsIcon/>,<img src="/img/in-stock.png" alt="stock" width="24" height="24"/>]
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
   })(({ theme, open }) => ({

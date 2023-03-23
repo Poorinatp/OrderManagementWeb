@@ -1,6 +1,6 @@
-import React, { useState,useEffect,useContext } from "react"
+import React, { useState,useEffect,useRef } from "react"
 import { useNavigate } from "react-router-dom"
-import { alpha, Box, Button, Checkbox, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormControlLabel, Grid, IconButton, Paper, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from "@mui/material"
+import { alpha, Box, Button, Checkbox, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormControlLabel, Grid, IconButton, MenuItem, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from "@mui/material"
 import MyOption from "./MyOption"
 import visuallyHidden from "@mui/utils/visuallyHidden"
 import PropTypes from 'prop-types';
@@ -9,6 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import axios from "axios";
 import Noti from "./Noti"
 import { useLocation } from "react-router-dom";
@@ -107,45 +108,9 @@ function stableSort(array, comparator) {
     });
     return stabilizedThis.map((el) => el[0]);
 } 
-function SelectedItem(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = (property) => (event) => {
-      onRequestSort(event, property);
-    };
-  
-    return (
-      <TableHead>
-        <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox color="primary" indeterminate={numSelected > 0 && numSelected < rowCount} checked={rowCount > 0 && numSelected === rowCount} onChange={onSelectAllClick} inputProps={{ 'aria-label': 'select all', }} />
-          </TableCell>
-          <TableCell>
-          </TableCell>
-          {props.headCells.map((headCell) => (
-            <TableCell key={headCell.id} align='left' padding={headCell.disablePadding ? 'none' : 'normal'} sortDirection={orderBy === headCell.id ? order : false} sx={{ maxWidth: '200px' }} >
-              <TableSortLabel active={orderBy === headCell.id} direction={orderBy === headCell.id ? order : 'asc'} onClick={createSortHandler(headCell.id)} >
-                {headCell.label}
-                {orderBy === headCell.id ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
-                ) : null}
-              </TableSortLabel>
-            </TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-    );
-}
 
-SelectedItem.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-};
+
+
 function SelectedTool(props) {
     const { numSelected } = props;
     const selected = props.selected;
@@ -276,13 +241,14 @@ SelectedTool.propTypes = {
 const Product = (props) => {
     const rows = props.data;
     const inventory = props.inventory;
-    const product_order = props.product_order;
     const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('product_id'); 
     const [selected, setSelected] = useState([]);
     const [dense, setDense] = useState(true);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchID, setSearchID] = useState("");
+    const [searchBrand, setSearchBrand] = useState("");
+    const [searchCat, setSearchCat] = useState("");
     const [currentPage, setCurrentPage] = useState(0);
     const [openEdit, setOpenEdit] = useState(false);
     const [openAdd, setOpenAdd] = useState(false);
@@ -290,15 +256,26 @@ const Product = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const filteredRows = searchQuery === "" ? rows : rows.filter((row) => {
-      const productDescription = row.product_description.toLowerCase();
-      const productBrand = row.product_brand.toLowerCase();
-      const search = searchQuery.toLowerCase();
-      return row.product_id === parseInt(search) || productDescription.includes(search) || productBrand.includes(search);
-    });
+    const filteredRows = (searchID === "" && searchBrand === "" && searchCat === "")
+    ? (rows) // case 1: no search
+    : (searchID === "") // case 2-6: search by brand, category, or both
+      ? (searchBrand === "") // case 2-3: search by category or brand
+        ? rows.filter((row) => row.product_type.toLowerCase().includes(searchCat.toLowerCase())) // case 2: search by category
+        : (searchCat === "") // case 3-4: search by brand or both
+          ? rows.filter((row) => row.product_brand.toLowerCase().includes(searchBrand.toLowerCase())) // case 3: search by brand
+          : rows.filter((row) => row.product_brand.toLowerCase().includes(searchBrand.toLowerCase()) && row.product_type.toLowerCase().includes(searchCat.toLowerCase())) // case 4: search by brand and category
+      : (searchBrand === "") // case 5-8: search by id, id and category, id and brand, or id, brand and category
+        ? (searchCat === "") // case 5-6: search by id or id and category
+          ? rows.filter((row) => row.product_id.toString().includes(searchID)) // case 5: search by id
+          : rows.filter((row) => row.product_id.toString().includes(searchID) && row.product_type.toLowerCase().includes(searchCat.toLowerCase())) // case 6: search by id and category
+        : (searchCat === "") // case 7-8: search by id and brand or id, brand and category
+          ? rows.filter((row) => row.product_id.toString().includes(searchID) && row.product_brand.toLowerCase().includes(searchBrand.toLowerCase())) // case 7: search by id and brand
+          : rows.filter((row) => row.product_id.toString().includes(searchID) && row.product_brand.toLowerCase().includes(searchBrand.toLowerCase()) && row.product_type.toLowerCase().includes(searchCat.toLowerCase()));// case 8: search by id, brand and category
+    
+    const pageRows = filteredRows.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
     const [openimgList, setOpenimgList] = useState(Array(filteredRows.length).fill(false));
     const [openstockList, setOpenstockList] = useState(Array(filteredRows.length).fill(false));
-    const pageRows = filteredRows.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
+    const [openeditList, setOpeneditList] = useState(Array(filteredRows.length).fill(false));
 
     useEffect(() => {
       setCurrentPage(0);
@@ -310,39 +287,14 @@ const Product = (props) => {
         setOrderBy(property);
     };
 
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-          const newSelected = filteredRows.map((n) => n.product_id);
-          setSelected(newSelected);
-          return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, product_id) => {
-        const selectedIndex = selected.indexOf(product_id);
-        let newSelected = [];
-    
-        if (selectedIndex === -1) {
-          newSelected = newSelected.concat(selected, product_id);
-        } else if (selectedIndex === 0) {
-          newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-          newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-          newSelected = newSelected.concat(
-            selected.slice(0, selectedIndex),
-            selected.slice(selectedIndex + 1),
-          );
-        }
-        setSelected(newSelected);
-    };
     const handleChangePage = (event, newPage) => {
-        setCurrentPage(newPage)
+      
+      setCurrentPage(newPage)
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setCurrentPage(0);
     };
 
     const handleChangeDense = (event) => {
@@ -350,7 +302,6 @@ const Product = (props) => {
     };
 
     const handleDelete = (event) => {
-      console.log(selected);
       axios.delete("http://localhost:8080/productinventory/delete", { data:{ product_id: event.target.id }})
       .then((res) => {
         const timestamp = new Date();
@@ -362,10 +313,9 @@ const Product = (props) => {
         console.log(err);
       });
     };
-    
-
-    const isSelected = (id) => selected.indexOf(id) !== -1;
-
+    const createSortHandler = (property) => (event) => {
+      handleRequestSort(event, property);
+    };
     const emptyRows =
     currentPage > 0 ? Math.max(0, (1 + currentPage) * rowsPerPage - filteredRows.length) : 0;
 
@@ -375,6 +325,12 @@ const Product = (props) => {
         numeric: false,
         disablePadding: true,
         label: 'Product ID',
+      },
+      {
+        id: 'product_gender',
+        numeric: true,
+        disablePadding: false,
+        label: 'Gender',
       },
       {
         id: 'product_type',
@@ -409,38 +365,80 @@ const Product = (props) => {
     ];
 
     return(
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ p: 2, width: '100%',backgroundColor:'white' }}>
       <Noti location={location}/>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <Stack direction="row" spacing={2} sx={{ p: 2 }}>
-        <TextField fullWidth label="Search Product Name or Brand" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-        <Button variant="contained" onClick={() => setOpenAdd(!openAdd)}>
-          {openAdd ? 'Close' : 'Add Product'}
-        </Button>
-        {/*<Button variant="contained" onClick={() => setOpenEdit(!openEdit)}>
-          Edit Product
-    </Button>*/}
-        {openEdit&&<EditProduct open={openEdit} setOpen={setOpenEdit} />}
-        </Stack>
+        <Paper sx={{ width: '100%', mb: 2, elevation:10}}>
+          <Grid container >
+            <Grid item xs={4} sm={4} >
+            <Stack direction="row" spacing={1} sx={{ p: 2 }} alignItems="center">
+              <Typography variant="h8" >Brand</Typography>
+              <TextField  value={searchBrand} onChange={(e) => setSearchBrand(e.target.value)} />
+            </Stack>
+            </Grid>
+            <Grid item xs={4} sm={4}>
+            <Stack direction="row" spacing={1} sx={{ p: 2 }} alignItems="center">
+              <Typography variant="h8" >Product ID</Typography>
+              <TextField value={searchID}  onChange={(e) => setSearchID(e.target.value)} />
+            </Stack>
+            </Grid>
+            <Grid item xs={4} sm={4}>
+            <Stack direction="row" spacing={1} sx={{ p: 2 }} alignItems="center">
+              <Typography variant="h8">Category</Typography>
+              <TextField value={searchCat}  onChange={(e) => setSearchCat(e.target.value)} />
+            </Stack>
+            </Grid>
+          </Grid>
+          </Paper>
+        <Paper sx={{ p: 2, width: '100%', mb: 2, elevation:10 }} >
+        <Grid container >
+          <Grid item xs={4} sm={4}>
+            <Button variant="contained" onClick={() => setOpenAdd(!openAdd)}>
+              {openAdd ? 'Close' : 'Add Product'}
+            </Button>
+          </Grid>
+          <Grid item xs={4} sm={4}>
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+            <Select value={orderBy} label="Order By" onChange={event=>handleRequestSort(event,event.target.value)} >
+              <MenuItem value={"product_id"}>Product ID</MenuItem>
+              <MenuItem value={"product_description"}>Name</MenuItem>
+            </Select>
+          </FormControl>
+          </Grid>
+        <Grid item xs={12} sm={12}>
         {openAdd&&<AddProduct/>}
-        <SelectedTool numSelected={selected.length} selected={selected}/>
+        </Grid>
+        </Grid>
+        </Paper>
+        <Paper sx={{ p: 2, width: '100%', mb: 2 , elevation:10 }}>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'} stickyHeader >
-            <SelectedItem numSelected={selected.length} order={order} orderBy={orderBy} onSelectAllClick={handleSelectAllClick} onRequestSort={handleRequestSort} rowCount={filteredRows.length} headCells = {headCells} />
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                </TableCell>
+                {headCells.map((headCell) => (
+                  <TableCell key={headCell.id} align='left' padding={headCell.disablePadding ? 'none' : 'normal'} sortDirection={orderBy === headCell.id ? order : false} sx={{ maxWidth: '200px' }} >
+                    <TableSortLabel active={orderBy === headCell.id} direction={orderBy === headCell.id ? order : 'asc'} onClick={createSortHandler(headCell.id)} >
+                      {headCell.label}
+                      {orderBy === headCell.id ? (
+                        <Box component="span" sx={visuallyHidden}>
+                          {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                        </Box>
+                      ) : null}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
             <TableBody>
               {stableSort(filteredRows, getComparator(order, orderBy))
                 .slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.product_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   const img = row.product_urlimg.replace(/\//g, "/");
                   return (
                     <>
-                    
                     <TableRow tabIndex={-1} key={row.product_id} >
-                      <TableCell padding="checkbox">
-                        <Checkbox color="primary" checked={isItemSelected} onClick={(event) => {handleClick(event, row.product_id);}} inputProps={{ 'aria-labelledby': labelId, }} />
-                      </TableCell>
                       <TableCell>
                         <IconButton size="small" onClick={() => { const openListCopy = [...openstockList]; openListCopy[index] = !openstockList[index]; setOpenstockList(openListCopy); }}>
                           {openstockList[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -449,6 +447,7 @@ const Product = (props) => {
                       <TableCell component="th" id={labelId} scope="row" padding="none" >
                         {row.product_id}
                       </TableCell>
+                      <TableCell align='left'><Typography >{row.product_gender}</Typography></TableCell>
                       <TableCell align='left'><Typography >{row.product_type}</Typography></TableCell>
                       <TableCell align='left'><Typography >{row.product_brand}</Typography></TableCell>
                       <TableCell align='left'><Typography >{row.product_description}</Typography></TableCell>
@@ -457,9 +456,14 @@ const Product = (props) => {
                         <img href="#" src={img} style={dense ? { width: '50px' } : { width: '100px' }} />
                       </TableCell>
                       <Dialog open={openimgList[index]} onClose={() => {const openListCopy = [...openimgList];openListCopy[index] = false;setOpenimgList(openListCopy);}}>
+                        <Paper sx={{ p: 2, width: '100%', elevation:10 }}>
                         <img src={img} style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                        </Paper>
                       </Dialog>
-                      <TableCell align='center'><Button id={row.product_id} onClick={handleDelete}>delete</Button></TableCell>
+                      <TableCell align='center'>
+                        {openeditList[index] ? <Stack direction="row" spacing={1}><IconButton onClick={() => { const openListCopy = [...openeditList]; openListCopy[index] = !openeditList[index]; setOpeneditList(openListCopy); }}><EditIcon/></IconButton><Button id={row.product_id} onClick={handleDelete}>delete</Button></Stack>
+                        :<IconButton onClick={() => { const openListCopy = [...openeditList]; openListCopy[index] = !openeditList[index]; setOpeneditList(openListCopy); }}><EditIcon/></IconButton>}
+                        </TableCell>
                     </TableRow>
                     {openstockList[index] ? (
                       <TableRow key={row.product_id+" "+row.product_size}>
