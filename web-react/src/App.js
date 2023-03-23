@@ -34,10 +34,9 @@ const App = () => {
           <Route path="/admin" element={<Admin/>}/>
           <Route path="/product" element={<Product/>}/>
           <Route path="/customer" element={<Customer/>}/>
-          <Route path="/order" element={<Order/>}/>
+          {/* <Route path="/order" element={<Order/>}/> */}
           <Route path="/payment" element={<Payment/>}/>
       </Routes>
-      {/* <ProductTable /> */}
     </div>
   );
 }
