@@ -4,7 +4,7 @@ import'./ProductTable.css';
 import { Box, Button, Grid, MenuItem, Paper, Select, Stack, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Typography } from "@mui/material";
 
 const ProductTable = (props) => {
-  const products = props.product;
+  const [products, setProducts] = useState(props.product);
   const [sortedProducts, setSortedProducts] = useState([]);
   const [sortOrder, setSortOrder] = useState("asc");
   
@@ -43,6 +43,9 @@ const ProductTable = (props) => {
 
     setSortedProducts(filteredProducts);
   }, [selectedFilter, products]);*/
+  useEffect(() => {
+    setProducts(props.product);
+  }, [props.product]);
 
   const handleSort = (order) => {
     if (order === "asc") {
@@ -59,9 +62,8 @@ const ProductTable = (props) => {
   
   return (
     <Box sx={{ textColor:"primary" }}>
-        
         <Paper sx={{ p: 2, display: "flex", flexDirection: "column",alignItems:'center',elevation:10 }}>
-          <img src="/img/Fad.jpg" width='80%' alt="Fad" />
+            <img src="/img/Fad.jpg" width='80%' alt="Fad" />
         </Paper>
         <Paper sx={{ mt:5, elevation: 10, marginBottom: 2 }}>
             <Grid container p={3} justifyContent="space-between" alignItems="center">
@@ -85,14 +87,14 @@ const ProductTable = (props) => {
         All Item
       </Typography>
       <Grid container spacing={1} >
-        {products.map((row) => (
-          <Grid item xs={12} sm={6} md={4} lg={4}>
-            <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+        {products.map((row,index) => (
+          <Grid key={"grid"+index} item xs={12} sm={6} md={4} lg={4}>
+            <Paper key={"paper"+index} sx={{ p: 2, display: "flex", flexDirection: "column" }}>
               <img style={{ width: '100%',maxHeight:'500px' }} src={row.product_urlimg} alt={row.product_descropton} />
-              <Typography variant="h8" component="h7">
+              <Typography key={"description"+index}  variant="h8">
                 {row.product_description}
               </Typography>
-              <Typography>{row.product_price}</Typography>
+              <Typography key={"price"+index}>{row.product_price}</Typography>
             </Paper>
           </Grid>
         ))}

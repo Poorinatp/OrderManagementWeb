@@ -20,25 +20,25 @@ const MyNavFront = () => {
             title:"Men",
             subCat:{
                 subcat1:["Shoes","Clothing","Accessories"],
-                subcat2:["adidas","Nike","converse","new balance"]
+                subcat2:["Adidas","Nike","Converse","New Balance"]
             }
         },{
             title:"Woman",
             subCat:{
                 subcat1:["Shoes","Clothing","Accessories"],
-                subcat2:["adidas","Nike","converse","new balance"]
+                subcat2:["Adidas","Nike","Converse","New Balance"]
             }
         },{
             title:"Brand",
             subCat:{
                 subcat1:["Popular","Brands"],
-                subcat2:["adidas","Nike","converse","new balance"]
+                subcat2:["Adidas","Nike","Converse","New Balance"]
             }
         },{
             title:"Sale",
             subCat:{
                 subcat1:["Shoes","Clothing","Accessories"],
-                subcat2:["adidas","Nike","converse","new balance"]
+                subcat2:["Adidas","Nike","Converse","New Balance"]
             }
         }
       ]
@@ -145,13 +145,7 @@ const MyNavFront = () => {
                 display: { xs: 'flex', md: 'none' },
               }}
             >
-            {Cat.data.map((item,index) => {
-              return(<NavItem key={index} 
-              Cat={item.subCat} 
-              title={item.title}
-
-              />)})}
-
+            <NavItem catdata={Cat}/>
             </Menu>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -186,11 +180,7 @@ const MyNavFront = () => {
             LOGO 1
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {Cat.data.map((item,index) => {
-              return(<NavItem key={index} drt='right-start' 
-              Cat={item.subCat} 
-              title={item.title}
-              />)})}
+            <NavItem catdata={Cat}/>
           </Box>
           <Box >
           <Grid container spacing={2}>

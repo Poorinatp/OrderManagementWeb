@@ -7,21 +7,37 @@ import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import Stack from '@mui/material/Stack';
-import { Collapse, Link, Popover, ThemeProvider, Typography } from '@mui/material';
+import { Collapse, Link, Popover, ThemeProvider, Typography, Dialog, List, ListItem, ListItemText } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import { purple } from '@mui/material/colors';
+import { blue, purple } from '@mui/material/colors';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+import { Box } from "@mui/system";
+
+
+const MyButton = styled(Button)({
+  width: 'fit-content',
+});
+
+const MyDialog = styled(Dialog)({
+  width: '50%',
+  height: '100%',
+  zIndex: 1000,
+  // remove background color
+  '& .MuiBackdrop-root': {
+    backgroundColor: 'transparent',
+  },
+  // remove box shadow
+
+});
 
 const NavItem = (props) => {
-    const [open, setOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
-    const anchorRef = useRef(null);
-    const title = props.title;
-    const cat = props.Cat;
+
+    const catdata = props.catdata;
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [selectedFilter, setSelectedFilter] = useState(location.state?.selectedFilter || {
+    const [selectedFilter, setSelectedFilter] = useState({
       productType: '',
       productGender: '',
       productBrand: '',
@@ -36,27 +52,27 @@ const NavItem = (props) => {
     };
 
     const goaway = () => {
-      //console.log(selectedFilter);
-      //localStorage.setItem('selectedFilter', JSON.stringify(selectedFilter));
-      navigate('/ProductPage', { state: { selectedFilter } });
+      navigate('/ProductPage/productTable', { state: { selectedFilter:selectedFilter } });
+      //window.location.reload();
     }
     const handleClick1 = (gender, type) => {
       if(gender ==='Men'){
         updateFilter('productGender', 'Men');
         updateFilter('productType', type);
         //console.log(selectedFilter);
-        goaway();
+        
       }
       else if(gender ==='Women'){
         updateFilter('productGender', 'Women');
         updateFilter('productType', type);
         //console.log(selectedFilter);
-        goaway();
+        
       } 
       else if(gender==='Brand'){
       }
       else{
       };
+      goaway();
     };
 
     const handleClick2 = (gender, type, detail) => {
@@ -65,110 +81,101 @@ const NavItem = (props) => {
         updateFilter('productType', type);
         updateFilter('productBrand', detail);
         //console.log(selectedFilter);
-        goaway();
+        
       }
       else if(gender ==='Women'){
         updateFilter('productGender', 'Women');
         updateFilter('productType', type);
         updateFilter('productBrand', detail);
         //console.log(selectedFilter);
-        goaway();
+        
       } 
       else if(gender==='Brand'){
       }
       else{
       };
+      goaway();
     };
-  
 
-  const handleClose = (event) => {
-    if (anchorEl.current && anchorEl.current.contains(event.target)) {
-      return;
-    }
-    setOpen(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [opendialogList, setOpendialogList] = useState([false,false,false,false]);
+
+  const handleMouseEnter = (event,index) => {
+    //setAnchorEl(event.currentTarget);
+    const openListCopy = [...opendialogList];
+    openListCopy[index] = !opendialogList[index];
+    setOpendialogList(openListCopy);
   };
 
-  const handleToggle = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-    setOpen((prevOpen) => !prevOpen);
+  const handleMouseLeave = (index) => {
+    //setAnchorEl(null);
+    const openListCopy = [...opendialogList];
+    openListCopy[index] = !opendialogList[index];
+    setOpendialogList(openListCopy);
   };
-
-  function handleListKeyDown(event) {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      setOpen(false);
-    } else if (event.key === 'Escape') {
-      setOpen(false);
-    }
-  }
-
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = useRef(open);
-  useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
-    }
-
-    prevOpen.current = open;
-  }, [open]);
-
 
 
   return (
       <div>
-       <MenuItem
-          ref={anchorRef}
-          id="composition-button"
-          aria-controls={open ? 'composition-menu' : undefined}
-          aria-expanded={open ? 'true' : undefined}
-          aria-haspopup="true"
-          onClick={handleToggle}
-          color='light'
-        >
-          {title}
-        </MenuItem>
-        <Popper
-          open={open}
-          anchorEl={anchorRef.current}
-          role={undefined}
-          placement="bottom-start"
-          transition
-          disablePortal
-
-        >
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{
-                transformOrigin:
-                  placement === 'bottom-start' ? 'left top' : 'left bottom',
-              }}
+        <Stack spacing={2} direction="row">
+        {catdata.data.map((item,index) => {
+          return(
+            <div key={"div"+index}>
+            <MenuItem
+            key={"menu"+index}
+            onMouseEnter={
+              e=>{
+                const openListCopy = [...opendialogList];
+                openListCopy[index] = !opendialogList[index];
+                setOpendialogList(openListCopy);
+                }
+            }
+            id="composition-button"
+            aria-haspopup="true"
+            color='light'
             >
-              <Paper>
-                <ClickAwayListener onClickAway={handleClose}>
-                  <Stack spacing={1}>
-                    {cat.subcat1.map((item1,index) => {
-                      return(
-                        <Stack spacing={0} key={index}>
-                        <MenuItem key={index} color='light' onClick={e=>handleClick1(title,item1)}>
-                          <Typography variant="h5" textAlign="center">{item1}</Typography>
+            {item.title}
+            </MenuItem>
+            <MyDialog
+              key={"dialog"+index}
+              open={opendialogList[index]}
+              placement="bottom-start"
+              fullScreen
+            >
+              <List onMouseLeave={
+              e=>{
+                const openListCopy = [...opendialogList];
+                openListCopy[index] = !opendialogList[index];
+                setOpendialogList(openListCopy);
+                }
+            }>
+              {item.subCat.subcat1.map((item2,index2) => {
+                return(
+                  <Paper key={"paper"+index2} sx={(index2===0) ? {mt:15,backgroundColor:'#F1ECE1',p:2} : {mt:2,backgroundColor:'#F1ECE1',p:2}}>
+                    <MenuItem key={"menu2"+index2} onClick={e=>handleClick1(item.title, item2)}>
+                    <Typography key={"typography"+index2} variant="h3" color="textSecondary" >
+                      {item.title} {item2}
+                    </Typography>
+                    </MenuItem>
+                  {item.subCat.subcat2.map((item3,index3) => {
+                    return(
+                        <MenuItem key={"menu3"+index3} onClick={e=>handleClick2(item.title, item2, item3)}>
+                        <Typography key={"typography"+index3} variant="h4" >
+                          {item3}
+                        </Typography>
                         </MenuItem>
-                        {cat.subcat2.map((item2,index) => {
-                            return(
-                              <MenuItem key={index} color='light' onClick={e=>handleClick2(title,item1,item2)}>
-                                <Typography variant="h7" textAlign="center">{item2}</Typography>
-                              </MenuItem>
-                            )
-                          }
-                          )}
-                        </Stack>   
-                    )})}
-                  </Stack>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
+                    )
+                  })}
+                  </Paper>
+                )
+              })}
+              </List>
+            </MyDialog>
+            </div>
+          )
+        })}
+        </Stack>
       </div>
   );
 }

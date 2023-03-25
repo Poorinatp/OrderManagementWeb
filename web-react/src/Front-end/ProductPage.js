@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material';
+import { Button, Paper, Typography } from '@mui/material';
 import { textAlign } from '@mui/system';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
@@ -8,13 +8,14 @@ import ProductTable from './FrontComponent/ProductTable';
 function ProductPage() {
   const location = useLocation();
     const [selectedFilter, setSelectedFilter] = useState(
-      location.state?.selectedFilter || {
+      location.state? location.state.selectedFilter :{
         productType: '',
         productGender: '',
         productBrand: '',
         productPromotion: '',
       }
     );
+    const s = location.state?.selectedFilter;
     const [products, setProducts] = useState([]);
     
     const filteredRows = (selectedFilter.productGender === "" && selectedFilter.productBrand === "" && selectedFilter.productType === "" && selectedFilter.productPromotion === "")
@@ -49,6 +50,9 @@ function ProductPage() {
             ? products.filter((row) => row.product_gender.toLowerCase().includes(selectedFilter.productGender.toLowerCase()) && row.product_brand.toLowerCase().includes(selectedFilter.productBrand.toLowerCase()) && row.product_type.toLowerCase().includes(selectedFilter.productType.toLowerCase())) // case 15: search by gender, brand and type
             // case 16: search by gender, brand, type and promotion
             : products.filter((row) => row.product_gender.toLowerCase().includes(selectedFilter.productGender.toLowerCase()) && row.product_brand.toLowerCase().includes(selectedFilter.productBrand.toLowerCase()) && row.product_type.toLowerCase().includes(selectedFilter.productType.toLowerCase()) && row.promotion_id === selectedFilter.productPromotion);
+    
+    
+    const [filteredProducts, setFilteredProducts] = useState(filteredRows);
     useEffect(() => {
       const fetchTodos = async () => {
         const results  = await axios.get('http://localhost:8080/product_detail');
@@ -60,16 +64,25 @@ function ProductPage() {
         }
         fetchTodos();
       },[]);
+    
     useEffect(() => {
-      console.log('selectedFilter changed');
-      console.log(filteredRows);
-      console.log(selectedFilter);
-      console.log(products);
+      //setFilteredProducts(filteredRows);
     }, [filteredRows]);
 
-    if (!selectedFilter) {
+    useEffect(() => {
+      location.state?setSelectedFilter(location.state.selectedFilter):(setSelectedFilter({
+        productBrand: "",
+        productType: "",
+        productGender: "",
+        productPromotion: "",
+        })
+        );
+      console.log(location.state);
+    }, [location.state]);
+
+    /*if (!selectedFilter) {
       return <div>Error: No filter selected.</div>;
-    }
+    }*/
     const handleClick = (event) => {
       setSelectedFilter({
         productBrand: "Nike",
@@ -85,20 +98,22 @@ function ProductPage() {
         <Button onClick={e=>handleClick(e)} sx={{color:"primary",backgroundColor:"secondary",borderRadius:10,margin:2}}>
           <Typography variant="h5">Filter</Typography>
         </Button>
+        <Paper sx={{width:'100%',textAlign:'right'}}>
             <h1>
-                {selectedFilter.productBrand}
+                {s.productBrand}
             </h1>
             <h1>
-                {selectedFilter.productCategory}
+                {s.productType}
             </h1>
             <h1>
-                {selectedFilter.productGender}
+                {s.productGender}
             </h1>
             <h1>
-                {selectedFilter.productPromotion}
+                {s.productPromotion}
             </h1>
+        </Paper>
             </div>
-        <ProductTable selectedFilter={selectedFilter} product={filteredRows} />
+            {location.pathname === '/ProductPage/productTable' && <ProductTable selectedFilter={selectedFilter} product={filteredRows} />}
       </div>
     );
   }
