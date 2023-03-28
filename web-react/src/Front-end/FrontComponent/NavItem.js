@@ -7,7 +7,7 @@ import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import Stack from '@mui/material/Stack';
-import { Collapse, Link, Popover, ThemeProvider, Typography, Dialog, List, ListItem, ListItemText } from '@mui/material';
+import { Collapse, Link, Popover, ThemeProvider, Typography, Dialog, List, ListItem, ListItemText, Grid } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { blue, purple } from '@mui/material/colors';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -143,6 +143,7 @@ const NavItem = (props) => {
               placement="bottom-start"
               fullScreen
             >
+              <Box sx={{ mt:13,width: '100%', height: '100%', bgcolor: '#F1ECE1'}}>
               <List onMouseLeave={
               e=>{
                 const openListCopy = [...opendialogList];
@@ -150,27 +151,57 @@ const NavItem = (props) => {
                 setOpendialogList(openListCopy);
                 }
             }>
+              
               {item.subCat.subcat1.map((item2,index2) => {
                 return(
-                  <Paper key={"paper"+index2} sx={(index2===0) ? {mt:15,backgroundColor:'#F1ECE1',p:2} : {mt:2,backgroundColor:'#F1ECE1',p:2}}>
+                  <>
                     <MenuItem key={"menu2"+index2} onClick={e=>handleClick1(item.title, item2)}>
-                    <Typography key={"typography"+index2} variant="h3" color="textSecondary" >
-                      {item.title} {item2}
+                    
+                    <Typography key={"typography"+index2} color="#000000" variant="h3"  sx={{
+                        fontWeight: 'bold',
+                        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                      }} >
+                      {" "}{item2}
                     </Typography>
                     </MenuItem>
-                  {item.subCat.subcat2.map((item3,index3) => {
-                    return(
-                        <MenuItem key={"menu3"+index3} onClick={e=>handleClick2(item.title, item2, item3)}>
-                        <Typography key={"typography"+index3} variant="h4" >
-                          {item3}
-                        </Typography>
-                        </MenuItem>
-                    )
-                  })}
-                  </Paper>
+                    {/*<Grid container>
+                        <Grid item xs={6}>
+                          <img src=".\img\logoadidas.png" alt="Logo adidas Image"/>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <img src=".\img\logonike.png" alt="Logo nike Image"/>
+                        </Grid>
+                    </Grid>*/}
+                      {index===2 && index2===0 ? 
+                      <Grid container style={{width:"50%"}}>
+                        <Grid item xs={6}>
+                          <img style={{width:"50%"}} src=".\img\logoadidas.png" alt="Logo adidas Image"/>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <img style={{width:"50%"}} src=".\img\logonike.png" alt="Logo nike Image"/>
+                        </Grid>
+                      </Grid>
+                      :index===3 && index2=== 2 ?
+                      <img style={{width:"100%"}} src=".\img\Fsale2.jpg" alt="Sale Image"/>
+                      :item.subCat.subcat2.map((item3,index3) => {
+                        return(
+                          <>
+                            <MenuItem key={"menu3"+index3} onClick={e=>handleClick2(item.title, item2, item3)}>
+                            <Typography color="#707070" key={"typography"+index3} fontc variant="h6" >
+                              {item3}
+                            </Typography>
+                            </MenuItem>
+                            {index === 2 && index2===1 && index3 === 3 && <img style={{width:"100%"}} src=".\img\3men.jpg" alt="Man Image"/>}
+                          </>
+                        )
+                      })}
+                  </>
                 )
               })}
+              
               </List>
+              
+              </Box>
             </MyDialog>
             </div>
           )

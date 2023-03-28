@@ -56,19 +56,19 @@ export const SecondaryListItems = () => {
       </ListSubheader>
       <ListItemButton>
         <ListItemIcon>
-          <AssignmentIcon />
+        <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary="Current month" />
       </ListItemButton>
       <ListItemButton>
         <ListItemIcon>
-          <AssignmentIcon />
+        <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary="Last quarter" />
       </ListItemButton>
       <ListItemButton>
         <ListItemIcon>
-          <AssignmentIcon />
+        <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary="Year-end sale" />
       </ListItemButton>

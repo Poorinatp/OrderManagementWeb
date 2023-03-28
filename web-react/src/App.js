@@ -16,12 +16,14 @@ import Product from './Back-end/Components/Product';
 import Customer from './Back-end/Components/Customer';
 import Order from './Back-end/Components/Order';
 import Payment from './Back-end/Components/Payment';
+import Stock from './Back-end/Components/Stock';
+import ReportChart from './Back-end/Components/ReportChart';
 
 const App = () => {
 
   return (
     <div>
-      <MyNavFront/>
+      {/*<MyNavFront/>*/}
       <Routes>
           <Route path="/" element={<><Front/></>}/>
           <Route path="/Help" element={<><Help/></>}/>
@@ -39,6 +41,8 @@ const App = () => {
             <Route path="customer" element={<Customer/>}/>
             <Route path="order" element={<Order/>}/>
             <Route path="payment" element={<Payment/>}/>
+            <Route path="stock" element={<Stock/>}/>
+            <Route path="report" element={<ReportChart/>} />
           </Route>
       </Routes>
     </div>

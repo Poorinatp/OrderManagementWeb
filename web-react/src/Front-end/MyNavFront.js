@@ -37,8 +37,8 @@ const MyNavFront = () => {
         },{
             title:"Sale",
             subCat:{
-                subcat1:["Shoes","Clothing","Accessories"],
-                subcat2:["Adidas","Nike","Converse","New Balance"]
+                subcat1:["Men's Product","Woman's Product","Shop All Sale products"],
+                subcat2:["Shoes","Clothing","Accessories"]
             }
         }
       ]

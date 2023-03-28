@@ -12,6 +12,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PaymentsIcon from '@mui/icons-material/Payments';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import axios from 'axios';
@@ -21,6 +22,8 @@ import Product from './Components/Product';
 import Customer from './Components/Customer';
 import Order from './Components/Order';
 import Payment from './Components/Payment';
+import Stock from './Components/Stock';
+import ReportChart from './Components/ReportChart';
 
 const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(true);
@@ -81,11 +84,24 @@ const Admin = () => {
       navigate('/admin/payment');
     } else if (page === 'Admin') {
       navigate('/admin');
+    } else if (page === 'Stock') {
+      navigate('/admin/stock');
+    } 
+  };
+  const handleSelectChart = (index) => {
+    const chart = chartDuration[index];
+    if (chart === 'Current month') {
+      navigate('/admin/report');
+    } else if (chart === 'Last Quarter') {
+      navigate('/admin/report');
+    } else if (chart === 'Year-end sale') {
+      navigate('/admin/report');
     }
   };
-
+  
   const menuName = ["Admin", "Order", "Product", "Customer", "Payment", "Stock"]
   const menuIcon = [<DashboardIcon/>, <ShoppingCartIcon/>, <LayersIcon/>, <PeopleIcon/>,<PaymentsIcon/>,<img src="/img/in-stock.png" alt="stock" width="24" height="24"/>]
+  const chartDuration= ["Current month", "Last Quarter", "Year-end sale"]
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
   })(({ theme, open }) => ({
@@ -195,9 +211,18 @@ const Admin = () => {
                   </ListItemButton>)
                 })}
             <Divider sx={{ my: 1 }} />
-            <SecondaryListItems />
+            {chartDuration.map((e, index) => {
+                return  (
+                  <ListItemButton key={index} onClick={e=>handleSelectChart(index)}>
+                    <ListItemIcon>
+                      <BarChartIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={""+e} />
+                  </ListItemButton>)
+                }
+                )
+            }
             </React.Fragment>
-            {/*<MyOption/>*/}
           </List>
         </Drawer>
         
@@ -228,6 +253,8 @@ const Admin = () => {
             {location.pathname === '/admin/customer' && <Customer data = {cusdata}/>}
             {location.pathname === '/admin/payment' && <Payment data = {paymentdata}/>}
             {location.pathname === '/admin/product' && <Product  data = {productdata} order={productorderdata} inventory={productinventorydata}/>}
+            {location.pathname === '/admin/stock' && <Stock  data = {productinventorydata} order={productorderdata} inventory={productinventorydata}/>}
+            {location.pathname === '/admin/report' && <ReportChart  data = {productinventorydata} order={productorderdata} inventory={productinventorydata}/>}
           </Container>
         </Box>
         
