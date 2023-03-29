@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { SecondaryListItems } from './MyNav';
 import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container,Typography, Badge, Alert} from '@mui/material';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import {ListItemButton, ListItemIcon, ListItemText, ListSubheader} from '@mui/material/';
@@ -38,6 +37,7 @@ const Admin = () => {
   const [productdata, setproductdata] = useState([]);
   const [productorderdata, setproductorderdata] = useState([]);
   const [productinventorydata, setproductinventorydata] = useState([]);
+  const [reportType, setReportType] = useState('Current month');
   let location = useLocation();
   const navigate = useNavigate();
   
@@ -48,8 +48,7 @@ const Admin = () => {
       const results3  = await axios.get('http://localhost:8080/payment');
       const results4  = await axios.get('http://localhost:8080/product_detail');
       const results5  = await axios.get('http://localhost:8080/product_inventory');
-      const results6  = await axios.get('http://localhost:8080/product_order');
-
+      const results6  = await axios.get('http://localhost:8080/orderline');
         try{
             setcusdata(results1.data);
             setorderdata(results2.data);
@@ -91,11 +90,14 @@ const Admin = () => {
   const handleSelectChart = (index) => {
     const chart = chartDuration[index];
     if (chart === 'Current month') {
-      navigate('/admin/report');
+      setReportType('Current month');
+      navigate('/admin/report/currentMonth');
     } else if (chart === 'Last Quarter') {
-      navigate('/admin/report');
+      setReportType('Last Quarter');
+      navigate('/admin/report/lastQuarter');
     } else if (chart === 'Year-end sale') {
-      navigate('/admin/report');
+      setReportType('Year-end sale');
+      navigate('/admin/report/lastYear');
     }
   };
   
@@ -148,7 +150,9 @@ const Admin = () => {
   const mdTheme = createTheme();
 
   return (
-    <ThemeProvider theme={mdTheme}>
+    <ThemeProvider
+        theme={mdTheme}
+      >
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" color="primary" open={open}>
@@ -199,7 +203,7 @@ const Admin = () => {
               </IconButton>
             </Toolbar>
           <Divider />
-          <List component="nav">
+          <List >
             <React.Fragment>
             {menuName.map((e, index) => {
                 return  (
@@ -239,22 +243,17 @@ const Admin = () => {
           }}
         >
           <Toolbar />
-          {/*<Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            {location && isAdmin&& (<Noti location={location}/>)}
-            {isOrder&& (<Order data = {orderdata}/>)}
-            {isCustomer&& (<Customer data = {cusdata}/>)}
-            {isPayment&& (<Payment data = {paymentdata}/>)}
-            {isProduct&& (<Product data = {productdata} order={productorderdata} inventory={productinventorydata}/>)}
-        </Container>*/}
           
           <Container maxWidth="lg" sx={{ mt: 10, mb: 4 }}>
             {location.pathname === '/admin' && <h1>admin</h1>}
             {location.pathname === '/admin/order' && <Order data = {orderdata}/>}
             {location.pathname === '/admin/customer' && <Customer data = {cusdata}/>}
             {location.pathname === '/admin/payment' && <Payment data = {paymentdata}/>}
-            {location.pathname === '/admin/product' && <Product  data = {productdata} order={productorderdata} inventory={productinventorydata}/>}
-            {location.pathname === '/admin/stock' && <Stock  data = {productinventorydata} order={productorderdata} inventory={productinventorydata}/>}
-            {location.pathname === '/admin/report' && <ReportChart  data = {productinventorydata} order={productorderdata} inventory={productinventorydata}/>}
+            {location.pathname === '/admin/product' && <Product  data = {productdata} inventory={productinventorydata}/>}
+            {location.pathname === '/admin/stock' && <Stock  data = {productinventorydata} inventory={productinventorydata}/>}
+            {location.pathname === '/admin/report/currentMonth' && <ReportChart data = {productorderdata} type = {reportType}/>}
+            {location.pathname === '/admin/report/lastQuarter' && <ReportChart data = {productorderdata} type = {reportType}/>}
+            {location.pathname === '/admin/report/lastYear' && <ReportChart data = {productorderdata} type = {reportType}/>}
           </Container>
         </Box>
         

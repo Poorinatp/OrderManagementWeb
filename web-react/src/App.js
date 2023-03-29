@@ -42,7 +42,11 @@ const App = () => {
             <Route path="order" element={<Order/>}/>
             <Route path="payment" element={<Payment/>}/>
             <Route path="stock" element={<Stock/>}/>
-            <Route path="report" element={<ReportChart/>} />
+            <Route path="report" element={<ReportChart/>}>
+              <Route path="currentMonth" element={<ReportChart/>}/>
+              <Route path="lastQuarter" element={<ReportChart/>}/>
+              <Route path="lastYear" element={<ReportChart/>}/>
+            </Route>
           </Route>
       </Routes>
     </div>
