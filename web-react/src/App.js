@@ -18,6 +18,7 @@ import Order from './Back-end/Components/Order';
 import Payment from './Back-end/Components/Payment';
 import Stock from './Back-end/Components/Stock';
 import ReportChart from './Back-end/Components/ReportChart';
+import AdminLogin from './Back-end/AdminLogin';
 
 const App = () => {
 
@@ -35,7 +36,7 @@ const App = () => {
           <Route path="/ProductPage" element={<><ProductPage/></>}>
             <Route path="productTable" element={<ProductTable/>}/>
           </Route>
-
+          <Route path="/ordermanagement" element={<AdminLogin/>}/>
           <Route path="/admin" element={<Admin/>}>
             <Route path="product" element={<Product/>}/>
             <Route path="customer" element={<Customer/>}/>

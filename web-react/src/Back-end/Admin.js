@@ -12,6 +12,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import LogoutIcon from '@mui/icons-material/Logout';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import axios from 'axios';
@@ -42,6 +43,11 @@ const Admin = () => {
   const navigate = useNavigate();
   
     useEffect(()=>{
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+      if(token == null || user != 'admin'){
+        navigate('/ordermanagement');
+      }
       const fetchTodos = async () => {
       const results1  = await axios.get('http://localhost:8080/customer');
       const results2  = await axios.get('http://localhost:8080/order');
@@ -149,6 +155,14 @@ const Admin = () => {
   );
   const mdTheme = createTheme();
 
+  const logout = () =>{
+    // delete the token from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem("user");
+    // redirect the user to the login page
+    navigate('/ordermanagement');
+  }
+
   return (
     <ThemeProvider
         theme={mdTheme}
@@ -226,6 +240,13 @@ const Admin = () => {
                 }
                 )
             }
+            <Divider sx={{ my: 1 }} />
+            <ListItemButton onClick={logout}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
             </React.Fragment>
           </List>
         </Drawer>

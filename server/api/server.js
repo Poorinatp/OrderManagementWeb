@@ -95,14 +95,14 @@ app.post('/signup', function (req, res) {
     });
 })
 
-// log in process: check if username and password match
+// log in process: check if username and password match 
 app.post('/login', function (req, res) {
     const username = req.body.username;
     const password = req.body.password;
     const token = jwt.sign({ username }, secret, { expiresIn: '1h' });
     connection.query("SELECT * FROM login WHERE username = ?", [username], 
     function (error, results, fields) {
-        if(results.length > 0) {
+        if(results.length > 0 && results[0].username !== "admin") {
             const hashedPassword = results[0].password;
             const passwordMatch = bcrypt.compareSync(password, hashedPassword); // Compare the hashed password with the entered password
             if (passwordMatch) {
@@ -116,6 +116,30 @@ app.post('/login', function (req, res) {
         }
     });
 })
+
+// log in process: check if username and password match
+app.post('/loginAdmin', function (req, res) {
+    const username = req.body.username;
+    const password = req.body.password;
+    const token = jwt.sign({ username }, secret, { expiresIn: '1h' });
+    connection.query("SELECT * FROM login WHERE username = ?", [username],
+    function (error, results, fields) {
+        if(results.length > 0 && results[0].username === "admin") {
+            const hashedPassword = results[0].password;
+            const passwordMatch = bcrypt.compareSync(password, hashedPassword); // Compare the hashed password with the entered password
+            if (passwordMatch) {
+                //res.status.send({message: "successfully password"});
+                res.json({ token });
+            } else {
+                res.status(401).send({message: "Invalid password"+password+" "+hashedPassword });
+            }
+        }else{
+            res.status(401).send({message: "no user Fold" });
+        }
+    });
+})
+
+
 // log out process: clear token cookie
 app.post('/logout', function(req, res) {
     // clear the token cookie
