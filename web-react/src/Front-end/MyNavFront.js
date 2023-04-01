@@ -3,7 +3,7 @@ import NavItem from './FrontComponent/NavItem';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -228,7 +228,11 @@ const MyNavFront = () => {
       navigate('/ProductPage/'+brands);
     }
   }
-  
+  const [subTotal, setSubTotal] = useState(5000.00);
+  const [shipping, setShipping] = useState(50.00);
+  const [total, setTotal] = useState(5050.00);
+  const [paymentMethod, setPaymentMethod] = useState("Credit Card");
+  const [shippingMethod, setShippingMethod] = useState("Standard");
   return (
     <Box sx={{ flexGrow: 1 }}>
     <AppBar position="sticky"  style={{ background: '#B8AD93' }}  >
@@ -422,12 +426,12 @@ const MyNavFront = () => {
       fullScreen
       open={openCart}
       onClose={e=>setOpenCart(false)}
-      placement="bottom-start"
+      
     >
       <Button onClick={e=>setOpenCart(false)}>Close</Button>
     <Grid container sx={{width:"100%",height:"100%"}}>
-      <Grid item xs={6}>
-        <Box sx={{ p:10,mt:5, width: '100%', height: '100%', bgcolor: 'red', alignContent:'center' }}>
+      <Grid item xs={12} md={6} lg ={6}>
+        <Box  sx={{ p:10,mt:5, width: 'auto', height: '100%', bgcolor: '#F1ECE1' }}>
           <Typography variant="h5" gutterBottom sx={{  }}>
             Cart
           </Typography>
@@ -436,37 +440,73 @@ const MyNavFront = () => {
           </Typography>
         </Box>
       </Grid>
-      <Grid item xs={6}>
-        <Box sx={{ p:2,mt:5, width: '100%', height: '100%', bgcolor: 'blue', alignContent:'center' }}>
+      <Grid item xs={12} md={6} lg ={6}>
+        <Box  sx={{ p:5, mt:5, width: 'auto', height: '100%', bgcolor: '#F1ECE1' }}>
           <List>
             <ListItem>
-              <ListItemText primary="Total" />
-              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                $0.00
-              </Typography>
+              <ListItemText primary="Summarize" />
             </ListItem>
-            <ListItem>
-              <ListItemText primary="Shipping" />
-              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                $0.00
-              </Typography>
+            <ListItem
+              secondaryAction={
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  {subTotal.toLocaleString('th-TH', { style: 'currency', currency: 'THB' })}
+                </Typography>
+              }
+            >
+              <ListItemText primary="Subtotal" />
             </ListItem>
-            <ListItem>
-              <ListItemText primary="Tax" />
-              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                $0.00
-              </Typography>
+            <ListItem
+              secondaryAction={
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  {shipping.toLocaleString('th-TH', { style: 'currency', currency: 'THB' })}
+                </Typography>
+              }
+            >
+              <ListItemText primary="Estimated shipping" />
             </ListItem>
             <Divider />
             <ListItem>
               <ListItemText primary="Total" />
               <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                $0.00
+                {total.toLocaleString('th-TH', { style: 'currency', currency: 'THB' })}
               </Typography>
             </ListItem>
+            <Divider />
+            <ListItem
+              secondaryAction={
+                <RadioGroup
+                  row
+                  aria-label="payment"
+                  name="row-radio-buttons-group"
+                  value={paymentMethod}
+                  onChange={e=>{setPaymentMethod(e.target.value);console.log(paymentMethod);}}
+                >
+                  <FormControlLabel value="credit" control={<Radio/>} label="Credit Card" />
+                  <FormControlLabel value="paypal" control={<Radio/>} label="Paypal" />
+                </RadioGroup>
+              }
+            >
+              <ListItemText primary="Payment" />
+            </ListItem>
+            <ListItem
+              secondaryAction={
+                <RadioGroup
+                  row
+                  aria-label="shipping"
+                  name="row-radio-buttons-group"
+                  value={shippingMethod}
+                  onChange={e=>{setShippingMethod(e.target.value);console.log(shippingMethod);}}
+                >
+                  <FormControlLabel value="standard" control={<Radio/>} label="Standard"/>
+                  <FormControlLabel value="ems" control={<Radio/>} label="EMS" />
+                </RadioGroup>
+              }
+            >
+              <ListItemText primary="Shipping" />
+            </ListItem>
           </List>
-          <Button variant="contained" sx={{ mt: 2, ml: 1 }}>
-            Checkout
+          <Button fullWidth variant="contained" sx={{ mt: 2, ml: 1 }}>
+            Pay now
           </Button>
         </Box>
       </Grid>
