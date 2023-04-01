@@ -26,15 +26,57 @@ const App = () => {
     <div>
       {/*<MyNavFront/>*/}
       <Routes>
-          <Route path="/" element={<><Front/></>}/>
-          <Route path="/Help" element={<><Help/></>}/>
-          <Route path="/Login" element={<><Login/></>}/>
-          <Route path="/Front" element={<><Front/></>}/>
-          <Route path="/Profile" element={<><Profile/></>}/>
-          <Route path="/ProductTable" element={<><ProductTable/></>}/>
-
-          <Route path="/ProductPage" element={<><ProductPage/></>}>
-            <Route path="productTable" element={<ProductTable/>}/>
+          <Route path="/" element={<MyNavFront/>}>
+            <Route path="Help" element={<><Help/></>}/>
+            <Route path="Login" element={<><Login/></>}/>
+            <Route path="Front" element={<Front/>}/>
+            <Route path="Profile" element={<><Profile/></>}/>
+            <Route path="ProductPage" element={<ProductPage/>}>
+              <Route path="Men" element={<ProductTable/>}>
+                <Route path="Shoes" element={<ProductTable/>}>
+                  <Route path="Nike" element={<ProductTable/>}/>
+                  <Route path="Adidas" element={<ProductTable/>}/>
+                  <Route path="Newbalance" element={<ProductTable/>}/>
+                  <Route path="Converse" element={<ProductTable/>}/>
+                </Route>
+                <Route path="Cloth" element={<ProductTable/>}>
+                  <Route path="Nike" element={<ProductTable/>}/>
+                  <Route path="Adidas" element={<ProductTable/>}/>
+                  <Route path="Newbalance" element={<ProductTable/>}/>
+                  <Route path="Converse" element={<ProductTable/>}/>
+                </Route>
+                <Route path="Accessories" element={<ProductTable/>}>
+                  <Route path="Nike" element={<ProductTable/>}/>
+                  <Route path="Adidas" element={<ProductTable/>}/>
+                  <Route path="Newbalance" element={<ProductTable/>}/>
+                  <Route path="Converse" element={<ProductTable/>}/>
+                </Route>
+              </Route>
+              <Route path='Woman' element={<ProductTable/>}>
+                <Route path="Shoes" element={<ProductTable/>}>
+                  <Route path="Nike" element={<ProductTable/>}/>
+                  <Route path="Adidas" element={<ProductTable/>}/>
+                  <Route path="Newbalance" element={<ProductTable/>}/>
+                  <Route path="Converse" element={<ProductTable/>}/>
+                </Route>
+                <Route path="Cloth" element={<ProductTable/>}>
+                  <Route path="Nike" element={<ProductTable/>}/>
+                  <Route path="Adidas" element={<ProductTable/>}/>
+                  <Route path="Newbalance" element={<ProductTable/>}/>
+                  <Route path="Converse" element={<ProductTable/>}/>
+                </Route>
+                <Route path="Accessories" element={<ProductTable/>}>
+                  <Route path="Nike" element={<ProductTable/>}/>
+                  <Route path="Adidas" element={<ProductTable/>}/>
+                  <Route path="Newbalance" element={<ProductTable/>}/>
+                  <Route path="Converse" element={<ProductTable/>}/>
+                </Route>
+              </Route>
+              <Route path="Nike" element={<ProductTable/>}/>
+              <Route path="Adidas" element={<ProductTable/>}/>
+              <Route path="Newbalance" element={<ProductTable/>}/>
+              <Route path="Converse" element={<ProductTable/>}/>
+            </Route>
           </Route>
           <Route path="/ordermanagement" element={<AdminLogin/>}/>
           <Route path="/admin" element={<Admin/>}>

@@ -38,14 +38,8 @@ const Front = () => {
     localStorage.setItem('selectedFilter', JSON.stringify(updatedFilter));
     navigate('/ProductPage');
   };
-  
-  
-  
-
-
   return (
     <div>
-      <MyNavFront/>
       <div className="container">
       <Link to="/promotion">
         <img className="promotion" src=".\img\F.jpg" alt="Promotion Image" />
