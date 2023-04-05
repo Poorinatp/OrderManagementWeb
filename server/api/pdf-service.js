@@ -169,8 +169,8 @@ function formatDate(date) {
 }
 
 function buildPDF(
-    dataCallback,
-    endCallback,
+    //dataCallback,
+    res,
     customerName,
     customerAddress,
     orderDate,
@@ -179,11 +179,12 @@ function buildPDF(
     taxRate,
     taxAmount,
     total) {
-    console.log(orderDate);
+    //console.log(orderDate);
     const doc = new PDFDocument();
     doc.registerFont('AngsabUPC', '/Users/poom/Library/Fonts/AngsabUPC.ttf');
-    doc.on('data', dataCallback);
-    doc.on('end', endCallback);
+    doc.pipe(res);
+    //doc.on('data', dataCallback);
+    //doc.on('end', endCallback);
     /*doc.font('AngsabUPC').fontSize(24).text('Tax Invoice', {align: 'center'});
     doc.moveDown();
     doc.fontSize(14).text(`Customer Name: ${customerName}\nCustomer Address: ${customerAddress}`, {align: 'left'});

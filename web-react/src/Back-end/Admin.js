@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { SecondaryListItems } from './MyNav';
 import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container,Typography, Badge, Alert} from '@mui/material';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import {ListItemButton, ListItemIcon, ListItemText, ListSubheader} from '@mui/material/';
@@ -12,6 +11,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PaymentsIcon from '@mui/icons-material/Payments';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import LogoutIcon from '@mui/icons-material/Logout';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import axios from 'axios';
@@ -21,6 +22,8 @@ import Product from './Components/Product';
 import Customer from './Components/Customer';
 import Order from './Components/Order';
 import Payment from './Components/Payment';
+import Stock from './Components/Stock';
+import ReportChart from './Components/ReportChart';
 
 const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(true);
@@ -35,18 +38,23 @@ const Admin = () => {
   const [productdata, setproductdata] = useState([]);
   const [productorderdata, setproductorderdata] = useState([]);
   const [productinventorydata, setproductinventorydata] = useState([]);
+  const [reportType, setReportType] = useState('Current month');
   let location = useLocation();
   const navigate = useNavigate();
   
     useEffect(()=>{
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+      if(token == null || user != 'admin'){
+        navigate('/ordermanagement');
+      }
       const fetchTodos = async () => {
       const results1  = await axios.get('http://localhost:8080/customer');
       const results2  = await axios.get('http://localhost:8080/order');
       const results3  = await axios.get('http://localhost:8080/payment');
       const results4  = await axios.get('http://localhost:8080/product_detail');
       const results5  = await axios.get('http://localhost:8080/product_inventory');
-      const results6  = await axios.get('http://localhost:8080/product_order');
-
+      const results6  = await axios.get('http://localhost:8080/orderline');
         try{
             setcusdata(results1.data);
             setorderdata(results2.data);
@@ -81,11 +89,27 @@ const Admin = () => {
       navigate('/admin/payment');
     } else if (page === 'Admin') {
       navigate('/admin');
+    } else if (page === 'Stock') {
+      navigate('/admin/stock');
+    } 
+  };
+  const handleSelectChart = (index) => {
+    const chart = chartDuration[index];
+    if (chart === 'Current month') {
+      setReportType('Current month');
+      navigate('/admin/report/currentMonth');
+    } else if (chart === 'Last Quarter') {
+      setReportType('Last Quarter');
+      navigate('/admin/report/lastQuarter');
+    } else if (chart === 'Year-end sale') {
+      setReportType('Year-end sale');
+      navigate('/admin/report/lastYear');
     }
   };
-
+  
   const menuName = ["Admin", "Order", "Product", "Customer", "Payment", "Stock"]
   const menuIcon = [<DashboardIcon/>, <ShoppingCartIcon/>, <LayersIcon/>, <PeopleIcon/>,<PaymentsIcon/>,<img src="/img/in-stock.png" alt="stock" width="24" height="24"/>]
+  const chartDuration= ["Current month", "Last Quarter", "Year-end sale"]
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
   })(({ theme, open }) => ({
@@ -131,8 +155,18 @@ const Admin = () => {
   );
   const mdTheme = createTheme();
 
+  const logout = () =>{
+    // delete the token from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem("user");
+    // redirect the user to the login page
+    navigate('/ordermanagement');
+  }
+
   return (
-    <ThemeProvider theme={mdTheme}>
+    <ThemeProvider
+        theme={mdTheme}
+      >
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" color="primary" open={open}>
@@ -183,7 +217,7 @@ const Admin = () => {
               </IconButton>
             </Toolbar>
           <Divider />
-          <List component="nav">
+          <List >
             <React.Fragment>
             {menuName.map((e, index) => {
                 return  (
@@ -195,9 +229,25 @@ const Admin = () => {
                   </ListItemButton>)
                 })}
             <Divider sx={{ my: 1 }} />
-            <SecondaryListItems />
+            {chartDuration.map((e, index) => {
+                return  (
+                  <ListItemButton key={index} onClick={e=>handleSelectChart(index)}>
+                    <ListItemIcon>
+                      <BarChartIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={""+e} />
+                  </ListItemButton>)
+                }
+                )
+            }
+            <Divider sx={{ my: 1 }} />
+            <ListItemButton onClick={logout}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
             </React.Fragment>
-            {/*<MyOption/>*/}
           </List>
         </Drawer>
         
@@ -214,20 +264,17 @@ const Admin = () => {
           }}
         >
           <Toolbar />
-          {/*<Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            {location && isAdmin&& (<Noti location={location}/>)}
-            {isOrder&& (<Order data = {orderdata}/>)}
-            {isCustomer&& (<Customer data = {cusdata}/>)}
-            {isPayment&& (<Payment data = {paymentdata}/>)}
-            {isProduct&& (<Product data = {productdata} order={productorderdata} inventory={productinventorydata}/>)}
-        </Container>*/}
           
           <Container maxWidth="lg" sx={{ mt: 10, mb: 4 }}>
             {location.pathname === '/admin' && <h1>admin</h1>}
             {location.pathname === '/admin/order' && <Order data = {orderdata}/>}
             {location.pathname === '/admin/customer' && <Customer data = {cusdata}/>}
             {location.pathname === '/admin/payment' && <Payment data = {paymentdata}/>}
-            {location.pathname === '/admin/product' && <Product  data = {productdata} order={productorderdata} inventory={productinventorydata}/>}
+            {location.pathname === '/admin/product' && <Product  data = {productdata} inventory={productinventorydata}/>}
+            {location.pathname === '/admin/stock' && <Stock  data = {productinventorydata} inventory={productinventorydata}/>}
+            {location.pathname === '/admin/report/currentMonth' && <ReportChart data = {productorderdata} type = {reportType}/>}
+            {location.pathname === '/admin/report/lastQuarter' && <ReportChart data = {productorderdata} type = {reportType}/>}
+            {location.pathname === '/admin/report/lastYear' && <ReportChart data = {productorderdata} type = {reportType}/>}
           </Container>
         </Box>
         

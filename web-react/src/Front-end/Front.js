@@ -6,6 +6,7 @@ import ProductPage from './ProductPage';
 import { useNavigate } from 'react-router-dom';
 import ProductTable from './FrontComponent/ProductTable';
 import { Button } from '@mui/material';
+import MyNavFront from './MyNavFront';
 
 const Front = () => {
   const navigate = useNavigate();
@@ -37,13 +38,9 @@ const Front = () => {
     localStorage.setItem('selectedFilter', JSON.stringify(updatedFilter));
     navigate('/ProductPage');
   };
-  
-  
-  
-
-
   return (
-    <div className="container">
+    <div>
+      <div className="container">
       <Link to="/promotion">
         <img className="promotion" src=".\img\F.jpg" alt="Promotion Image" />
       </Link>
@@ -100,6 +97,7 @@ const Front = () => {
 
         </Grid>
         {/* <ProductTable selectedFilter={selectedFilter} /> */}
+        </div>
       </div>
     );
 }

@@ -95,14 +95,14 @@ app.post('/signup', function (req, res) {
     });
 })
 
-// log in process: check if username and password match
+// log in process: check if username and password match 
 app.post('/login', function (req, res) {
     const username = req.body.username;
     const password = req.body.password;
     const token = jwt.sign({ username }, secret, { expiresIn: '1h' });
     connection.query("SELECT * FROM login WHERE username = ?", [username], 
     function (error, results, fields) {
-        if(results.length > 0) {
+        if(results.length > 0 && results[0].username !== "admin") {
             const hashedPassword = results[0].password;
             const passwordMatch = bcrypt.compareSync(password, hashedPassword); // Compare the hashed password with the entered password
             if (passwordMatch) {
@@ -116,6 +116,30 @@ app.post('/login', function (req, res) {
         }
     });
 })
+
+// log in process: check if username and password match
+app.post('/loginAdmin', function (req, res) {
+    const username = req.body.username;
+    const password = req.body.password;
+    const token = jwt.sign({ username }, secret, { expiresIn: '1h' });
+    connection.query("SELECT * FROM login WHERE username = ?", [username],
+    function (error, results, fields) {
+        if(results.length > 0 && results[0].username === "admin") {
+            const hashedPassword = results[0].password;
+            const passwordMatch = bcrypt.compareSync(password, hashedPassword); // Compare the hashed password with the entered password
+            if (passwordMatch) {
+                //res.status.send({message: "successfully password"});
+                res.json({ token });
+            } else {
+                res.status(401).send({message: "Invalid password"+password+" "+hashedPassword });
+            }
+        }else{
+            res.status(401).send({message: "no user Fold" });
+        }
+    });
+})
+
+
 // log out process: clear token cookie
 app.post('/logout', function(req, res) {
     // clear the token cookie
@@ -151,8 +175,9 @@ app.post('/addproduct', function (req, res) {
     const product_description = req.body.product_description;
     const product_price = req.body.product_price;
     const product_image = req.body.product_image;
-    connection.query("INSERT INTO product_detail (product_type, product_gender, product_brand, product_description, product_price, product_urlimg) \
-    VALUES (?, ?, ?, ?, ?) ", [product_type, product_gender, product_brand, product_description,product_price, product_image],
+    const promotion_id = req.body.promotion_id;
+    connection.query("INSERT INTO product_detail (product_type, product_gender, product_brand, product_description, product_price, promotion_id, product_urlimg) \
+    VALUES (?, ?, ?, ?, ?, ?, ?) ", [product_type, product_gender, product_brand, product_description,product_price, promotion_id, product_image],
     function (error, results, fields) {
         if(error) {
             res.status(401).send({message: error.message + " Username already exists 3"});
@@ -266,6 +291,17 @@ app.get('/productinventory/:id', function(req, res) {
     });
 })
 
+// retrieve data from order table, product_order table and product table from mysql database
+app.get('/orderline', function(req, res) {
+    connection.query('SELECT * FROM `order` INNER JOIN product_order ON `order`.order_id = product_order.order_id INNER JOIN product_detail ON product_order.product_id = product_detail.product_id',
+    function(error, results, fields){
+        if(results.length > 0) {
+            res.status(200).send(results);
+        }else{
+            res.status(401).send({message: "Order not found" });
+        }
+    });
+})
 
 // update customer data from mysql database by id
 app.put('/profile/:id', function(req, res) {
@@ -285,7 +321,22 @@ app.put('/profile/:id', function(req, res) {
     );
 });
 
-// delete product from mysql database by id
+// update order status from mysql database by id
+app.put('/updateorder/:id', function(req, res) {
+    const order_id = parseInt(req.params.id);
+    const { order_status } = req.body;
+    connection.query('UPDATE `order` SET order_status = ? WHERE order_id = ?', [order_status, order_id],
+    function(error, results, fields) {
+        if (error) {
+        res.status(500).send({ message: "Error updating order status", error: error });
+        } else if (results.affectedRows > 0) {
+        res.status(200).send({ message: "Order status updated successfully" });
+        } else {
+        res.status(401).send({ message: "Order not found" });
+        }
+    }
+    );
+});
 
 // generate tax invoice for order by id 
 app.get('/taxinvoice/:id', function(req, res) {
@@ -298,8 +349,6 @@ app.get('/taxinvoice/:id', function(req, res) {
     WHERE o.order_id = ?',[order_id],
     function(error, results, fields){
         if(results.length > 0) {
-            //res.status(200).send(results);
-          // Extract necessary information from results
           const customerName = results[0].cus_fname+' '+results[0].cus_lname;
           const customerAddress = results[0].cus_address;
           const date = results[0].order_date;
@@ -316,34 +365,31 @@ app.get('/taxinvoice/:id', function(req, res) {
           const taxRate = 0.1; // Assuming a 10% tax rate
           const taxAmount = subtotal * taxRate;
           const total = subtotal + taxAmount;
-          // Create new PDF document
-          const doc = new PDFDocument();
-          const fileName = `taxinvoice_${order_id}.pdf`;
-          const stream = res.writeHead(200, {
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment;filename="taxinvoice_${order_id}.pdf"`,
-          });
-          pdfService.buildPDF(
-            (chunk) => stream.write(chunk),
-            () => stream.end(),
-            customerName,
-            customerAddress,
-            orderDate,
-            productDetails,
-            subtotal,
-            taxRate,
-            taxAmount,
-            total
-          )
-          
+            //const doc = new PDFDocument();
+            const fileName = `taxinvoice_${order_id}.pdf`;
+            // Send the PDF back to the client
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment;filename="${fileName}"`);
+            pdfService.buildPDF(
+                res,
+                customerName,
+                customerAddress,
+                orderDate,
+                productDetails,
+                subtotal,
+                taxRate,
+                taxAmount,
+                total
+            )
         } else {
           res.status(401).send({message: "User not found"});
         }
       });
   })
 
+
 // delete product from mysql database by id
-app.delete('/productinventory/delete', function(req, res) {
+app.delete('/productdetail/delete', function(req, res) {
     const product_id = req.body.product_id;
     connection.query('DELETE FROM product_detail WHERE product_id = ?',[product_id],
     function(error, results, fields){
@@ -375,6 +421,22 @@ app.delete('/productinventory/deletemultiple', function(req, res) {
       return res.status(200).send({ message: 'No products found with the specified IDs' });
     });
   });
+// delete product inventory from mysql database by id
+app.delete('/productinventory/delete', function(req, res) {
+    const product_id = req.body.product_id;
+    connection.query('DELETE FROM product_inventory WHERE product_id = ?',[product_id],
+    function(error, results, fields){
+        if(error) {
+            console.log(error.message);
+            res.status(500).send({message: "Error deleting product inventory"});
+        }else if(results.affectedRows > 0) {
+            res.status(200).send({message: "Product inventory deleted successfully" });
+        }else{
+            res.status(401).send({message: "Product inventory not found" });
+        }
+    });
+})
+
 
 // add list of product inventory to mysql database
 app.post('/productinventory/addmultiple', function(req, res) {
@@ -392,6 +454,18 @@ app.post('/productinventory/addmultiple', function(req, res) {
     });
 });
 
+// add product inventory to mysql database
+app.post('/productinventory/add', function(req, res) {
+    const { product_id, product_size, product_quantity } = req.body;
+    const sql = `INSERT INTO product_inventory (product_id, product_size, product_quantity) VALUES ('${product_id}', '${product_size}', '${product_quantity}')`;
+    connection.query(sql, function(error, results, fields) {
+        if(error) {
+            res.status(401).send({message: error.message + " Username already exists 3"});
+        }else{
+            res.status(200).send({message: "Added" });
+        }
+    });
+});
 
 // listen to port
 app.listen(8080, function () {

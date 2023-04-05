@@ -1,6 +1,6 @@
 import React, { useState,useEffect,useRef } from "react"
 import { useNavigate } from "react-router-dom"
-import { alpha, Box, Button, Checkbox, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormControlLabel, Grid, IconButton, MenuItem, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from "@mui/material"
+import { alpha, Box, Button, Checkbox, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from "@mui/material"
 import MyOption from "./MyOption"
 import visuallyHidden from "@mui/utils/visuallyHidden"
 import PropTypes from 'prop-types';
@@ -10,20 +10,23 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
 import Noti from "./Noti"
 import { useLocation } from "react-router-dom";
 
 const AddProduct = (props) => {
+  const [product_gender, setProduct_gender] = useState("");
   const [product_price, setProduct_price] = useState("");
   const [product_type, setProduct_type] = useState("");
   const [product_brand, setProduct_brand] = useState("");
   const [product_description, setProduct_description] = useState("");
   const [product_image, setProduct_image] = useState("");
   const [product_discount, setProduct_discount] = useState("");
+  const [openAdd, setOpenAdd] = useState(false);
   const navigate = useNavigate();
   const handleAdd = (e) => {
-    axios.post("http://localhost:8080/addproduct", { product_price:product_price, product_type:product_type, product_brand:product_brand, product_description:product_description, product_image:product_image, product_discount:product_discount })
+    axios.post("http://localhost:8080/addproduct", { product_gender:product_gender, product_price:product_price, product_type:product_type, product_brand:product_brand, product_description:product_description, product_image:product_image, promotion_id:product_discount })
     .then((res) => {
       const timestamp = new Date();
         navigate('/admin/product', { state: { status:'success', action:'add', message: "Product Added Successful At "+timestamp.toLocaleString() } });
@@ -38,28 +41,53 @@ const AddProduct = (props) => {
   };
 
   return (
-    <FormControl fullWidth margin="1" style={{ padding: '20px' }}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <TextField required id="product_type" label="Product Type" value={product_type} onChange={(e) => setProduct_type(e.target.value)} fullWidth margin="normal" />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField required id="product_brand" label="Product Brand" value={product_brand} onChange={(e) => setProduct_brand(e.target.value)} fullWidth margin="normal" />
-        </Grid>
-      </Grid>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={10}>
-          <TextField required id="product_description" label="Product Description" value={product_description} onChange={(e) => setProduct_description(e.target.value)} fullWidth margin="normal" />
-        </Grid>
-        <Grid item xs={12} sm={2}>
-          <TextField required id="product_price" label="Product Price" value={product_price} onChange={(e) => setProduct_price(e.target.value)} fullWidth margin="normal" />
-        </Grid>
-      </Grid>
-      <TextField required id="product_image" label="Product Image" value={product_image} onChange={(e) => setProduct_image(e.target.value)} margin="normal" />
-      <Button variant="contained" onClick={handleAdd}>
-        Add
-      </Button>
-    </FormControl>
+    <>
+    <Button variant="contained" onClick={() => setOpenAdd(!openAdd)}>
+      Add Product
+    </Button>
+    <Dialog fullScreen open={openAdd} onClose={e=>setOpenAdd(!openAdd)} aria-labelledby="form-dialog-title">
+    <Stack alignItems="center">
+      <Box  sx={{ width:"100%", height:"100px", justifyContent: 'space-between', p: 5 }}>
+        <Stack direction="row" alignItems="center">
+        <IconButton onClick={e=>setOpenAdd(!openAdd)}>
+          <CloseIcon />
+        </IconButton>
+        <Typography variant="h5"  sx={{ ml:5,flexGrow: 1 }}>Add product</Typography>
+        </Stack>
+      </Box>
+      <Box sx={{ width:"50%", height:"80%", justifyContent: 'center', alignItems: 'center', p: 2 }}>
+        <FormControl fullWidth margin="1" style={{ padding: '20px' }}>
+          <Grid container spacing={2} mb={5}>
+            <Grid item xs={12} >
+              <TextField required id="product_type" label="Product Type" value={product_type} onChange={(e) => setProduct_type(e.target.value)} fullWidth  margin="normal" />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField required id="product_gender" label="Product Gender" value={product_gender} onChange={(e) => setProduct_gender(e.target.value)} fullWidth margin="normal" />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField required id="product_brand" label="Product Brand" value={product_brand} onChange={(e) => setProduct_brand(e.target.value)}  fullWidth margin="normal" />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField required id="product_description" label="Product Description" value={product_description} onChange={(e) => setProduct_description(e.target.value)}  fullWidth margin="normal" />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField required id="product_price" label="Product Price" value={product_price} onChange={(e) => setProduct_price(e.target.value)} fullWidth margin="normal" />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField required id="product_discount" label="Product Promotion" value={product_discount} onChange={(e) => setProduct_discount(e.target.value)} fullWidth margin="normal" />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField required id="product_image" label="Product Image" value={product_image} onChange={(e) => setProduct_image(e.target.value)} fullWidth margin="normal" />
+            </Grid>
+          </Grid>
+          <Button variant="contained" onClick={handleAdd}>
+            Add
+          </Button>
+        </FormControl>
+      </Box>
+      </Stack>
+    </Dialog>
+    </>
   );
 }
 
@@ -109,135 +137,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 } 
 
-
-
-function SelectedTool(props) {
-    const { numSelected } = props;
-    const selected = props.selected;
-    const [showFilters, setShowFilters] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [product, setProduct] = useState([]);
-    const [productSizes, setProductSizes] = useState([]);
-    const [productQuantities, setProductQuantities] = useState([]);
-    const navigate = useNavigate();
-
-    const handleShowFilters = () => {
-      setShowFilters(!showFilters);
-    };
-    const handleDelete = () => {
-      console.log(selected);
-      axios.delete("http://localhost:8080/productinventory/deletemultiple", { data:{ product_id_list: selected }})
-      .then((res) => {
-        const timestamp = new Date();
-        console.log(res.data.array);
-        alert("Product Deleted!"+res.data.message);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    };
-
-    const handleAddStock = () => {
-      //console.log(selected);
-      //combine selected, size and quantity
-      const data = selected.map((product_id) => {
-        return {
-          product_id: product_id,
-          size: productSizes[product_id],
-          quantity: productQuantities[product_id],
-        };
-      });
-      //console.log(data);
-      
-      axios.post("http://localhost:8080/productinventory/addmultiple", data)
-      .then((res) => {
-        const timestamp = new Date();
-        //navigate('/admin/product', { state: { status:'success', action:'add', message: "Product Stock Added Successful At "+timestamp.toLocaleString() } });
-        //window.location.reload();
-        console.log(res.array);
-        alert("Product Stock Added!");
-        setOpen(false);
-        setProductSizes({});
-        setProductQuantities({});
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    };
-
-    const handleSizeChange = (event, productId) => {
-      setProductSizes({ ...productSizes, [productId]: event.target.value });
-    };
-  
-    const handleQuantityChange = (event, productId) => {
-      setProductQuantities({ ...productQuantities, [productId]: event.target.value });
-    };
-    
-
-    return (
-      <Toolbar
-        sx={{
-          pl: { sm: 2 },
-          pr: { xs: 1, sm: 1 },
-          ...(numSelected > 0 && {
-            bgcolor: (theme) =>
-              alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-          }),
-        }}
-      >
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Add stock</DialogTitle>
-          <DialogContent>
-            {selected.map((item) => {
-              return(
-              <Paper sx={{ p: 2, margin: 'auto', maxWidth: 500, flexGrow: 1 }}>
-                <Typography>Product ID:{item}</Typography>
-                <TextField id={`size-${item}`} value={productSizes[item]} onChange={(e) => handleSizeChange(e, item)} />
-                <TextField id={`quantity-${item}`} value={productQuantities[item]} onChange={(e) => handleQuantityChange(e, item)} />
-              </Paper>)
-            })}
-          </DialogContent>
-        <DialogActions>
-          <Button onClick={handleAddStock}>Add</Button>
-        </DialogActions>
-      </Dialog>
-        {numSelected > 0 ? (
-          <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div" >
-            {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography sx={{ flex: '1 1 100%' }} variant="h6" cus_id="tableTitle" component="div" >
-            Product
-          </Typography>
-        )}
-        {numSelected > 0 ? (
-          <Stack direction="row" spacing={2}>
-          <Tooltip title="Add Stock" onClick={e=>setOpen(true)}>
-            <IconButton>
-              <AddIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete Product" onClick={handleDelete}>
-            <IconButton >
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-          </Stack>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton onClick={handleShowFilters}>
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </Toolbar>
-    );
-}
-
-SelectedTool.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
-
 const Product = (props) => {
     const rows = props.data;
     const inventory = props.inventory;
@@ -251,7 +150,6 @@ const Product = (props) => {
     const [searchCat, setSearchCat] = useState("");
     const [currentPage, setCurrentPage] = useState(0);
     const [openEdit, setOpenEdit] = useState(false);
-    const [openAdd, setOpenAdd] = useState(false);
     
     const navigate = useNavigate();
     const location = useLocation();
@@ -301,8 +199,8 @@ const Product = (props) => {
         setDense(event.target.checked);
     };
 
-    const handleDelete = (event) => {
-      axios.delete("http://localhost:8080/productinventory/delete", { data:{ product_id: event.target.id }})
+    const handleDelete = (product_id) => {
+      axios.delete("http://localhost:8080/productdetail/delete", { data:{ product_id: product_id }})
       .then((res) => {
         const timestamp = new Date();
         navigate('/admin/product', { state: { status:'success', action:'delete', message: "Product Delete Successful At "+timestamp.toLocaleString() } });
@@ -392,22 +290,20 @@ const Product = (props) => {
         <Paper sx={{ p: 2, width: '100%', mb: 2, elevation:10 }} >
         <Grid container >
           <Grid item xs={4} sm={4}>
-            <Button variant="contained" onClick={() => setOpenAdd(!openAdd)}>
-              {openAdd ? 'Close' : 'Add Product'}
-            </Button>
+          <AddProduct/>
           </Grid>
+            
           <Grid item xs={4} sm={4}>
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-            <Select value={orderBy} label="Order By" onChange={event=>handleRequestSort(event,event.target.value)} >
-              <MenuItem value={"product_id"}>Product ID</MenuItem>
-              <MenuItem value={"product_description"}>Name</MenuItem>
-            </Select>
-          </FormControl>
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel>Sort By</InputLabel>
+                <Select value={orderBy} label="Order By" onChange={event=>handleRequestSort(event,event.target.value)} >
+                  <MenuItem value={"product_id"}>Product ID</MenuItem>
+                  <MenuItem value={"product_description"}>Name</MenuItem>
+                </Select>
+              </FormControl>
           </Grid>
-        <Grid item xs={12} sm={12}>
-        {openAdd&&<AddProduct/>}
         </Grid>
-        </Grid>
+        
         </Paper>
         <Paper sx={{ p: 2, width: '100%', mb: 2 , elevation:10 }}>
         <TableContainer>
@@ -461,7 +357,7 @@ const Product = (props) => {
                         </Paper>
                       </Dialog>
                       <TableCell align='center'>
-                        {openeditList[index] ? <Stack direction="row" spacing={1}><IconButton onClick={() => { const openListCopy = [...openeditList]; openListCopy[index] = !openeditList[index]; setOpeneditList(openListCopy); }}><EditIcon/></IconButton><Button id={row.product_id} onClick={handleDelete}>delete</Button></Stack>
+                        {openeditList[index] ? <Stack direction="row" spacing={1}><IconButton onClick={() => { const openListCopy = [...openeditList]; openListCopy[index] = !openeditList[index]; setOpeneditList(openListCopy); }}><EditIcon/></IconButton><IconButton id={row.product_id} onClick={e=>handleDelete(row.product_id)}><DeleteIcon >delete</DeleteIcon></IconButton></Stack>
                         :<IconButton onClick={() => { const openListCopy = [...openeditList]; openListCopy[index] = !openeditList[index]; setOpeneditList(openListCopy); }}><EditIcon/></IconButton>}
                         </TableCell>
                     </TableRow>
@@ -492,7 +388,7 @@ const Product = (props) => {
                                   <TableRow key={""+item.product_id+item.size} sx={{ '& > *': { borderBottom: 'unset' } }}>
                                     <TableCell align="left"><Typography>{item.product_id}</Typography></TableCell>
                                     <TableCell align="left"><Typography>{item.product_size}</Typography></TableCell>
-                                    <TableCell align="left"><TextField value={item.product_quantity}></TextField></TableCell>
+                                    <TableCell align="left"><Typography>{item.product_quantity}</Typography></TableCell>
                                     <TableCell align="left"><Typography>{item.product_dateadd}</Typography></TableCell>
                                   </TableRow>
                                 );})
