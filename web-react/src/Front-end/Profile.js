@@ -10,11 +10,12 @@ function Profile() {
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
+    // console.log(user);
     axios.get(api + 'profile/'+user)
       .then(response => {
         const cusdata = response.data[0];
-        console.log(localStorage);
-        console.log(cusdata);
+        // console.log(localStorage);
+        // console.log(cusdata);
         setCustomer(cusdata);
       })
       .catch(error => {

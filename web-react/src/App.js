@@ -3,7 +3,6 @@ import { Route,Routes } from 'react-router-dom';
 import React from 'react';
 import './App.css';
 import Front from './Front-end/Front';
-import Help from './Front-end/FrontComponent/Help';
 import Login from './Front-end/FrontComponent/Login';
 import Profile from './Front-end/Profile';
 import ProductTable from './Front-end/FrontComponent/ProductTable';
@@ -19,15 +18,25 @@ import Payment from './Back-end/Components/Payment';
 import Stock from './Back-end/Components/Stock';
 import ReportChart from './Back-end/Components/ReportChart';
 import AdminLogin from './Back-end/AdminLogin';
+import ContactUs from './Front-end/Help/ContactUs';
+import OrderStatus from './Front-end/Help/OrderStatus';
+import OrderHistory from './Front-end/Help/OrderHistory';
+import ProductDetail from './Front-end/FrontComponent/ProductDetail';
 
 const App = () => {
 
   return (
     <div>
-      {/*<MyNavFront/>*/}
+      {/* <MyNavFront/> */}
       <Routes>
           <Route path="/" element={<MyNavFront/>}>
-            <Route path="Help" element={<><Help/></>}/>
+
+            <Route path="ContactUs" element={<><ContactUs/></>}/>
+            <Route path="OrderStatus" element={<><OrderStatus/></>}/>
+            <Route path="OrderHistory" element={<><OrderHistory/></>}/>
+
+            <Route path="/Product" element={<ProductDetail/>} />
+
             <Route path="Login" element={<><Login/></>}/>
             <Route path="Front" element={<Front/>}/>
             <Route path="Profile" element={<><Profile/></>}/>

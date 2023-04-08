@@ -1,20 +1,25 @@
-import { useState } from 'react';
+import { React,useState } from 'react';
 import NavItem from './FrontComponent/NavItem';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel, Select } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { Stack } from '@mui/system';
-import './MyNavFront.css';
 
-import Login_and_Help from './Login_and_Help';
 import Front from './Front';
-import { Route, useLocation, useNavigate } from 'react-router-dom';
-import ProductTable from './FrontComponent/ProductTable';
+import { Link, Route, useLocation, useNavigate } from 'react-router-dom';
 import ProductPage from './ProductPage';
+import Login from './FrontComponent/Login';
+import Profile from './Profile';
+
+import './MyNavFront.css';
+import ContactUs from './Help/ContactUs';
+import OrderStatus from './Help/OrderStatus';
+import OrderHistory from './Help/OrderHistory';
+import ProductDetail from './FrontComponent/ProductDetail';
 
 const MyDialog = styled(Dialog)({
   width: '50%',
@@ -233,10 +238,117 @@ const MyNavFront = () => {
   const [total, setTotal] = useState(5050.00);
   const [paymentMethod, setPaymentMethod] = useState("Credit Card");
   const [shippingMethod, setShippingMethod] = useState("Standard");
+
+  //======================================  help/login  ==============================================
+  const [istoken,setistoken] = useState(localStorage.getItem('token'));
+  //const token = 'have';
+
+  const logout = () =>{
+    // delete the token from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem("user");
+    // redirect the user to the login page
+    window.location.href = '/Front';
+  }
+
+  const [helpOption, setHelpOption] = useState("");
+  const [signInOption, setSignInOption] = useState("");
+  const [LoginInOption, setLoginInOption] = useState("");
+
+  const helpLinks = [
+    { title: "Contact Us", url: "/ContactUs" },
+    { title: "Order Status", url: "/OrderStatus" },
+    { title: "Order History", url: "/Order_History" },
+  ];
+
+  const signInLinks = [
+    { title: "Sign In", url: "/Login" },
+    { title: "Join Us", url: "/Login" },
+  ];
+
+  const LoginInLinks = [
+    { title: "Edit Profile", url: "/Profile" },
+    { title: "Log Out", url: "/Front" },
+  ];
+
   return (
     <Box sx={{ flexGrow: 1 }}>
     <AppBar position="sticky"  style={{ background: '#B8AD93' }}  >
-      <Login_and_Help/>
+    {/*================================== help/login ====================================== */}
+    <nav className = "help-login">
+        <Select
+          value={helpOption}
+          onChange={(e) => {
+            setHelpOption(e.target.value);
+            window.location.href = e.target.value;
+          }}
+          displayEmpty
+          className="select"
+          inputProps={{ 'aria-label': 'Without label' }}
+        >
+          <MenuItem value="" disabled>
+            Help
+          </MenuItem>
+          {helpLinks.map((link) => (
+            <MenuItem key={link.title} value={link.url}>
+              <Link to={link.url}>{link.title}</Link>
+            </MenuItem>
+          ))}
+        </Select>
+
+        {!istoken ? (
+            <Select
+            value={signInOption}
+            onChange={(e) => {
+                setSignInOption(e.target.value);
+                window.location.href = e.target.value;
+            }}
+            displayEmpty
+            className="select"
+            inputProps={{ 'aria-label': 'Without label' }}
+            >
+            <MenuItem value="" disabled>
+                Sign In
+            </MenuItem>
+            {signInLinks.map((link) => (
+                <MenuItem key={link.title} value={link.url}>
+                <Link to={link.url}>{link.title}</Link>
+                </MenuItem>
+            ))}
+            </Select>
+
+        ) : (
+          // ================================================= login/havetoken ======================================
+            <Select
+            value={LoginInOption}
+            onChange={(e) => {
+                setLoginInOption(e.target.value);
+                window.location.href = e.target.value;
+            }}
+            displayEmpty
+            className="select"
+            inputProps={{ 'aria-label': 'Without label' }}
+            >
+            <MenuItem value="" disabled>
+                Profile
+            </MenuItem>
+            {LoginInLinks.map((link) => (
+                <MenuItem key={link.title} value={link.url}>
+                {link.title === "Log Out" ? (
+                  <Link to={link.url} onClick={logout}>
+                    {link.title}
+                  </Link>
+                ) : (
+                  <Link to={link.url}>{link.title}</Link>
+                )}
+                </MenuItem>
+
+            ))}
+            </Select>
+        )}
+
+    </nav>
+    {/*================================== logo men won brand sale ====================================== */}
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -393,8 +505,8 @@ const MyNavFront = () => {
             </Stack>
           </Box>
           <Box >
-          <Grid container spacing={2}>
-            <Grid item xs={8}>
+          <Grid container>
+            <Grid item xs={6}>
               <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
@@ -406,7 +518,7 @@ const MyNavFront = () => {
                 />
               </Search>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
             <IconButton
               size="large"
               color="inherit"
@@ -515,7 +627,19 @@ const MyNavFront = () => {
     
     {location.pathname === '/' && <Front/> }
     {location.pathname === '/Front' && <Front/> }
-    
+
+    {/* ============================================== help/login ========================================================*/}
+    {location.pathname === '/Login' && <Login/> }
+    {location.pathname === '/Profile' && <Profile/> }
+
+    {location.pathname === '/ContactUs' && <ContactUs/> }
+    {location.pathname === '/OrderStatus' && <OrderStatus/> }
+    {location.pathname === '/OrderHistory' && <OrderHistory/> }
+
+    {/* {location.pathname === '/product/:id' && <ProductDetail/> } */}
+    {location.pathname === '/Product' && <ProductDetail/> }
+
+    {/* ============================================== help/login ========================================================*/}
     {location.pathname === '/ProductPage/Men/Shoes' && <ProductPage filter={selectedFilter}/>}
       {location.pathname === '/ProductPage/Men/Shoes/Nike' && <ProductPage filter={selectedFilter}/>}
       {location.pathname === '/ProductPage/Men/Shoes/Adidas' && <ProductPage filter={selectedFilter}/>}
@@ -556,7 +680,10 @@ const MyNavFront = () => {
     {location.pathname === '/ProductPage/Adidas' && <ProductPage filter={selectedFilter}/>}
     {location.pathname === '/ProductPage/Newbalance' && <ProductPage filter={selectedFilter}/>}
     {location.pathname === '/ProductPage/Converse' && <ProductPage filter={selectedFilter}/>}
+
+    
     </Box>
+
   );
 }
 

@@ -401,7 +401,7 @@ const Order = (props) => {
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
+          {/* <TableBody>
             {stableSort(filteredRows, getComparator(order, orderBy))
               .slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage)
               .map((row, index) => {
@@ -474,7 +474,7 @@ const Order = (props) => {
                 <TableCell colSpan={6} />
               </TableRow>
             )}
-          </TableBody>
+          </TableBody> */}
         </Table>
       </TableContainer>
       <TablePagination rowsPerPageOptions={[5, 10, 25]} component="div" count={filteredRows.length} rowsPerPage={rowsPerPage} page={currentPage} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
