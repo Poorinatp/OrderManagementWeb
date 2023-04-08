@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container,Typography, Badge, Alert} from '@mui/material';
+import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container,Typography, Badge, Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow} from '@mui/material';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import {ListItemButton, ListItemIcon, ListItemText, ListSubheader} from '@mui/material/';
+import {ListItemButton, ListItemIcon, ListItemText} from '@mui/material/';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
@@ -16,7 +16,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import axios from 'axios';
-import Noti from './Components/Noti';
 import { useNavigate } from 'react-router-dom';
 import Product from './Components/Product';
 import Customer from './Components/Customer';
@@ -25,13 +24,90 @@ import Payment from './Components/Payment';
 import Stock from './Components/Stock';
 import ReportChart from './Components/ReportChart';
 
+export const Dashboard = (props) => {
+  const orderdata = props.orderdata;
+  const productinventorydata = props.inventorydata;
+  const chartdata = props.chartdata;
+  const reportType = props.reportType;
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={6} lg={6}>
+          <Paper sx={{ mb:2,p: 2, display: 'flex', flexDirection: 'column', height: 120 }}>
+            <Grid container spacing={1}>
+              <Grid item xs={6} md={6} lg={6}>
+                <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                  Total Orders
+                </Typography>
+                <Typography component="p" variant="h4">
+                  {orderdata.length}
+                </Typography>
+              </Grid>
+              <Grid item xs={6} md={6} lg={6}>
+                <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                  Today Orders
+                </Typography>
+                <Typography component="p" variant="h4">
+                  {orderdata.filter((order) => order.order_date === new Date().toISOString().slice(0, 10)).length}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Paper>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column'}}>
+            <Box sx={{ overflow: 'auto' }}>
+          <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Order ID</TableCell>
+                  <TableCell>Customer ID</TableCell>
+                  <TableCell>Order Price</TableCell>
+                  <TableCell>Order Date</TableCell>
+                  <TableCell>Order Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {orderdata.map((row) => (
+                  <TableRow
+                    key={row.order_id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell align='left'><Typography >{row.order_id}</Typography></TableCell>
+                    <TableCell align='left'><Typography >{row.cus_id}</Typography></TableCell>
+                    <TableCell align='left'><Typography >{row.order_price}</Typography></TableCell>
+                    <TableCell align='left'><Typography >{row.order_date}</Typography></TableCell>
+                    <TableCell align='left'><Typography >{row.order_status}</Typography></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6} lg={6}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 120 }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Products
+            </Typography>
+            <Typography component="p" variant="h4">
+              {productinventorydata.length}
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column'}}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Current Month Sales
+            </Typography>
+            <ReportChart data = {chartdata} type = {reportType}/>
+          </Paper>
+          </Grid>
+        </Grid>
+    </Box>
+  );
+};
+
 const Admin = () => {
-  const [isAdmin, setIsAdmin] = useState(true);
-  const [isOrder,setIsOrder] = useState(false);
-  const [isCustomer, setIsCustomer] = useState(false);
-  const [isProduct, setIsProduct] = useState(false);
-  const [isPayment, setIsPayment] = useState(false);
-  // fetch data from database
   const [cusdata, setcusdata] = useState([]);
   const [orderdata, setorderdata] = useState([]);
   const [paymentdata, setpaymentdata] = useState([]);
@@ -45,7 +121,7 @@ const Admin = () => {
     useEffect(()=>{
       const token = localStorage.getItem('token');
       const user = localStorage.getItem('user');
-      if(token == null || user != 'admin'){
+      if(token == null || user !== 'admin'){
         navigate('/ordermanagement');
       }
       const fetchTodos = async () => {
@@ -162,7 +238,7 @@ const Admin = () => {
     // redirect the user to the login page
     navigate('/ordermanagement');
   }
-
+  
   return (
     <ThemeProvider
         theme={mdTheme}
@@ -266,7 +342,9 @@ const Admin = () => {
           <Toolbar />
           
           <Container maxWidth="lg" sx={{ mt: 10, mb: 4 }}>
-            {location.pathname === '/admin' && <h1>admin</h1>}
+            {location.pathname === '/admin' &&
+              <Dashboard orderdata = {orderdata} chartdata = {productorderdata} type = {reportType} inventorydata={productinventorydata}/>
+            }
             {location.pathname === '/admin/order' && <Order data = {orderdata}/>}
             {location.pathname === '/admin/customer' && <Customer data = {cusdata}/>}
             {location.pathname === '/admin/payment' && <Payment data = {paymentdata}/>}
