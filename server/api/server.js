@@ -42,6 +42,7 @@ connection.connect(function (err) {
 app.get('/', function (req, res) {
     res.send('Hello World');
 });
+
 // retrieve all data from mysql database
 for (var i = 0; i < tables.length; i++) {
     (function(table) {
@@ -287,6 +288,19 @@ app.get('/productinventory/:id', function(req, res) {
             res.status(200).send(results);
         }else{
             res.status(200).send({message: "Product sold out" });
+        }
+    });
+})
+
+// retrieve product data from mysql database by id
+app.get('/productdetail/:id', function(req, res) {
+    const product_id = parseInt(req.params.id);
+    connection.query('SELECT * FROM product_detail WHERE product_id = ?',[product_id],
+    function(error, results, fields){
+        if(results.length > 0) {
+            res.status(200).send(results);
+        }else{
+            res.status(200).send({message: "Product not found" });
         }
     });
 })
