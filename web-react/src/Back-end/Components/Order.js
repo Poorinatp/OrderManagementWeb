@@ -197,6 +197,7 @@ SelectedTool.propTypes = {
 
 const Order = (props) => {
   const rows = props.data;
+  const pages = props.pages;
   const [order, setOrder] = useState('desc');
   const [orderBy, setOrderBy] = useState('order_id');
   const [dense, setDense] = useState(false);
@@ -235,7 +236,7 @@ const Order = (props) => {
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [filteredRows]);
+  }, [searchCID, searchOID, searchDate, filterStatus]);
 
   const handleRequestSort = (event, property) => {
       const isAsc = orderBy === property && order === 'asc';
@@ -347,6 +348,8 @@ const Order = (props) => {
   return(
   <Box sx={{ p: 2, width: '100%',backgroundColor:'white' }}>
     <Noti location={location}/>
+      {pages!=="admin"&&
+      <>
       <Paper sx={{ p: 2, width: '100%', mb: 2, elevation:10 }} >
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120}} >
         <InputLabel>Status</InputLabel>
@@ -380,6 +383,7 @@ const Order = (props) => {
           </Grid>
         </Grid>
         </Paper>
+        </>}
       <Paper sx={{ p: 2, width: '100%', mb: 2 , elevation:10 }}>
       <TableContainer>
         <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'} stickyHeader >

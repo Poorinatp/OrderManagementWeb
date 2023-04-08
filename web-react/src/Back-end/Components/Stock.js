@@ -33,7 +33,7 @@ const AddProduct = (props) => {
             alert("Product Stock Added!");
         }
         ).catch((err) => {
-            console.log(err);
+            alert("Product Stock Added Failed! No Product Found!");
         }
         );
       };
@@ -139,7 +139,7 @@ const Stock = (props) => {
 
     useEffect(() => {
       setCurrentPage(0);
-    }, [filteredRows]);
+    }, [searchPID, searchSize, searchDate]);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';

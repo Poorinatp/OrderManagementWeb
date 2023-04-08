@@ -177,7 +177,7 @@ const Product = (props) => {
 
     useEffect(() => {
       setCurrentPage(0);
-    }, [filteredRows]);
+    }, [searchBrand, searchCat, searchID]);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';

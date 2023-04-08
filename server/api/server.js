@@ -360,7 +360,6 @@ app.get('/taxinvoice/:id', function(req, res) {
             quantity: row.product_amount,
             subtotal: row.product_price * row.product_amount
           }));
-          console.log(productDetails[0].name);
           const subtotal = productDetails.reduce((sum, product) => sum + product.subtotal, 0);
           const taxRate = 0.1; // Assuming a 10% tax rate
           const taxAmount = subtotal * taxRate;
@@ -453,6 +452,38 @@ app.post('/productinventory/addmultiple', function(req, res) {
         });
     });
 });
+
+
+// create order, product_order, payment in mysql database product_id,product_size,product_amount is store in array
+app.post('/order/create', function(req, res) {
+    const { cus_id, order_amount, order_price, order_Shipmethod, order_status, product_id, product_size, product_amount, payment_totalvat, payment_bill, payment_method, payment_status } = req.body;
+    const sql1 = `INSERT INTO \`order\` (cus_id, order_amount, order_price, order_Shipmethod, order_status) VALUES ('${cus_id}', '${order_amount}', '${order_price}', '${order_Shipmethod}', '${order_status}')`;
+    connection.query(sql1, function(error, results, fields) {
+        if(error) {
+            res.status(401).send({message: error.message + " Username already exists 3"});
+        }else{
+            const order_id = results.insertId;
+            for (var i = 0; i < product_id.length; i++) {
+                const sql2 = `INSERT INTO product_order (order_id, product_id, product_size, product_amount) VALUES ('${order_id}', '${product_id[i]}', '${product_size[i]}', '${product_amount[i]}')`;
+                connection.query(sql2, function(error, results, fields) {
+                    if(error) {
+                        res.status(401).send({message: error.message + " Username already exists 3"});
+                    }else{
+                        const sql3 = `INSERT INTO payment (order_id, payment_totalvat, payment_bill, payment_method, payment_status) VALUES ('${order_id}', '${payment_totalvat}', '${payment_bill}', '${payment_method}', '${payment_status}')`;
+                        connection.query(sql3, function(error, results, fields) {
+                            if(error) {
+                                res.status(401).send({message: error.message + " Username already exists 3"});
+                            }else{
+                                res.status(200).send({message: "Added" });
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+});
+
 
 // add product inventory to mysql database
 app.post('/productinventory/add', function(req, res) {

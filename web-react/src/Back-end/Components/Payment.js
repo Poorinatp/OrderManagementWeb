@@ -50,7 +50,7 @@ const Payment = (props) => {
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [filteredRows]);
+  }, [searchOID, searchPID, searchStatus]);
 
   const handleRequestSort = (event, property) => {
       const isAsc = orderBy === property && order === 'asc';
