@@ -14,10 +14,20 @@ function generateHeader(doc) {
     .moveDown();
 }
 
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  return `${year}/${month}/${day}`;
+}
+
 function generateCustomerInformation(doc, customerName,
   customerAddress,
   orderDate,
-  total) {
+  total,
+  order_id) {
+    const today = new Date();
+    const invoicenumber = "VYG" + today.getFullYear().toString().slice(-2) + (today.getMonth() + 1).toString().padStart(2, '0') + order_id;    
   doc
     .fillColor("#444444")
     .fontSize(20)
@@ -32,19 +42,21 @@ function generateCustomerInformation(doc, customerName,
     .font("AngsabUPC")
     .text("Invoice Number:", 50, customerInformationTop)
     .font("AngsabUPC")
-    .text("1234", 150, customerInformationTop)
+    .text(invoicenumber, 150, customerInformationTop)
     .font("AngsabUPC")
     .text("Order Date:", 50, customerInformationTop + 15)
-    .text(orderDate,150, customerInformationTop + 15)
+    .text(formatDate(orderDate),150, customerInformationTop + 15)
     .text("Invoice Date:", 50, customerInformationTop + 30)
-    .text(formatDate(new Date()), 150, customerInformationTop + 30)
+    .text(formatDate(today), 150, customerInformationTop + 30)
     .text("Balance Due:", 50, customerInformationTop + 45)
     .text("฿"+total, 150, customerInformationTop + 45)
 
     .font("AngsabUPC")
-    .text(customerName, 300, customerInformationTop)
+    .text("ลูกค้า / Customer :", 300, customerInformationTop)
     .font("AngsabUPC")
-    .text(customerAddress, 300, customerInformationTop + 15)
+    .text(customerName, 300, customerInformationTop+15)
+    .font("AngsabUPC")
+    .text(customerAddress, 300, customerInformationTop + 30)
     
     .moveDown();
 
@@ -58,68 +70,72 @@ function generateInvoiceTable(doc,
   taxAmount,
   total) {
   let i ;
-  const invoiceTableTop = 330;
+  let currentPosition = 330;
 
   doc.font("AngsabUPC");
   generateTableRow(
     doc,
-    invoiceTableTop,
-    "Item",
-    "Description",
-    "Unit Cost",
+    currentPosition,
+    "No.",
+    "SKU",
+    "Name",
+    "Unit Price",
     "Quantity",
     "Line Total"
   );
-  generateHr(doc, invoiceTableTop + 20);
+  generateHr(doc, currentPosition + 20);
   doc.font("AngsabUPC");
   for (i = 0; i < productDetails.length; i++) {
     const item = productDetails[i];
-    const position = invoiceTableTop + (i + 1) * 30;
+    tablepos = currentPosition + (i + 1) * 30;
       generateTableRow(
       doc,
-      position,
+      tablepos,
+      i+1,
       item.brand,
       item.name,
       "฿"+item.price,
       item.quantity,
       "฿"+item.subtotal
       )
-      generateHr(doc, position + 20);
+      generateHr(doc, tablepos + 20);
   }
-  const subtotalPosition = invoiceTableTop + (i + 1) * 30;
+  currentPosition = currentPosition + (i + 1) * 30;
   generateTableRow(
     doc,
-    subtotalPosition,
+    currentPosition,
+    "",
     "",
     "",
     "Subtotal",
     "",
-    subtotal
+    "฿"+subtotal
   );
-
-  const taxPosition = subtotalPosition + 20;
+  currentPosition = currentPosition + 20;
   generateTableRow(
     doc,
-    taxPosition,
+    currentPosition,
     "",
     "",
-    `Tax Rate ${taxRate * 100}%`,
     "",
-    taxAmount
+    `Tax Rate ${(taxRate * 100).toFixed(0)}%`,
+    "",
+    "฿"+taxAmount
   );
-
-  const totalPosition = taxPosition + 25;
-  doc.font("Helvetica-Bold");
+  generateHrHalf(doc, currentPosition + 20);
+  currentPosition = currentPosition + 25;
+  doc.font("AngsabUPC");
   generateTableRow(
     doc,
-    totalPosition,
+    currentPosition,
+    "",
     "",
     "",
     "Total",
     "",
-    total
+    "฿"+total
   );
-  doc.font("Helvetica");
+  doc.font("AngsabUPC");
 }
 
 function generateFooter(doc) {
@@ -136,6 +152,7 @@ function generateFooter(doc) {
 function generateTableRow(
   doc,
   y,
+  no,
   item,
   description,
   unitCost,
@@ -144,10 +161,11 @@ function generateTableRow(
 ) {
   doc
     .fontSize(10)
-    .text(item, 50, y)
+    .text(no, 50, y)
+    .text(item, 100, y)
     .text(description, 150, y)
-    .text(unitCost, 280, y, { width: 90, align: "right" })
-    .text(quantity, 370, y, { width: 90, align: "right" })
+    .text(unitCost, 300, y, { width: 90, align: "right" })
+    .text(quantity, 390, y, { width: 90, align: "right" })
     .text(lineTotal, 0, y, { align: "right" });
 }
 
@@ -156,6 +174,15 @@ function generateHr(doc, y) {
     .strokeColor("#aaaaaa")
     .lineWidth(1)
     .moveTo(50, y)
+    .lineTo(550, y)
+    .stroke();
+}
+// generate half hr on the right side
+function generateHrHalf(doc, y) {
+  doc
+    .strokeColor("#aaaaaa")
+    .lineWidth(1)
+    .moveTo(350, y)
     .lineTo(550, y)
     .stroke();
 }
@@ -178,50 +205,17 @@ function buildPDF(
     subtotal,
     taxRate,
     taxAmount,
-    total) {
-    //console.log(orderDate);
+    total,
+    order_id) {
     const doc = new PDFDocument();
     doc.registerFont('AngsabUPC', '/Users/poom/Library/Fonts/AngsabUPC.ttf');
     doc.pipe(res);
-    //doc.on('data', dataCallback);
-    //doc.on('end', endCallback);
-    /*doc.font('AngsabUPC').fontSize(24).text('Tax Invoice', {align: 'center'});
-    doc.moveDown();
-    doc.fontSize(14).text(`Customer Name: ${customerName}\nCustomer Address: ${customerAddress}`, {align: 'left'});
-    doc.moveDown();
-    doc.fontSize(14).text(`Date: ${orderDate}`, {align: 'left'});
-    doc.moveDown();
-    doc.fontSize(14).text('Product Details:', {align: 'left'});
-    doc.moveDown();
-    const tableHeaders = ['Product Name', 'Quantity', 'Price', 'Subtotal'];
-    const tableRows = productDetails.map(product => [product.name, product.quantity, product.price, product.subtotal]);
-    console.log("tableRows = ");
-    console.log(tableRows);
-    const table = new PDFTable(doc, {
-        bottomMargin: 30
-      });
-      doc.addPage();
-      table
-        .setColumnsDefaults({
-            headerBorder: 'B',
-          align: 'left'
-
-        })
-        .addColumns(tableHeaders)
-        .addBody(tableRows);
-
-    doc.moveDown();
-    doc.fontSize(14).text(`Subtotal: $${subtotal.toFixed(2)}`, {align: 'right'});
-    doc.moveDown();
-    doc.fontSize(14).text(`Tax (${taxRate * 100}%): $${taxAmount.toFixed(2)}`, {align: 'right'});
-    doc.moveDown();
-    doc.font('Helvetica-Bold').fontSize(16).text(`Total: $${total.toFixed(2)}`, {align: 'right'});
-    */
     generateHeader(doc);
     generateCustomerInformation(doc, customerName,
       customerAddress,
       orderDate,
-      total);
+      total,
+      order_id);
     generateInvoiceTable(doc, productDetails,
       subtotal,
       taxRate,

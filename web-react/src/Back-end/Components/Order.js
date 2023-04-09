@@ -322,6 +322,7 @@ const Order = (props) => {
           link.click();
         })
         .catch((error) => {
+          alert(error.message);
           console.error(error);
         });
   }

@@ -29,7 +29,7 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'webappdb'
+    database: 'WebAppDB'
 });
 // set mysql table names
 const tables = ["login", "customer", "order", "payment", "product_detail", "product_inventory", "product_order"];
@@ -355,29 +355,39 @@ app.put('/updateorder/:id', function(req, res) {
 // generate tax invoice for order by id 
 app.get('/taxinvoice/:id', function(req, res) {
     const order_id = parseInt(req.params.id);
-    connection.query('SELECT o.*, po.*, pd.*, c.*, p.* FROM `order` o \
+    connection.query('SELECT o.*, po.*, pd.*, c.* FROM `order` o \
     JOIN product_order po ON o.order_id = po.order_id \
     JOIN product_detail pd ON po.product_id = pd.product_id \
     JOIN customer c ON o.cus_id = c.cus_id \
-    JOIN payment p ON o.order_id = p.order_id \
     WHERE o.order_id = ?',[order_id],
     function(error, results, fields){
-        if(results.length > 0) {
-          const customerName = results[0].cus_fname+' '+results[0].cus_lname;
-          const customerAddress = results[0].cus_address;
-          const date = results[0].order_date;
-          const orderDate = date.toISOString().slice(0, 10).split('T')[0];
-          const productDetails = results.map(row => ({
-            brand:row.product_brand,
-            name: row.product_description,
-            price: row.product_price,
-            quantity: row.product_amount,
-            subtotal: row.product_price * row.product_amount
-          }));
-          const subtotal = productDetails.reduce((sum, product) => sum + product.subtotal, 0);
-          const taxRate = 0.1; // Assuming a 10% tax rate
-          const taxAmount = subtotal * taxRate;
-          const total = subtotal + taxAmount;
+        if(error) {
+            res.status(401).send({ message: error.message, error: error });
+        } else if(results.length > 0) {
+            const customerName = results[0].cus_fname+' '+results[0].cus_lname;
+            const customerAddress = results[0].cus_address;
+            const orderDate = results[0].order_date;
+            //const orderDate = date.toISOString().slice(0, 10).split('T')[0];
+            //console.log(date);
+            const productDetails = results.map(row => ({
+                // band: keep 3 character and to upper case
+                brand: (row.product_brand).toUpperCase().slice(0, 3)+"-"+row.product_id,
+                name: row.product_description,
+                price: (row.product_price / 1.07).toFixed(2),
+                quantity: row.product_amount,
+                // if second decimal is lower than 5, round down, else round up
+                subtotal: (row.product_price / 1.07 * row.product_amount).toFixed(2)
+              }));
+              
+            const subtotal = productDetails.reduce((sum, product) => sum + parseFloat(product.subtotal), 0).toFixed(2);
+            const taxRate = 0.07; // Assuming a 7% tax rate
+            const taxAmount = (subtotal * taxRate).toFixed(2);
+            const total = (parseFloat(subtotal) + parseFloat(taxAmount)).toFixed(2);
+              
+            console.log("subtotal: ", subtotal);
+            console.log("taxAmount: ", taxAmount);
+            console.log("total: ", total);
+            console.log("total"+results[0].product_price*3);
             //const doc = new PDFDocument();
             const fileName = `taxinvoice_${order_id}.pdf`;
             // Send the PDF back to the client
@@ -392,10 +402,11 @@ app.get('/taxinvoice/:id', function(req, res) {
                 subtotal,
                 taxRate,
                 taxAmount,
-                total
+                total,
+                order_id
             )
-        } else {
-          res.status(401).send({message: "User not found"});
+        }else{
+            res.status(401).send({message: "Order not found" });
         }
       });
   })
