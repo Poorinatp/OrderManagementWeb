@@ -1,9 +1,9 @@
-import { React,useState } from 'react';
+import { React,useEffect,useState } from 'react';
 import NavItem from './FrontComponent/NavItem';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel, Select } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel, Select, Checkbox } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -140,6 +140,12 @@ const MyNavFront = () => {
 
   const [opendialogList, setOpendialogList] = useState([false,false,false,false]);
   const [openCart, setOpenCart] = useState(false);
+  // ==================== Cart ====================
+  const [cart, setCart] = useState([]);
+  //cart and setCart
+  
+
+
   const [selectedFilter, setSelectedFilter] = useState(
     {
       productType: '',
@@ -538,7 +544,6 @@ const MyNavFront = () => {
       fullScreen
       open={openCart}
       onClose={e=>setOpenCart(false)}
-      
     >
       <Button onClick={e=>setOpenCart(false)}>Close</Button>
     <Grid container sx={{width:"100%",height:"100%"}}>
@@ -548,7 +553,34 @@ const MyNavFront = () => {
             Cart
           </Typography>
           <Typography variant="body1" paragraph sx={{ ml:5}}>
-            There are no items in your cart
+            
+            {cart.map((item,index) => {
+              return(
+                <Grid container key={"grid"+index}>
+                  <Grid item xs={1}>
+                    <Checkbox color="primary" />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <p>pic</p>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Grid item xs={12}>
+                      <p>{item.product_name}</p>
+                      <p>{item.product_size}</p>
+                      <p>{item.product_qty}</p>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <p>Bin</p>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <p>{item.product_price}  </p>
+                  </Grid>
+
+                </Grid>
+
+              )
+            })}
           </Typography>
         </Box>
       </Grid>
@@ -637,7 +669,7 @@ const MyNavFront = () => {
     {location.pathname === '/OrderHistory' && <OrderHistory/> }
 
     {/* {location.pathname === '/product/:id' && <ProductDetail/> } */}
-    {location.pathname === '/Product' && <ProductDetail/> }
+    {location.pathname === '/Product' && <ProductDetail setOpenCart={setOpenCart} setCart={setCart} cart={cart}/> }
 
     {/* ============================================== help/login ========================================================*/}
     {location.pathname === '/ProductPage/Men/Shoes' && <ProductPage filter={selectedFilter}/>}

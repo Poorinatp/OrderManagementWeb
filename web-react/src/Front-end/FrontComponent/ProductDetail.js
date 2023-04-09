@@ -1,14 +1,26 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import './ProductDetail.css'
 
-const api = 'http://localhost:8080/product_detail';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Button from '@mui/material/Button';
+import { Grid } from '@mui/material';
 
-function ProductDetail() {
+const api = 'http://localhost:8080/';
+
+function ProductDetail( props ) {
   const id = localStorage.getItem('productId');
   const [product, setProduct] = useState({});
+  const [inventory, setInventory] = useState({});
+  const [selectedSize, setSelectedSize] = useState('');
 
+  console.log(id);
+  //=============================================== productdetail ==================================================
   useEffect(() => {
-    axios.get(`${api}/${id}`)
+    axios.get(api+"productdetail/"+id)
       .then(response => {
         const data_product = response.data[0];
         setProduct(data_product);
@@ -17,18 +29,132 @@ function ProductDetail() {
         console.log(error);
       });
   }, [id]);
-    
+
+ //=============================================== productinventory ==================================================
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    axios.get(api + 'productinventory/' + id)
+      .then(response => {
+        setData(response.data);
+        // setSizes(data.product_size.split(',').map(s => s.trim()));
+        console.log(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, [id]);
+
+  const handleSizeChange = (event) => {
+    setSelectedSize(event.target.value);
+  };
+
+  //==================================================== cart =======================================================
+
+  const addToCart = () => {
+    //เช็คว่ามีสินค้า product.product_quatity หรือไม่
+    //ถ้ามีให้เอามาเก็บไว้ในตัวแปร cartItem
+    //ถ้าไม่มีให้ alert ว่าสินค้าหมดแล้ว
+
+    const quantity = data.find((item) => item.product_size === selectedSize)?.product_quatity;
+
+    console.log("selectedSize: " + selectedSize);
+    //code here
+    console.log("quantity: " + quantity);
+    {quantity === 0 ? alert('สินค้าหมดแล้ว') : (
+      // Declare cartItem constant outside the JSX expression
+      (() => {
+        const cartItem = {
+          product_id: product.product_id,
+          product_name: product.product_description,
+          product_price: product.product_price,
+          product_size: selectedSize,
+          product_qty: 1
+        };
+        // Update cart state and localStorage
+        props.setCart([...props.cart, cartItem]);
+        localStorage.setItem('cart', JSON.stringify([...props.cart, cartItem]));
+      })()
+  )}  
+
+  };
+
+  const payNow = () => {
+    addToCart();
+    // open
+    props.setOpenCart(true);
+  };
+
+  
+
   return (
-    <div>
-      {Object.keys(product).length !== 0 ? (
-        <>
-          <h2>{product.product_name}</h2>
-          <p>{product.product_description}</p>
-          <p>{product.product_price}</p>
-          <img src={product.product_urlimg} alt={product.product_description} />
-        </>
+    <div className='ProductDetail'>
+      {product !== null ? (
+        <div>
+            <Grid container className='container'>
+                <Grid item xs={5} className='left-box'>
+                    <img src={product.product_urlimg} alt={product.product_description} />
+                    <div className='description'>
+                        <p>name : {product.product_description}</p>
+                        <p>brand : {product.product_brand}</p>
+                        <p>gender :{product.product_gender}</p>
+                    </div>
+                </Grid>
+                <Grid item xs={7}>
+                    <Grid container className='container-price'>
+                        <Grid item xs={5}>
+                            <h2>Price</h2>
+                        </Grid>
+                        <Grid item xs={7}>
+                            <h3>฿ {product.product_price}</h3>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={5}>
+                        <h2>Size</h2>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl className='selectedSize'>
+                        <Select
+                          value={selectedSize}
+                          onChange={handleSizeChange}
+                        >
+                          <MenuItem value='' disabled>Select a size</MenuItem>
+                          {data.map((item, index) => (
+                            <MenuItem 
+                              key={index} 
+                              value={item.product_size} 
+                              disabled={item.product_quatity === 0}
+                            >
+                              {item.product_size}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        </FormControl>
+                    </Grid>
+                    <div className='buttonProduct'> 
+                      <Grid item xs={12} >
+                      <Button 
+                        variant="contained" 
+                        onClick={addToCart} 
+                        className='add'
+                        disabled={selectedSize === ''}
+                      >
+                        Add to Cart
+                      </Button>
+
+                      </Grid>
+                      <Grid item xs={12} >
+                            <Button variant="contained"  onClick={payNow} className='pay' disabled={selectedSize === ''}>
+                              Pay Now
+                            </Button>
+                      </Grid>
+                    </div>
+
+                </Grid>
+            </Grid>
+      
+        </div>
       ) : (
-        <p>Loading...</p>
+        <p>Can't find the product...</p>
       )}
     </div>
   );

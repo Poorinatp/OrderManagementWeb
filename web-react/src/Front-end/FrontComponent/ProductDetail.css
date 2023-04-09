@@ -1,0 +1,84 @@
+.ProductDetail{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    /* background-color: #c72929; */
+    margin: auto;
+}
+.container{
+    margin-top: 50px;
+}
+
+.ProductDetail h2{
+    font-size: 30px;
+    text-align: left;
+    margin-left: 50px;
+    margin-bottom: 20px;
+    margin-top: 0px;
+}
+.ProductDetail h3{
+    font-size: 20px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.buttonProduct{
+    padding-top: 80px; 
+}
+
+.buttonProduct .add{
+    width: 80%;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.buttonProduct .add:hover{
+    background-color: #ffffff;
+    color: #000000;
+}
+.buttonProduct .pay{
+    width: 80%;
+    background-color: #e40000;
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.buttonProduct .pay:hover{
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.left-box {
+    width: 100%;
+
+}
+.left-box img {
+    margin: auto;
+    /* border: 2px solid #393939; */
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.387);
+    max-width:500px;
+    max-height: 500px;
+    object-fit: cover;
+    width: 100%;
+    object-position: top left;
+}
+
+.selectedSize{
+    width: 80%;
+    height: 40px;
+    background-color: #ffffff;
+    border: 1px solid #393939;
+}
+.selectedSize .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select{
+    padding: 10px;
+    font-size: 16px;
+    color: #393939;
+}
