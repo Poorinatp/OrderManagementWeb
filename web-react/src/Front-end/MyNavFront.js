@@ -3,7 +3,7 @@ import NavItem from './FrontComponent/NavItem';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel, Select, Checkbox } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel, Select, Checkbox, TextField } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -142,8 +142,31 @@ const MyNavFront = () => {
   const [openCart, setOpenCart] = useState(false);
   // ==================== Cart ====================
   const [cart, setCart] = useState([]);
-  //cart and setCart
-  
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleCheckboxChange = (event, index) => {
+    const newSelectedItems = [...selectedItems];
+    if (event.target.checked) {
+      newSelectedItems.push(index);
+    } else {
+      const indexToRemove = newSelectedItems.indexOf(index);
+      newSelectedItems.splice(indexToRemove, 1);
+    }
+    setSelectedItems(newSelectedItems);
+  };
+
+  const getTotalPrice = () => {
+    let totalPrice = 0;
+    selectedItems.forEach(index => {
+      totalPrice += cart[index].product_price;
+    });
+    return totalPrice;
+  };
+
+  const getLastPrice = () => {
+    let lastPrice = getTotalPrice()+shipping ;
+    return lastPrice;
+  };
 
 
   const [selectedFilter, setSelectedFilter] = useState(
@@ -239,7 +262,7 @@ const MyNavFront = () => {
       navigate('/ProductPage/'+brands);
     }
   }
-  const [subTotal, setSubTotal] = useState(5000.00);
+  const [vat, setVat] = useState(7.00);
   const [shipping, setShipping] = useState(50.00);
   const [total, setTotal] = useState(5050.00);
   const [paymentMethod, setPaymentMethod] = useState("Credit Card");
@@ -276,6 +299,83 @@ const MyNavFront = () => {
     { title: "Edit Profile", url: "/Profile" },
     { title: "Log Out", url: "/Front" },
   ];
+
+  //====================================================================== textfields cradit card ====================================================================
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [cardType, setCardType] = useState('');
+  const [isCardNumberValid, setIsCardNumberValid] = useState(false);
+
+  function validateCardNumber(cardNumber) {
+    let sum = 0;
+    let isEven = false;
+    for (let i = cardNumber.length - 1; i >= 0; i--) {
+        let digit = parseInt(cardNumber[i]);
+        if (isEven) {
+            digit *= 2;
+            if (digit > 9) {
+                digit -= 9;
+            }
+        }
+        sum += digit;
+        isEven = !isEven;
+    }
+    return (sum % 10) === 0;
+  }
+  
+  const handleCardNumberChange = (event) => {
+    const input = event.target.value.replace(/\D/g, '');
+    let type = '';
+    let isValid = false;
+    if (/^4/.test(input)) {
+      type = 'Visa';
+    } else if (/^5[1-5]/.test(input)) {
+      type = 'Mastercard';
+    } else if (/^3[47]/.test(input)) {
+      type = 'American Express';
+    } else if (/^35(2[89]|[3-8][0-9])/.test(input)) {
+      type = 'JCB';
+    }
+  
+    if (input.length >= 13 && input.length <= 19 && validateCardNumber(input)) {
+      isValid = true;
+    }
+    
+    setCardType(type);
+    setCardNumber(input);
+    setIsCardNumberValid(isValid);
+  };
+  
+  const handleExpiryDateChange = (event) => {
+    let expiryDate = event.target.value.replace(/\D/g, '');
+    if (expiryDate.length > 2) {
+      const month = expiryDate.substring(0, 2);
+      const year = expiryDate.substring(2, 4);
+      expiryDate = month + '/' + year;
+      if (parseInt(month) > 12) {
+        expiryDate = '01/' + year;
+      }
+    }
+    setExpiryDate(expiryDate);
+  };
+
+  const handleCvvChange = (event) => {
+    let cvv = event.target.value.replace(/\D/g, '');
+    setCvv(cvv);
+  };
+
+  const handleFirstNameChange = (event) => {
+    let firstName = event.target.value.replace(/[^a-zA-Z]/g, '');
+    setFirstName(firstName);
+  };
+
+  const handleLastNameChange = (event) => {
+    let lastName = event.target.value.replace(/[^a-zA-Z]/g, '');
+    setLastName(lastName);
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -545,38 +645,37 @@ const MyNavFront = () => {
       open={openCart}
       onClose={e=>setOpenCart(false)}
     >
-      <Button onClick={e=>setOpenCart(false)}>Close</Button>
-    <Grid container sx={{width:"100%",height:"100%"}}>
+    <Button onClick={e=>setOpenCart(false)}>Close</Button>
+    <Grid container sx={{width:"100%",height:"100%" , bgcolor:'#F1ECE1'}} className='cartbox'>
       <Grid item xs={12} md={6} lg ={6}>
         <Box  sx={{ p:10,mt:5, width: 'auto', height: '100%', bgcolor: '#F1ECE1' }}>
-          <Typography variant="h5" gutterBottom sx={{  }}>
-            Cart
-          </Typography>
-          <Typography variant="body1" paragraph sx={{ ml:5}}>
-            
-            {cart.map((item,index) => {
+{/*======================================================================================== cart show ===========================================================================*/}
+          <Typography variant="body1" paragraph sx={{ ml:5}}>            {cart.map((item,index) => {
               return(
-                <Grid container key={"grid"+index}>
-                  <Grid item xs={1}>
-                    <Checkbox color="primary" />
+                <Grid container className="cart-item" key={"grid"+index}>
+                  <Grid item xs={1} className="cart-item-checkbox">
+                    <Checkbox
+                      color="primary" 
+                      checked={selectedItems.includes(index)}
+                      onChange={(event) => handleCheckboxChange(event, index)}
+                    />
                   </Grid>
-                  <Grid item xs={4}>
-                    <p>pic</p>
+                  <Grid item xs={3} className="cart-item-image">
+                    <img src={item.product_img} alt={item.product_description} />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={4} className="cart-item-details">
                     <Grid item xs={12}>
-                      <p>{item.product_name}</p>
-                      <p>{item.product_size}</p>
-                      <p>{item.product_qty}</p>
+                      <p className="name">{item.product_brand} : {item.product_name}</p>
+                      <p>size us: {item.product_size}</p>
+                      <p>amount: {item.product_qty}</p>
                     </Grid>
                     <Grid item xs={12}>
-                      <p>Bin</p>
+                      <img className="logobin" src="..\img\bin.png" alt="Logo bin" />
                     </Grid>
                   </Grid>
-                  <Grid item xs={4}>
-                    <p>{item.product_price}  </p>
+                  <Grid item xs={4} className="cart-item-price">
+                    <p>฿ {item.product_price}</p>
                   </Grid>
-
                 </Grid>
 
               )
@@ -593,26 +692,28 @@ const MyNavFront = () => {
             <ListItem
               secondaryAction={
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  {subTotal.toLocaleString('th-TH', { style: 'currency', currency: 'THB' })}
+                  <a>฿ {getTotalPrice()}</a>
                 </Typography>
               }
             >
-              <ListItemText primary="Subtotal" />
+              <ListItemText primary="Price" />
             </ListItem>
+
             <ListItem
               secondaryAction={
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  {shipping.toLocaleString('th-TH', { style: 'currency', currency: 'THB' })}
+                  <a>฿ {shipping}</a>
                 </Typography>
               }
             >
               <ListItemText primary="Estimated shipping" />
             </ListItem>
+
             <Divider />
             <ListItem>
               <ListItemText primary="Total" />
               <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                {total.toLocaleString('th-TH', { style: 'currency', currency: 'THB' })}
+                <a>฿ {getLastPrice()}</a>
               </Typography>
             </ListItem>
             <Divider />
@@ -626,12 +727,65 @@ const MyNavFront = () => {
                   onChange={e=>{setPaymentMethod(e.target.value);console.log(paymentMethod);}}
                 >
                   <FormControlLabel value="credit" control={<Radio/>} label="Credit Card" />
-                  <FormControlLabel value="paypal" control={<Radio/>} label="Paypal" />
+                  {/* <FormControlLabel value="paypal" control={<Radio/>} label="Paypal" /> */}
                 </RadioGroup>
-              }
-            >
+              }>
               <ListItemText primary="Payment" />
             </ListItem>
+
+            <form className='paymentbox'>
+            {/* test card 5555555555554444 : MasterCard
+            Visa : 4012888888881881 
+            JCB : 3566002020360505
+            */}
+            <Grid xs={12} >
+              <TextField
+                label={cardType + " Card Number"}
+                value={cardNumber}
+                onChange={handleCardNumberChange}
+                inputProps={{ maxLength: 16 }}
+                className='cardNumber'
+              />
+              <br />
+            </Grid>
+            <Grid xs={6}>
+            <TextField
+              label="Expiry Date"
+              value={expiryDate}
+              onChange={handleExpiryDateChange}
+              inputProps={{ maxLength: 5 }}
+            />
+            <br />
+            </Grid>
+            <Grid xs={6}>
+            <TextField
+              label="CVV"
+              value={cvv}
+              onChange={handleCvvChange}
+              inputProps={{ maxLength: 3 }}
+            />
+            <br />
+            </Grid>
+            <Grid xs={6}>
+            <TextField
+              label="First Name"
+              value={firstName}
+              onChange={handleFirstNameChange}
+              inputProps={{ maxLength: 30 }}
+            />
+            <br />
+            </Grid>
+            <Grid xs={6}>
+            <TextField
+              label="Last Name"
+              value={lastName}
+              onChange={handleLastNameChange}
+              inputProps={{ maxLength: 30 }}
+            />
+            </Grid>
+            
+          </form>
+
             <ListItem
               secondaryAction={
                 <RadioGroup
@@ -649,7 +803,12 @@ const MyNavFront = () => {
               <ListItemText primary="Shipping" />
             </ListItem>
           </List>
-          <Button fullWidth variant="contained" sx={{ mt: 2, ml: 1 }}>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mt: 2, ml: 1 }}
+            disabled={!isCardNumberValid}
+          >
             Pay now
           </Button>
         </Box>

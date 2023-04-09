@@ -1,5 +1,5 @@
 .ProductDetail{
-    display: flex;
+    max-width: 1000px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -7,10 +7,26 @@
     height: 100%;
     /* background-color: #c72929; */
     margin: auto;
+    text-align: left;
 }
-.container{
+.ProductDetail .container{
     margin-top: 50px;
 }
+
+.description {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0;
+    text-align: left;
+  }
+  
+  .description p {
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+
 
 .ProductDetail h2{
     font-size: 30px;

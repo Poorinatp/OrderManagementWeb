@@ -68,7 +68,9 @@ function ProductDetail( props ) {
           product_name: product.product_description,
           product_price: product.product_price,
           product_size: selectedSize,
-          product_qty: 1
+          product_qty: 1,
+          product_img: product.product_urlimg,
+          product_brand: product.product_brand,
         };
         // Update cart state and localStorage
         props.setCart([...props.cart, cartItem]);
@@ -94,9 +96,9 @@ function ProductDetail( props ) {
                 <Grid item xs={5} className='left-box'>
                     <img src={product.product_urlimg} alt={product.product_description} />
                     <div className='description'>
-                        <p>name : {product.product_description}</p>
-                        <p>brand : {product.product_brand}</p>
-                        <p>gender :{product.product_gender}</p>
+                      <p>Name: {product.product_description}</p>
+                      <p>Brand: {product.product_brand}</p>
+                      <p>Gender: {product.product_gender}</p>
                     </div>
                 </Grid>
                 <Grid item xs={7}>
@@ -124,7 +126,7 @@ function ProductDetail( props ) {
                               value={item.product_size} 
                               disabled={item.product_quatity === 0}
                             >
-                              {item.product_size}
+                              US {item.product_size}
                             </MenuItem>
                           ))}
                         </Select>
