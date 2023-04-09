@@ -11,6 +11,7 @@
     "pdfkit": "^0.13.0",
     "pdfkit-table": "^0.1.99",
     "pm2": "^5.2.2",
+    "react-pdf": "^6.2.2",
     "voilab-pdf-table": "^0.5.1"
   },
   "scripts": {

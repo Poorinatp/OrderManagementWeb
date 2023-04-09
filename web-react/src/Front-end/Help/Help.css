@@ -1,0 +1,117 @@
+.ContactUs{
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+.ContactUs h1{
+    font-size: 2.5rem;
+    margin-bottom: 70px;
+}
+.ContactUs h2{
+    font-size: 1.5rem;
+}
+.ContactUs p{
+    font-size: 1.2rem;
+}
+.ContactUs a{
+    font-size: 1.2rem;
+}
+.ContactUs a:hover{
+    text-decoration: underline;
+}
+.ContactUs img{
+    width: 100%;
+    max-width: 100px;
+    margin: 10px;
+    margin-bottom: 20px;
+}
+
+.OrderStatus{
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+.OrderStatus h1{
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.OrderStatus p{
+  max-width: 280px;
+  margin: auto;
+  text-align: left;
+  font-size: 1rem;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  max-width: 300px;
+  margin-top: 20px;
+}
+
+.MuiTextField-root {
+  border: none;
+  margin-top: 50px;
+}
+
+.MuiTextField-root input {
+  background-color: #ffffff;
+  font-size: 1.0rem;
+  color: #333;
+  outline: none;
+  height: 20px;
+}
+
+
+button {
+  margin-top: 30px;
+  width: 200px;
+  background-color: black;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #555;
+  color: white;
+}
+
+
+
+
+
+
+@media screen and (max-width: 700px) {
+    .ContactUs h1 {
+      font-size: 1.8rem;
+      margin-bottom: 50px;
+    }
+    
+    .ContactUs h2 {
+      font-size: 1.2rem;
+    }
+    
+    .ContactUs p,
+    .ContactUs a {
+      font-size: 1rem;
+    }
+    
+    .ContactUs {
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    
+    .ContactUs img {
+      max-width: 70px;
+    }
+  }
+  

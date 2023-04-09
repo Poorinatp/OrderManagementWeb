@@ -2,7 +2,7 @@ import { Box, Button, Grid, MenuItem, Paper, Select, Stack, Typography } from '@
 import { textAlign } from '@mui/system';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function ProductPage(props) {
   const location = useLocation();
@@ -87,6 +87,10 @@ function ProductPage(props) {
       console.log(order)
     };
 
+    function saveProductId(productId) {
+      localStorage.setItem('productId', productId);
+    }
+
     return (
       <Box>
         <div>
@@ -147,7 +151,7 @@ function ProductPage(props) {
                 :"Women"))}
 
           </Typography>
-          <Grid container spacing={1} >
+          {/* <Grid container spacing={1} >
             {filteredRows.map((row,index) => (
               <Grid key={"grid"+index} item xs={12} sm={6} md={4} lg={4}>
                 <Paper key={"paper"+index} sx={{ p: 2, display: "flex", flexDirection: "column" }}>
@@ -159,10 +163,27 @@ function ProductPage(props) {
                 </Paper>
               </Grid>
             ))}
+          </Grid> */}
+          <Grid container spacing={1}>
+            {filteredRows.map((row,index) => (
+              <Grid key={"grid"+index} item xs={12} sm={6} md={4} lg={4}>
+                <Link to={`/Product`}  key={`link${index}`} onClick={() => saveProductId(row.product_id)} >
+                  <Paper key={"paper"+index} sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+                    <img style={{ width: '100%',maxHeight:'500px' }} src={row.product_urlimg} alt={row.product_description} />
+                    <Typography key={"description"+index} variant="h8">
+                      {row.product_description}
+                    </Typography>
+                    <Typography key={"price"+index}>{row.product_price}</Typography>
+                  </Paper>
+                </Link>
+              </Grid>
+            ))}
           </Grid>
+
           </Stack>
         </Box>
       </Box>
+      
       </Box>
     );
   }

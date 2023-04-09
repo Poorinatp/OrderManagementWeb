@@ -6,3 +6,167 @@
 .css-19r6kue-MuiContainer-root {
     color: rgb(0, 0, 0);
 }
+
+.select .MuiOutlinedInput-notchedOutline {
+    border: none;
+}
+.select .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border: none;
+}
+.select .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border: none;
+}
+.select .MuiOutlinedInput-root {
+    border: none;
+}
+.select .MuiSvgIcon-root {
+    display: none;
+}
+
+.help-login{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: #b8ad93;
+}
+.help-login.nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+    margin-right: 50px;
+}
+
+.help-login.select {
+    margin-left: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    outline: none;
+}
+
+.help-login.select:hover {
+    cursor: pointer;
+}
+
+.help-login.a {
+    color: #333;
+    text-decoration: none;
+}
+
+.help-login.a:hover {
+    text-decoration: underline;
+}
+
+a:-webkit-any-link {
+    color: black;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* ======================================== cart ======================================== */
+
+.cartbox{
+    margin-top: 50px;
+    width: 100%;
+    height: 100%;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .cart-item-checkbox {
+    flex-basis: 5%;
+  }
+  
+  .cart-item-image img {
+    max-width: 150px;
+    max-height: 150px;
+    width: 100%;
+    height: 100%;
+  }
+  
+  
+  .cart-item-details {
+    flex-basis: 50%;
+  }
+  
+  .cart-item-details p {
+    max-width: 400px;
+    margin: 0;
+    margin-left: 20px;
+  }
+  
+  .cart-item-details .name {
+    font-weight: bold;
+  }
+  
+  .cart-item-details .bin {
+    color: red;
+    margin-top: 10px;
+  }
+  
+  .cart-item-price {
+    flex-basis: 25%;
+    text-align: center;
+  }
+  
+  .cart-item-price p {
+    font-weight: bold;
+  }
+  
+
+.css-1f7m58l{
+    padding: 40px;
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+}
+.cartbox .css-1f7m58l{
+    padding: 40px;
+    margin: 40px 0px 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.paymentbox {
+    padding: 16px;
+    border: none;
+    text-align: left;
+    padding: 40px;
+    margin: auto;
+    width: 100%;
+    max-width: 400px;
+    min-width: 400px;
+    }
+
+
+.paymentbox input[type="text"] {
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: auto;
+    width: 100%;
+    }
+
+.paymentbox label {
+    margin-bottom: 8px;
+    }
+.logobin{
+    max-width: 22px;
+    width: 100%;
+    height: 100%;
+    margin-top: 10px;
+    margin-left: 20px;
+    }
+
+.cardNumber{
+    width: 400px;
+}
+.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root{
+    margin: 5px;
+}
