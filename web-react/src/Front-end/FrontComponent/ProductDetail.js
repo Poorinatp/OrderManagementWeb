@@ -17,7 +17,7 @@ function ProductDetail( props ) {
   const [inventory, setInventory] = useState({});
   const [selectedSize, setSelectedSize] = useState('');
 
-  console.log(id);
+  //console.log(id);
   //=============================================== productdetail ==================================================
   useEffect(() => {
     axios.get(api+"productdetail/"+id)
@@ -51,34 +51,30 @@ function ProductDetail( props ) {
   //==================================================== cart =======================================================
 
   const addToCart = () => {
-    //เช็คว่ามีสินค้า product.product_quatity หรือไม่
-    //ถ้ามีให้เอามาเก็บไว้ในตัวแปร cartItem
-    //ถ้าไม่มีให้ alert ว่าสินค้าหมดแล้ว
-
     const quantity = data.find((item) => item.product_size === selectedSize)?.product_quatity;
-
+  
     console.log("selectedSize: " + selectedSize);
-    //code here
     console.log("quantity: " + quantity);
-    {quantity === 0 ? alert('สินค้าหมดแล้ว') : (
-      // Declare cartItem constant outside the JSX expression
-      (() => {
-        const cartItem = {
-          product_id: product.product_id,
-          product_name: product.product_description,
-          product_price: product.product_price,
-          product_size: selectedSize,
-          product_qty: 1,
-          product_img: product.product_urlimg,
-          product_brand: product.product_brand,
-        };
-        // Update cart state and localStorage
-        props.setCart([...props.cart, cartItem]);
-        localStorage.setItem('cart', JSON.stringify([...props.cart, cartItem]));
-      })()
-  )}  
-
+  
+    if (quantity === 0) {
+      alert('สินค้าหมดแล้ว');
+    } else {
+      const cartItem = {
+        product_id: product.product_id,
+        product_name: product.product_description,
+        product_price: product.product_price,
+        product_size: selectedSize,
+        product_qty: 1,
+        product_img: product.product_urlimg,
+        product_brand: product.product_brand,
+        selected: false
+      };
+      // Update cart state and localStorage
+      props.setCart([...props.cart, cartItem]);
+      localStorage.setItem('cart', JSON.stringify([...props.cart, cartItem]));
+    }
   };
+  
 
   const payNow = () => {
     addToCart();
