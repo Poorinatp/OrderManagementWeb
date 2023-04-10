@@ -32,12 +32,12 @@ const Front = () => {
     }));
   };
 
-  const handleClick = (propertyName, propertyValue) => {
+  /*const handleClick = (propertyName, propertyValue) => {
     updateFilter(propertyName, propertyValue);
     const updatedFilter = { ...selectedFilter, [propertyName]: propertyValue };
     localStorage.setItem('selectedFilter', JSON.stringify(updatedFilter));
     navigate('/ProductPage');
-  };
+  };*/
   return (
     <div>
       <div className="container">
@@ -48,22 +48,22 @@ const Front = () => {
       <div className="BoxBrand">
         <Grid container>
           <Grid item xs={3}>
-            <Link to="/ProductPage" onClick={() => handleClick('productBrand', 'Adidas')}>
+            <Link onClick={navigate("/ProductPage/Adidas")} >
               <img className="logo" src=".\img\logoAdidas.png" alt="Logo adidas Image" />
             </Link>
           </Grid>
           <Grid item xs={3}>
-            <Link to="/ProductPage" onClick={() => handleClick('productBrand', 'Nike')}>
+            <Link onClick={navigate("/ProductPage/Nike")}>
               <img className="logo" src=".\img\logoNike.png" alt="Logo nike Image" />
             </Link>
           </Grid>
           <Grid item xs={3}>
-            <Link to="/ProductPage" onClick={() => handleClick('productBrand', 'Converse')}>
+            <Link onClick={navigate("/ProductPage/Converse")}>
               <img className="logo" src=".\img\logoConverse.png" alt="Logo converse Image" />
             </Link>
           </Grid>
           <Grid item xs={3}>
-            <Link to="/ProductPage" onClick={() => handleClick('productBrand', 'Newblance')}>
+            <Link onClick={navigate("/ProductPage/Newbalance")}>
               <img className="logo" src=".\img\logoNewBalance.png" alt="Logo newbalance Image" />
             </Link>
           </Grid>

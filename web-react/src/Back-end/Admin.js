@@ -28,12 +28,12 @@ export const Dashboard = (props) => {
   const orderdata = props.orderdata;
   const productinventorydata = props.inventorydata;
   const chartdata = props.chartdata;
-  const reportType = props.reportType;
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6} lg={6}>
+        <Grid item xs={12} md={12} lg={6}>
           <Paper sx={{ mb:2,p: 2, display: 'flex', flexDirection: 'column', height: 120 }}>
             <Grid container spacing={1}>
               <Grid item xs={6} md={6} lg={6}>
@@ -67,16 +67,16 @@ export const Dashboard = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orderdata.map((row) => (
+                {orderdata.slice(-10).reverse().map((row) => (
                   <TableRow
-                    key={row.order_id}
+                    key={"order"+row.order_id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell align='left'><Typography >{row.order_id}</Typography></TableCell>
-                    <TableCell align='left'><Typography >{row.cus_id}</Typography></TableCell>
-                    <TableCell align='left'><Typography >{row.order_price}</Typography></TableCell>
-                    <TableCell align='left'><Typography >{row.order_date}</Typography></TableCell>
-                    <TableCell align='left'><Typography >{row.order_status}</Typography></TableCell>
+                    <TableCell align='left'><Typography>{row.order_id}</Typography></TableCell>
+                    <TableCell align='left'><Typography>{row.cus_id}</Typography></TableCell>
+                    <TableCell align='left'><Typography>{row.order_price}</Typography></TableCell>
+                    <TableCell align='left'><Typography>{new Date(row.order_date).toLocaleDateString()}</Typography></TableCell>
+                    <TableCell align='left'><Typography>{row.order_status}</Typography></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -84,8 +84,8 @@ export const Dashboard = (props) => {
           </Box>
           </Paper>
         </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 120 }}>
+        <Grid item xs={12} md={12} lg={6}>
+          <Paper sx={{ mb:2,p: 2, display: 'flex', flexDirection: 'column', height: 120 }}>
             <Typography component="h2" variant="h6" color="primary" gutterBottom>
               Products
             </Typography>
@@ -93,13 +93,37 @@ export const Dashboard = (props) => {
               {productinventorydata.length}
             </Typography>
           </Paper>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column'}}>
+            <Box sx={{ overflow: 'auto' }}>
+          <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Product ID</TableCell>
+                  <TableCell>Size</TableCell>
+                  <TableCell>Quantity</TableCell>
+                  <TableCell>Date Added</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {productinventorydata.slice(-10).reverse().map((row) => (
+                  <TableRow
+                    key={"product"+row.product_id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell align='left'><Typography >{row.product_id}</Typography></TableCell>
+                    <TableCell align='left'><Typography >{row.product_size}</Typography></TableCell>
+                    <TableCell align='left'><Typography >{row.product_quantity}</Typography></TableCell>
+                    <TableCell align='left'><Typography>{new Date(row.product_dateadd).toLocaleDateString()}</Typography></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+          </Paper>
         </Grid>
         <Grid item xs={12}>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column'}}>
-            <Typography component="h2" variant="h6" color="primary" gutterBottom>
-              Current Month Sales
-            </Typography>
-            <ReportChart data = {chartdata} type = {reportType}/>
+            <ReportChart data = {chartdata} type = {"Current month"}/>
           </Paper>
           </Grid>
         </Grid>

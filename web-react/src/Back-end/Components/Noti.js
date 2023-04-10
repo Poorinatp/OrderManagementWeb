@@ -7,7 +7,7 @@ const Noti = ({location}) => {
     const message = location.state && location.state.message;
     const status = location.state && location.state.status;
     const severity = status === "success" ? "success" : "error";
-
+    
     useEffect(() => {
         if (message) {
             setShowAlert(true);

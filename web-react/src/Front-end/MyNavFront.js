@@ -20,6 +20,7 @@ import ContactUs from './Help/ContactUs';
 import OrderStatus from './Help/OrderStatus';
 import OrderHistory from './Help/OrderHistory';
 import ProductDetail from './FrontComponent/ProductDetail';
+import axios from 'axios';
 
 const MyDialog = styled(Dialog)({
   width: '50%',
@@ -139,52 +140,6 @@ const MyNavFront = () => {
   }));
 
   const [opendialogList, setOpendialogList] = useState([false,false,false,false]);
-  const [openCart, setOpenCart] = useState(false);
-  // ==================== Cart ====================
-  const [cart, setCart] = useState([]);
-
-  const [product_id, setProductID] = useState([]);
-  const [product_size, setProductSize] = useState([]);
-  const [product_amount, setProductAmount] = useState([]);
-
-
-  const handleCheckboxChange = (event, index) => {
-    const newCart = [...cart];
-    newCart[index].selected = event.target.checked;
-    setCart(newCart);
-  };
-  
-  const handleDeleteItem = (index) => {
-    const newCart = [...cart];
-    newCart.splice(index, 1);
-    setCart(newCart);
-  };
-  
-  const handleDeleteSelectedItems = () => {
-    handlePayment();
-    const newCart = cart.filter(item => !item.selected);
-    setCart(newCart);
-  };
-  
-  
-  const getTotalPrice = () => {
-    if (cart.length === 0) {
-      return 0;
-    } else{    
-      let totalPrice = 0;
-      cart.forEach(item => {
-      if (item.selected) {
-          totalPrice += item.product_price * item.product_qty;
-      }
-    });
-    return totalPrice;}
-  };
-  
-
-  const getLastPrice = () => {
-    let lastPrice = getTotalPrice()+shipping ;
-    return lastPrice;
-  };
 
   const [selectedFilter, setSelectedFilter] = useState(
     {
@@ -402,16 +357,26 @@ const MyNavFront = () => {
   };
 
   //============================================================================== createOrder ==================================================================================
-  const handlePayment = () => {
+  const handlePayment = (item) => {
     //create payment bill
     const currentDate = new Date();
-    const dateStr = `${currentDate.getFullYear()}${currentDate.getMonth()+1}${currentDate.getDate()}`;
-    const timeStr = `${currentDate.getHours()}${currentDate.getMinutes()}${currentDate.getSeconds()}`;
+    // get full year 2 digit
+    const dateStr = `${(currentDate.getFullYear()).toString().substr(-2)}${currentDate.getMonth()+1}${currentDate.getDate()}`;
+    const timeStr = `${currentDate.getHours()}${currentDate.getMinutes()}`;
     const paymentBill = `${dateStr}${timeStr}`;
-
+    // store item.product_id, item.product_size, item.product_amount to array
+    const product_id = [];
+    const product_size = [];
+    const product_amount = [];
+    item.forEach((item) => {
+      product_id.push(item.product_id);
+      product_size.push(item.product_size);
+      product_amount.push(item.product_qty);
+    });
+    
     const orderData = {
-      cus_id: localStorage.getItem('user'),
-      order_amount: cart.selected.length,
+      username: localStorage.getItem('user'),
+      order_amount: item.length,
       order_price: getLastPrice(),
       order_Shipmethod: shippingMethod,
       order_status: 'pending',
@@ -419,7 +384,7 @@ const MyNavFront = () => {
       product_size: product_size,
       product_amount: product_amount,
       payment_totalvat: getLastPrice(),
-      payment_bill: paymentBill,
+      payment_bill: parseInt(paymentBill),
       payment_method: cardType,
       payment_status: 'paid'
     };
@@ -433,8 +398,68 @@ const MyNavFront = () => {
   
     console.log(orderData);
     console.log(paymentData);
+    // axios create order to /order/create
+    axios.post('http://localhost:8080/order/create', orderData)
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        alert('Order created');
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Order not created');
+      }
+    );
+
+  };
+  const [openCart, setOpenCart] = useState(false);
+  // ==================== Cart ====================
+  const [cart, setCart] = useState([]);
+  /*const [product_id, setProductID] = useState([]);
+  const [product_size, setProductSize] = useState([]);
+  const [product_amount, setProductAmount] = useState([]);*/
+
+
+  const handleCheckboxChange = (event, index) => {
+    // selected item
+    const newCart = [...cart];
+    newCart[index].selected = event.target.checked;
+    setCart(newCart);
   };
   
+  const handleDeleteItem = (index) => {
+    const newCart = [...cart];
+    newCart.splice(index, 1);
+    setCart(newCart);
+  };
+  
+  const handleDeleteSelectedItems = () => {
+    /*const newCart = cart.filter(item => !item.selected);
+    setCart(newCart);*/
+    const selected = cart.filter(item => item.selected);
+    handlePayment(selected);
+    console.log(selected);
+  };
+  
+  
+  const getTotalPrice = () => {
+    if (cart.length === 0) {
+      return 0;
+    } else{    
+      let totalPrice = 0;
+      cart.forEach(item => {
+      if (item.selected) {
+          totalPrice += item.product_price * item.product_qty;
+      }
+    });
+    return totalPrice;}
+  };
+  
+
+  const getLastPrice = () => {
+    let lastPrice = getTotalPrice()+shipping ;
+    return lastPrice;
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -517,11 +542,11 @@ const MyNavFront = () => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
+          <MenuItem
             variant="h6"
             noWrap
             component="a"
-            href="/Front"
+            onClick={() => {navigate('/Front')}}
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -533,7 +558,7 @@ const MyNavFront = () => {
             }}
           >
             LOGO 2
-          </Typography>
+          </MenuItem>
           <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -570,7 +595,7 @@ const MyNavFront = () => {
             variant="h5"
             noWrap
             component="a"
-            href="/Front"
+            onClick={() => {navigate('/Front')}}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -933,10 +958,10 @@ const MyNavFront = () => {
       {location.pathname === '/ProductPage/Woman/Accessories/Newbalance' && <ProductPage filter={selectedFilter}/>}
       {location.pathname === '/ProductPage/Woman/Accessories/Converse' && <ProductPage filter={selectedFilter}/>}
 
-    {location.pathname === '/ProductPage/Nike' && <ProductPage filter={selectedFilter}/>}
-    {location.pathname === '/ProductPage/Adidas' && <ProductPage filter={selectedFilter}/>}
-    {location.pathname === '/ProductPage/Newbalance' && <ProductPage filter={selectedFilter}/>}
-    {location.pathname === '/ProductPage/Converse' && <ProductPage filter={selectedFilter}/>}
+    {location.pathname === '/ProductPage/Nike' && <ProductPage filter={selectedFilter} brand={"Nike"}/>}
+    {location.pathname === '/ProductPage/Adidas' && <ProductPage filter={selectedFilter} brand={"Adidas"}/>}
+    {location.pathname === '/ProductPage/Newbalance' && <ProductPage filter={selectedFilter} brand={"Newbalance"}/>}
+    {location.pathname === '/ProductPage/Converse' && <ProductPage filter={selectedFilter} brand={"Converse"}/>}
 
     
     </Box>

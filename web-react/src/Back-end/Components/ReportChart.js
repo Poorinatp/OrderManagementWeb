@@ -11,50 +11,50 @@ const ReportChart = (props) => {
     if (type === 'Current month') {
       const currentMonthOrders = order.filter((order) => {
         const orderDate = new Date(order.order_date);
+        console.log("order : "+orderDate.getMonth()+" "+orderDate.getFullYear()+" brand : "+order.product_brand);
         const currentDate = new Date();
+        console.log("today :"+currentDate.getMonth());
         return orderDate.getMonth() === currentDate.getMonth() && orderDate.getFullYear() === currentDate.getFullYear() && order.order_status!=='ยกเลิก';
       });
+      
       const chartdata = currentMonthOrders ? currentMonthOrders:[];
       const sumnike = [0,0,0];
       const sumadidas = [0,0,0];
       const sumnewbalance = [0,0,0];
       const sumconverse = [0,0,0];
-      for (var i = 0; i < chartdata.length; i++) {
-        if (chartdata[i].product_brand.toLowerCase() === 'nike') {
-          if (chartdata[i].product_type.toLowerCase() === 'shoes') {
-            sumnike[0] += chartdata[i].product_price*chartdata[i].product_amount;
-          } else if (chartdata[i].product_type.toLowerCase() === 'cloth') {
-            sumnike[1] += chartdata[i].product_price*chartdata[i].product_amount;
-          } else if (chartdata[i].product_type.toLowerCase() === 'accessories') {
-            sumnike[2] += chartdata[i].product_price*chartdata[i].product_amount;
-          }
-        } else if (chartdata[i].product_brand.toLowerCase() === 'adidas') {
-          if (chartdata[i].product_type.toLowerCase() === 'shoes') {
-            sumadidas[0] += chartdata[i].product_price*chartdata[i].product_amount;
-          } else if (chartdata[i].product_type.toLowerCase() === 'cloth') {
-            sumadidas[1] += chartdata[i].product_price*chartdata[i].product_amount;
-          } else if (chartdata[i].product_type.toLowerCase() === 'accessories') {
-            sumadidas[2] += chartdata[i].product_price*chartdata[i].product_amount;
-          }
-        } else if (chartdata[i].product_brand.toLowerCase() === 'new balance') {
-          if (chartdata[i].product_type.toLowerCase() === 'shoes') {
-            sumnewbalance[0] += chartdata[i].product_price*chartdata[i].product_amount;
-          } else if (chartdata[i].product_type.toLowerCase() === 'cloth') {
-            sumnewbalance[1] += chartdata[i].product_price*chartdata[i].product_amount;
-          } else if (chartdata[i].product_type.toLowerCase() === 'accessories') {
-            sumnewbalance[2] += chartdata[i].product_price*chartdata[i].product_amount;
-          }
-        } else if (chartdata[i].product_brand.toLowerCase() === 'converse') {
-          if (chartdata[i].product_type.toLowerCase() === 'shoes') {
-            sumconverse[0] += chartdata[i].product_price*chartdata[i].product_amount;
-          } else if (chartdata[i].product_type.toLowerCase() === 'cloth') {
-            sumconverse[1] += chartdata[i].product_price*chartdata[i].product_amount;
-          } else if (chartdata[i].product_type.toLowerCase() === 'accessories') {
-            sumconverse[2] += chartdata[i].product_price*chartdata[i].product_amount;
-          }
-        } else{
+      function updateMonthSales(brandSumArray, productType, productPrice, productAmount) {
+        if (productType.toLowerCase() === 'shoes') {
+          brandSumArray[0] += productPrice*productAmount;
+        } else if (productType.toLowerCase() === 'cloth') {
+          brandSumArray[1] += productPrice*productAmount;
+        } else if (productType.toLowerCase() === 'accessories') {
+          brandSumArray[2] += productPrice*productAmount;
         }
       }
+        
+      for (var i = 0; i < chartdata.length; i++) {
+        const productBrand = chartdata[i].product_brand.toLowerCase();
+        const productType = chartdata[i].product_type;
+        const productPrice = chartdata[i].product_price;
+        const productAmount = chartdata[i].product_amount;
+        switch(productBrand) {
+          case 'nike':
+            updateMonthSales(sumnike, productType, productPrice, productAmount);  
+            break;
+          case 'adidas':
+            updateMonthSales(sumadidas, productType, productPrice, productAmount);
+            break;
+          case 'newbalance':
+            updateMonthSales(sumnewbalance, productType, productPrice, productAmount);
+            break;
+          case 'converse':
+            updateMonthSales(sumconverse, productType, productPrice, productAmount);
+            break;
+          default:
+            break;
+        }
+      }
+
       const shoes = [sumnike[0],sumadidas[0],sumnewbalance[0],sumconverse[0]];
       const clothes = [sumnike[1],sumadidas[1],sumnewbalance[1],sumconverse[1]];
       const accessories = [sumnike[2],sumadidas[2],sumnewbalance[2],sumconverse[2]];
@@ -158,7 +158,7 @@ const ReportChart = (props) => {
             case 'adidas':
                 updateQuarterlySales(sumadidas, orderMonth, productAmount);
                 break;
-            case 'new balance':
+            case 'newbalance':
                 updateQuarterlySales(sumnewbalance, orderMonth, productAmount);
                 break;
             case 'converse':
@@ -265,7 +265,7 @@ const ReportChart = (props) => {
           case 'adidas':
             updateLastYearSales(sumadidas, orderMonth, productAmount);
             break;
-          case 'new balance':
+          case 'newbalance':
             updateLastYearSales(sumnewbalance, orderMonth, productAmount);
             break;
           case 'converse':

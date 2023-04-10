@@ -47,6 +47,8 @@ function ProductPage(props) {
     const [filteredProducts, setFilteredProducts] = useState(filteredRows);
 
     useEffect(() => {
+      console.log("brand: ", props.brand);
+      props.brand?setSelectedFilter({...selectedFilter, productBrand: props.brand}):console.log("");
       const fetchTodos = async () => {
         const results  = await axios.get('http://localhost:8080/product_detail');
           try{
@@ -56,6 +58,7 @@ function ProductPage(props) {
           }
         }
         fetchTodos();
+        console.log(selectedFilter)
       },[]);
     
     useEffect(() => {
@@ -111,9 +114,9 @@ function ProductPage(props) {
           :selectedFilter.productBrand==='Adidas'
             ?<img src="/img/Fad.jpg" width='80%' alt="Fad" />
             :selectedFilter.productBrand==='Nike'
-              ?<img src="/img/FN.jpg" width='80%' alt="FN" />
-              :selectedFilter.productBrand==='New Balance'
-                ?<img src="/img/FNB.jpg" width='80%' alt="FNB" />
+              ?<img src="/img/Fnk.jpg" width='80%' alt="FN" />
+              :selectedFilter.productBrand==='Newbalance'
+                ?<img src="/img/FNb.jpg" width='80%' alt="FNB" />
                 :<img src="/img/FCon.jpg" width='80%' alt="Fad" />
           }
       </Paper>

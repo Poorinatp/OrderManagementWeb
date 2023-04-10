@@ -12,188 +12,188 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Noti from './Noti';
 
 
-// function descendingComparator(a, b, orderBy) {
-//   if (b[orderBy] < a[orderBy]) {
-//     return -1;
-//   }
-//   if (b[orderBy] > a[orderBy]) {
-//     return 1;
-//   }
-//   return 0;
-// }
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
 
-// function getComparator(order, orderBy) {
-//   return order === 'desc'
-//     ? (a, b) => descendingComparator(a, b, orderBy)
-//     : (a, b) => -descendingComparator(a, b, orderBy);
-// }
+function getComparator(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
 
-// function stableSort(array, comparator) {
-//   const stabilizedThis = array.map((el, index) => [el, index]);
-//   stabilizedThis.sort((a, b) => {
-//     const order = comparator(a[0], b[0]);
-//     if (order !== 0) {
-//       return order;
-//     }
-//     return a[1] - b[1];
-//   });
-//   return stabilizedThis.map((el) => el[0]);
-// }
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) {
+      return order;
+    }
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
 
-// const headCells = [
-//   {
-//     order_id: 'order_id',
-//     numeric: false,
-//     disablePadding: true,
-//     label: 'Order ID',
-//   },
-//   {
-//     order_id: 'cus_id',
-//     numeric: true,
-//     disablePadding: false,
-//     label: 'Customer ID',
-//   },
-//   {
-//     order_id: 'order_amount',
-//     numeric: true,
-//     disablePadding: false,
-//     label: 'Amount',
-//   },
-//   {
-//     order_id: 'order_price',
-//     numeric: true,
-//     disablePadding: false,
-//     label: 'price',
-//   },
-//   {
-//     order_id: 'order_date',
-//     numeric: true,
-//     disablePadding: false,
-//     label: 'Date',
-//   },
-//   {
-//     order_id: 'order_ShipMethod',
-//     numeric: true,
-//     disablePadding: false,
-//     label: 'Ship Method',
-//   },
-//   {
-//     order_id: 'order_status',
-//     numeric: true,
-//     disablePadding: false,
-//     label: 'Status',
-//   }
-// ];
+const headCells = [
+  {
+    order_id: 'order_id',
+    numeric: false,
+    disablePadding: true,
+    label: 'Order ID',
+  },
+  {
+    order_id: 'cus_id',
+    numeric: true,
+    disablePadding: false,
+    label: 'Customer ID',
+  },
+  {
+    order_id: 'order_amount',
+    numeric: true,
+    disablePadding: false,
+    label: 'Amount',
+  },
+  {
+    order_id: 'order_price',
+    numeric: true,
+    disablePadding: false,
+    label: 'price',
+  },
+  {
+    order_id: 'order_date',
+    numeric: true,
+    disablePadding: false,
+    label: 'Date',
+  },
+  {
+    order_id: 'order_ShipMethod',
+    numeric: true,
+    disablePadding: false,
+    label: 'Ship Method',
+  },
+  {
+    order_id: 'order_status',
+    numeric: true,
+    disablePadding: false,
+    label: 'Status',
+  }
+];
 
-// function SelectedItem(props) {
-//   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-//   const createSortHandler = (property) => (event) => {
-//     onRequestSort(event, property);
-//   };
+function SelectedItem(props) {
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
 
-//   return (
-//     <TableHead>
-//       <TableRow>
-//         <TableCell padding="checkbox">
-//           <Checkbox
-//             color="primary"
-//             indeterminate={numSelected > 0 && numSelected < rowCount}
-//             checked={rowCount > 0 && numSelected === rowCount}
-//             onChange={onSelectAllClick}
-//             inputProps={{
-//               'aria-label': 'select all desserts',
-//             }}
-//           />
-//         </TableCell>
-//         {headCells.map((headCell) => (
-//           <TableCell
-//             key={headCell.order_id}
-//             align={headCell.numeric ? 'right' : 'left'}
-//             padding={headCell.disablePadding ? 'none' : 'normal'}
-//             sortDirection={orderBy === headCell.order_id ? order : false}
-//           >
-//             <TableSortLabel
-//               active={orderBy === headCell.order_id}
-//               direction={orderBy === headCell.order_id ? order : 'asc'}
-//               onClick={createSortHandler(headCell.order_id)}
-//             >
-//               {headCell.label}
-//               {orderBy === headCell.order_id ? (
-//                 <Box component="span" sx={visuallyHidden}>
-//                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-//                 </Box>
-//               ) : null}
-//             </TableSortLabel>
-//           </TableCell>
-//         ))}
-//       </TableRow>
-//     </TableHead>
-//   );
-// }
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell padding="checkbox">
+          <Checkbox
+            color="primary"
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{
+              'aria-label': 'select all desserts',
+            }}
+          />
+        </TableCell>
+        {headCells.map((headCell) => (
+          <TableCell
+            key={headCell.order_id}
+            align={headCell.numeric ? 'right' : 'left'}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
+            sortDirection={orderBy === headCell.order_id ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === headCell.order_id}
+              direction={orderBy === headCell.order_id ? order : 'asc'}
+              onClick={createSortHandler(headCell.order_id)}
+            >
+              {headCell.label}
+              {orderBy === headCell.order_id ? (
+                <Box component="span" sx={visuallyHidden}>
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </Box>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+}
 
-// SelectedItem.propTypes = {
-//   numSelected: PropTypes.number.isRequired,
-//   onRequestSort: PropTypes.func.isRequired,
-//   onSelectAllClick: PropTypes.func.isRequired,
-//   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-//   orderBy: PropTypes.string.isRequired,
-//   rowCount: PropTypes.number.isRequired,
-// };
+SelectedItem.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
+};
 
-// function SelectedTool(props) {
-//   const { numSelected } = props;
+function SelectedTool(props) {
+  const { numSelected } = props;
 
-//   return (
-//     <Toolbar
-//       sx={{
-//         pl: { sm: 2 },
-//         pr: { xs: 1, sm: 1 },
-//         ...(numSelected > 0 && {
-//           bgcolor: (theme) =>
-//             alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-//         }),
-//       }}
-//     >
-//       {numSelected > 0 ? (
-//         <Typography
-//           sx={{ flex: '1 1 100%' }}
-//           color="inherit"
-//           variant="subtitle1"
-//           component="div"
-//         >
-//           {numSelected} selected
-//         </Typography>
-//       ) : (
-//         <Typography
-//           sx={{ flex: '1 1 100%' }}
-//           variant="h6"
-//           order_id="tableTitle"
-//           component="div"
-//         >
-//           Order
-//         </Typography>
-//       )}
+  return (
+    <Toolbar
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+        ...(numSelected > 0 && {
+          bgcolor: (theme) =>
+            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+        }),
+      }}
+    >
+      {numSelected > 0 ? (
+        <Typography
+          sx={{ flex: '1 1 100%' }}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {numSelected} selected
+        </Typography>
+      ) : (
+        <Typography
+          sx={{ flex: '1 1 100%' }}
+          variant="h6"
+          order_id="tableTitle"
+          component="div"
+        >
+          Order
+        </Typography>
+      )}
 
-//       {numSelected > 0 ? (
-//         <Tooltip title="Delete">
-//           <IconButton>
-//             <DeleteIcon />
-//           </IconButton>
-//         </Tooltip>
-//       ) : (
-//         <Tooltip title="Filter list">
-//           <IconButton>
-//             <FilterListIcon />
-//           </IconButton>
-//         </Tooltip>
-//       )}
-//     </Toolbar>
-//   );
-// }
+      {numSelected > 0 ? (
+        <Tooltip title="Delete">
+          <IconButton>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <Tooltip title="Filter list">
+          <IconButton>
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
+      )}
+    </Toolbar>
+  );
+}
 
-// SelectedTool.propTypes = {
-//   numSelected: PropTypes.number.isRequired,
-// };
+SelectedTool.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+};
 
 const Order = (props) => {
   const rows = props.data;
@@ -406,7 +406,7 @@ const Order = (props) => {
               ))}
             </TableRow>
           </TableHead>
-          {/* <TableBody>
+          <TableBody>
             {stableSort(filteredRows, getComparator(order, orderBy))
               .slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage)
               .map((row, index) => {
@@ -479,7 +479,7 @@ const Order = (props) => {
                 <TableCell colSpan={6} />
               </TableRow>
             )}
-          </TableBody> */}
+          </TableBody>
         </Table>
       </TableContainer>
       <TablePagination rowsPerPageOptions={[5, 10, 25]} component="div" count={filteredRows.length} rowsPerPage={rowsPerPage} page={currentPage} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />

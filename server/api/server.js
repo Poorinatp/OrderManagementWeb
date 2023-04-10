@@ -481,34 +481,48 @@ app.post('/productinventory/addmultiple', function(req, res) {
 
 // create order, product_order, payment in mysql database product_id,product_size,product_amount is store in array
 app.post('/order/create', function(req, res) {
-    const { cus_id, order_amount, order_price, order_Shipmethod, order_status, product_id, product_size, product_amount, payment_totalvat, payment_bill, payment_method, payment_status } = req.body;
-    const sql1 = `INSERT INTO \`order\` (cus_id, order_amount, order_price, order_Shipmethod, order_status) VALUES ('${cus_id}', '${order_amount}', '${order_price}', '${order_Shipmethod}', '${order_status}')`;
-    connection.query(sql1, function(error, results, fields) {
+    const { username, order_amount, order_price, order_Shipmethod, order_status, product_id, product_size, product_amount, payment_totalvat, payment_bill, payment_method, payment_status } = req.body;
+    const sql = `SELECT cus_id FROM customer WHERE username = '${username}'`;
+    console.log("username: ", username);
+    connection.query(sql, function(error, results, fields) {
         if(error) {
-            res.status(401).send({message: error.message + " Username already exists 3"});
+            console.log(error.message);
+            res.status(401).send({message: error.message + " Username already exists 1"});
         }else{
-            const order_id = results.insertId;
-            for (var i = 0; i < product_id.length; i++) {
-                const sql2 = `INSERT INTO product_order (order_id, product_id, product_size, product_amount) VALUES ('${order_id}', '${product_id[i]}', '${product_size[i]}', '${product_amount[i]}')`;
-                connection.query(sql2, function(error, results, fields) {
-                    if(error) {
-                        res.status(401).send({message: error.message + " Username already exists 3"});
-                    }else{
-                        const sql3 = `INSERT INTO payment (order_id, payment_totalvat, payment_bill, payment_method, payment_status) VALUES ('${order_id}', '${payment_totalvat}', '${payment_bill}', '${payment_method}', '${payment_status}')`;
-                        connection.query(sql3, function(error, results, fields) {
-                            if(error) {
-                                res.status(401).send({message: error.message + " Username already exists 3"});
-                            }else{
-                                res.status(200).send({message: "Added" });
+            const cus_id = results[0].cus_id;
+            const sql1 = `INSERT INTO \`order\` (cus_id, order_amount, order_price, order_Shipmethod, order_status) VALUES ('${cus_id}', '${order_amount}', '${order_price}', '${order_Shipmethod}', '${order_status}')`;
+            console.log("username: ", username);
+            console.log("cus_id: ", cus_id);
+            connection.query(sql1, function(error, results, fields) {
+                if(error) {
+                    console.log(error.message);
+                    res.status(401).send({message: error.message + " Username already exists 2"});
+                }else{
+                    const order_id = results.insertId;
+                    console.log("payment_bill: ", payment_bill);
+                    const sql2 = `INSERT INTO payment (order_id, payment_totalvat, payment_bill, payment_method, payment_status) VALUES ('${order_id}', '${payment_totalvat}', '${payment_bill}', '${payment_method}', '${payment_status}')`;
+                    connection.query(sql2, function(error, results, fields) {
+                        if(error) {
+                            console.log(error.message);
+                            res.status(401).send({message: error.message + " Username already exists 3"});
+                        }else{
+                            for (var i = 0; i < product_id.length; i++) {
+                                const sql3 = `INSERT INTO product_order (order_id, product_id, product_size, product_amount) VALUES ('${order_id}', '${product_id[i]}', '${product_size[i]}', '${product_amount[i]}')`;
+                                connection.query(sql3, function(error, results, fields) {
+                                    if(error) {
+                                        console.log(error.message);
+                                        res.status(401).send({message: error.message + " Username already exists 3"});
+                                    }
+                                });
                             }
-                        });
-                    }
-                });
-            }
+                            res.status(200).send({message: "Added" });
+                        }
+                    });
+                }
+            });
         }
     });
 });
-
 
 // add product inventory to mysql database
 app.post('/productinventory/add', function(req, res) {
