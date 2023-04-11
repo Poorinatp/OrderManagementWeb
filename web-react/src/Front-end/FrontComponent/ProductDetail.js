@@ -79,7 +79,7 @@ function ProductDetail( props ) {
     }
 
   };
-  
+ 
 
   const payNow = () => {
     addToCart();

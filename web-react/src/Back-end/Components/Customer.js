@@ -127,7 +127,12 @@ const Customer = (props) => {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ p:2,width: '100%',background:"white" }}>
+      <Paper sx={{ mb:2,p: 2,width:"100%", height: "100%",fontWeight: 'bold',textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', }}>
+      <Typography component="h2" variant="h3" color="primary" >
+        Customer
+      </Typography>
+      </Paper>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <TableContainer>
           <Table

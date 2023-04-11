@@ -47,6 +47,379 @@ const MyCart = styled(Dialog)({
   alignItems:"center",
 });
 
+const Cart = ({cart, setCart, openCart, setOpenCart}) => {
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [cardType, setCardType] = useState('');
+  const [isCardNumberValid, setIsCardNumberValid] = useState(false);
+ 
+  const [vat, setVat] = useState(7.00);
+  const [shipping, setShipping] = useState(50.00);
+  const [total, setTotal] = useState(5050.00);
+  const [paymentMethod, setPaymentMethod] = useState("Credit Card");
+  const [shippingMethod, setShippingMethod] = useState("Standard");
+
+  function validateCardNumber(cardNumber) {
+    let sum = 0;
+    let isEven = false;
+    for (let i = cardNumber.length - 1; i >= 0; i--) {
+      const digit = parseInt(cardNumber[i]);
+      if (isEven) {
+        const doubledDigit = digit * 2;
+        sum += (doubledDigit > 9) ? (doubledDigit - 9) : doubledDigit;
+      } else {
+        sum += digit;
+      }
+      isEven = !isEven;
+    }
+    return (sum % 10) === 0;
+  }
+  
+  const handleCardNumberChange = (event) => {
+    const input = event.target.value.replace(/\D/g, '');
+    let type = '';
+    let isValid = false;
+    if (/^4/.test(input)) {
+      type = 'Visa';
+      if (input.length >= 16 && input.length <= 19 && validateCardNumber(input)) {
+        isValid = true;
+      }
+    } else if (/^5[1-5]/.test(input)) {
+      type = 'Mastercard';
+      if (input.length >= 16 && input.length <= 19 && validateCardNumber(input)) {
+        isValid = true;
+      }
+    } else if (/^3[47]/.test(input)) {
+      type = 'American Express';
+      if (input.length >= 15 && input.length <= 19 && validateCardNumber(input)) {
+        isValid = true;
+      }
+    } else if (/^35(2[89]|[3-8][0-9])/.test(input)) {
+      type = 'JCB';
+      if (input.length >= 16 && input.length <= 19 && validateCardNumber(input)) {
+        isValid = true;
+      }
+    }
+  
+    setCardType(type);
+    setCardNumber(input);
+    setIsCardNumberValid(isValid);
+  };
+  
+  const handleExpiryDateChange = (event) => {
+    let expiryDate = event.target.value.replace(/\D/g, '');
+    if (expiryDate.length > 2) {
+      const month = expiryDate.substring(0, 2);
+      const year = expiryDate.substring(2, 4);
+      expiryDate = month + '/' + year;
+      if (parseInt(month) > 12) {
+        expiryDate = '01/' + year;
+      }
+    }
+    setExpiryDate(expiryDate);
+  };
+
+  const handleCvvChange = (event) => {
+    let cvv = event.target.value.replace(/\D/g, '');
+    setCvv(cvv);
+  };
+
+  const handleFirstNameChange = (event) => {
+    let firstName = event.target.value.replace(/[^a-zA-Z]/g, '');
+    setFirstName(firstName);
+  };
+
+  const handleLastNameChange = (event) => {
+    let lastName = event.target.value.replace(/[^a-zA-Z]/g, '');
+    setLastName(lastName);
+  };
+
+  //============================================================================== createOrder ==================================================================================
+  const handlePayment = (item) => {
+    //create payment bill
+    const currentDate = new Date();
+    // get full year 2 digit
+    const dateStr = `${(currentDate.getFullYear()).toString().substr(-2)}${currentDate.getMonth()+1}${currentDate.getDate()}`;
+    const timeStr = `${currentDate.getHours()}${currentDate.getMinutes()}`;
+    const paymentBill = `${dateStr}${timeStr}`;
+    // store item.product_id, item.product_size, item.product_amount to array
+    const product_id = [];
+    const product_size = [];
+    const product_amount = [];
+    item.forEach((item) => {
+      product_id.push(item.product_id);
+      product_size.push(item.product_size);
+      product_amount.push(item.product_qty);
+    });
+    
+    const orderData = {
+      username: localStorage.getItem('user'),
+      order_amount: item.length,
+      order_price: getLastPrice(),
+      order_Shipmethod: shippingMethod,
+      order_status: 'pending',
+      product_id: product_id,
+      product_size: product_size,
+      product_amount: product_amount,
+      payment_totalvat: getLastPrice(),
+      payment_bill: parseInt(paymentBill),
+      payment_method: cardType,
+      payment_status: 'paid'
+    };
+    const paymentData = {
+      cardNumber,
+      expiryDate,
+      cvv,
+      firstName,
+      lastName
+    };
+  
+    console.log(orderData);
+    console.log(paymentData);
+    // axios create order to /order/create
+    axios.post('http://localhost:8080/order/create', orderData)
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        alert('Order created');
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Order not created');
+      }
+    );
+  };
+
+  const handleCheckboxChange = (event, index) => {
+    // selected item
+    const newCart = [...cart];
+    newCart[index].selected = event.target.checked;
+    setCart(newCart);
+  };
+  
+  const handleDeleteItem = (index) => {
+    const newCart = [...cart];
+    newCart.splice(index, 1);
+    setCart(newCart);
+  };
+  
+  const handleDeleteSelectedItems = () => {
+    // const newCart = cart.filter(item => !item.selected);
+    // setCart(newCart);
+    const selected = cart.filter(item => item.selected);
+    handlePayment(selected);
+    console.log(selected);
+  };
+  
+  
+  const getTotalPrice = () => {
+    if (cart.length === 0) {
+      return 0;
+    } else{    
+      let totalPrice = 0;
+      cart.forEach(item => {
+      if (item.selected) {
+          totalPrice += item.product_price * item.product_qty;
+      }
+    });
+    return totalPrice;}
+  };
+  
+
+  const getLastPrice = () => {
+    let lastPrice = getTotalPrice()+shipping ;
+    return lastPrice;
+  };
+  
+  return(
+    <MyCart
+      className='mycart'
+      fullScreen
+      open={openCart}
+      onClose={e=>setOpenCart(false)}
+    >
+    <Button onClick={e=>setOpenCart(false)}>Close</Button>
+    <Grid container sx={{width:"100%",height:"100%" , bgcolor:'#F1ECE1'}} className='cartbox'>
+      <Grid item xs={12} md={6} lg ={6}>
+        <Box  sx={{ p:10,mt:5, width: 'auto', height: '100%', bgcolor: '#F1ECE1' }}>
+{/*======================================================================================== cart show ===========================================================================*/}
+          <Typography variant="body1" paragraph sx={{ ml:5}}>            
+          {cart.map((item,index) => {
+              return(
+                <Grid container className="cart-item" key={"grid"+index}>
+                  <Grid item xs={1} className="cart-item-checkbox">
+                  <Checkbox
+                    color="primary" 
+                    checked={item.selected}
+                    onChange={(event) => handleCheckboxChange(event, index)}
+                  />
+                  </Grid>
+                  <Grid item xs={3} className="cart-item-image">
+                    <img src={item.product_img} alt={item.product_description} />
+                  </Grid>
+                  <Grid item xs={4} className="cart-item-details">
+                    <Grid item xs={12}>
+                      <p className="name">{item.product_brand} : {item.product_name}</p>
+                      <p>size us: {item.product_size}</p>
+                      <p>amount: {item.product_qty}</p>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button onClick={() => handleDeleteItem(index)}>
+                        <img className="logobin" src="..\img\bin.png" alt="Logo bin" />
+                      </Button>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={4} className="cart-item-price">
+                    <p>฿ {item.product_price}</p>
+                  </Grid>
+                </Grid>
+
+              )
+            })}
+          </Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={12} md={6} lg ={6}>
+        <Box  sx={{ p:5, mt:5, width: 'auto', height: '100%', bgcolor: '#F1ECE1' }}>
+          <List>
+            <ListItem>
+              <ListItemText primary="Summarize" />
+            </ListItem>
+            <ListItem
+              secondaryAction={
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  <a>฿ {getTotalPrice()}</a>
+                </Typography>
+              }
+            >
+              <ListItemText primary="Price" />
+            </ListItem>
+
+            <ListItem
+              secondaryAction={
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  <a>฿ {shipping}</a>
+                </Typography>
+              }
+            >
+              <ListItemText primary="Estimated shipping" />
+            </ListItem>
+
+            <Divider />
+            <ListItem>
+              <ListItemText primary="Total" />
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                <a>฿ {getLastPrice()}</a>
+              </Typography>
+            </ListItem>
+            <Divider />
+            <ListItem
+            className='PaymentChoice'
+              secondaryAction={
+                <RadioGroup
+                  row
+                  aria-label="payment"
+                  name="row-radio-buttons-group"
+                  value={paymentMethod}
+                  onChange={e=>{setPaymentMethod(e.target.value);console.log(paymentMethod);}}
+                >
+                  <FormControlLabel value="credit" control={<Radio/>} label="Credit Card" />
+                </RadioGroup>
+              }>
+              <ListItemText primary="Payment" />
+            </ListItem>
+
+            <form className='paymentbox'>
+            {/* test card 5555555555554444 : MasterCard
+            Visa : 4012888888881881 
+            JCB : 3566002020360505
+            */}
+            <Grid xs={12} >
+              <TextField
+                label={cardType + " Card Number"}
+                value={cardNumber}
+                onChange={handleCardNumberChange}
+                inputProps={{ maxLength: 16 }}
+                className='cardNumber'
+              />
+              <br />
+            </Grid>
+            <Grid xs={6}>
+            <TextField
+              label="Expiry Date"
+              value={expiryDate}
+              onChange={handleExpiryDateChange}
+              inputProps={{ maxLength: 5 }}
+            />
+            <br />
+            </Grid>
+            <Grid xs={6}>
+            <TextField
+              label="CVV"
+              value={cvv}
+              onChange={handleCvvChange}
+              inputProps={{ maxLength: 3 }}
+            />
+            <br />
+            </Grid>
+            <Grid xs={6}>
+            <TextField
+              label="First Name"
+              value={firstName}
+              onChange={handleFirstNameChange}
+              inputProps={{ maxLength: 30 }}
+            />
+            <br />
+            </Grid>
+            <Grid xs={6}>
+            <TextField
+              label="Last Name"
+              value={lastName}
+              onChange={handleLastNameChange}
+              inputProps={{ maxLength: 30 }}
+            />
+            </Grid>
+            
+          </form>
+
+            <ListItem
+              className='ShippingChoice'
+              secondaryAction={
+                <RadioGroup
+                  row
+                  aria-label="shipping"
+                  name="row-radio-buttons-group"
+                  value={shippingMethod}
+                  onChange={e=>{setShippingMethod(e.target.value);console.log(shippingMethod);}}
+                >
+                  <FormControlLabel value="standard" control={<Radio/>} label="Standard"/>
+                  <FormControlLabel value="ems" control={<Radio/>} label="EMS" />
+                </RadioGroup>
+              }
+            >
+              <ListItemText primary="Shipping" />
+            </ListItem>
+          </List>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mt: 2, ml: 1 }}
+            disabled={!isCardNumberValid}
+            onClick={() => {
+              handleDeleteSelectedItems();
+            }}
+          >
+            Pay now
+          </Button>
+        </Box>
+      </Grid>
+    </Grid>
+    </MyCart>
+  )
+}
 const MyNavFront = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -194,7 +567,7 @@ const MyNavFront = () => {
         productPromotion: 'Brands',
       });
     }
-   
+  
   }
   
   const handleClick2 = (gender,type,brand) => {
@@ -235,11 +608,7 @@ const MyNavFront = () => {
       navigate('/ProductPage/'+brands);
     }
   }
-  const [vat, setVat] = useState(7.00);
-  const [shipping, setShipping] = useState(50.00);
-  const [total, setTotal] = useState(5050.00);
-  const [paymentMethod, setPaymentMethod] = useState('');
-  const [shippingMethod, setShippingMethod] = useState('');
+  
 
   //======================================  help/login  ==============================================
   const [istoken,setistoken] = useState(localStorage.getItem('token'));
@@ -275,209 +644,9 @@ const MyNavFront = () => {
     { title: "Edit Profile", url: "/Profile" },
     { title: "Log Out", url: "/Front" },
   ];
-
-  //====================================================================== textfields cradit card ====================================================================
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [cardType, setCardType] = useState('');
-
-  function validateCardNumber(cardNumber) {
-    let sum = 0;
-    let isEven = false;
-    for (let i = cardNumber.length - 1; i >= 0; i--) {
-      const digit = parseInt(cardNumber[i]);
-      if (isEven) {
-        const doubledDigit = digit * 2;
-        sum += (doubledDigit > 9) ? (doubledDigit - 9) : doubledDigit;
-      } else {
-        sum += digit;
-      }
-      isEven = !isEven;
-    }
-    return (sum % 10) === 0;
-  }
-  //add shippingMethod paymentMethod
-  const all_messages_cart = () => {
-    if(cardNumber === ''){
-      return false;
-    }else if(expiryDate === ''){
-      return false;
-    }else if(cvv === ''){
-      return false;
-    }else if(firstName === ''){
-      return false;
-    }else if(lastName === ''){
-      return false;
-    }else if(cardType === ''){
-      return false;
-    }else if(paymentMethod === ''){
-      return false;
-    }else if(shippingMethod === ''){
-      return false;
-    }else{
-      return true;
-    }
-
-  }
-
-
-  const handleCardNumberChange = (event) => {
-    const input = event.target.value.replace(/\D/g, '');
-    let type = '';
-    if (/^4/.test(input)) {
-      type = 'Visa';
-    } else if (/^5[1-5]/.test(input)) {
-      type = 'Mastercard';
-    } else if (/^3[47]/.test(input)) {
-      type = 'American Express';
-    } else if (/^35(2[89]|[3-8][0-9])/.test(input)) {
-      type = 'JCB';
-    }
-  
-    setCardType(type);
-    setCardNumber(input);
-  };
-  
-  const handleExpiryDateChange = (event) => {
-    let expiryDate = event.target.value.replace(/\D/g, '');
-    if (expiryDate.length > 2) {
-      const month = expiryDate.substring(0, 2);
-      const year = expiryDate.substring(2, 4);
-      expiryDate = month + '/' + year;
-      if (parseInt(month) > 12) {
-        expiryDate = '01/' + year;
-      }
-    }
-    setExpiryDate(expiryDate);
-  };
-
-  const handleCvvChange = (event) => {
-    let cvv = event.target.value.replace(/\D/g, '');
-    setCvv(cvv);
-  };
-
-  const handleFirstNameChange = (event) => {
-    let firstName = event.target.value.replace(/[^a-zA-Z]/g, '');
-    setFirstName(firstName);
-  };
-
-  const handleLastNameChange = (event) => {
-    let lastName = event.target.value.replace(/[^a-zA-Z]/g, '');
-    setLastName(lastName);
-  };
-
-  //============================================================================== createOrder ==================================================================================
-  const handlePayment = (item) => {
-    //create payment bill
-    const currentDate = new Date();
-    // get full year 2 digit
-    const dateStr = `${(currentDate.getFullYear()).toString().substr(-2)}${currentDate.getMonth()+1}${currentDate.getDate()}`;
-    const timeStr = `${currentDate.getHours()}${currentDate.getMinutes()}`;
-    const paymentBill = `${dateStr}${timeStr}`;
-    // store item.product_id, item.product_size, item.product_amount to array
-    const product_id = [];
-    const product_size = [];
-    const product_amount = [];
-    item.forEach((item) => {
-      product_id.push(item.product_id);
-      product_size.push(item.product_size);
-      product_amount.push(item.product_qty);
-    });
-    
-    const orderData = {
-      username: localStorage.getItem('user'),
-      order_amount: item.length,
-      order_price: getLastPrice(),
-      order_Shipmethod: shippingMethod,
-      order_status: 'pending',
-      product_id: product_id,
-      product_size: product_size,
-      product_amount: product_amount,
-      payment_totalvat: getLastPrice(),
-      payment_bill: parseInt(paymentBill),
-      payment_method: cardType,
-      payment_status: 'paid'
-    };
-    const paymentData = {
-      cardNumber,
-      expiryDate,
-      cvv,
-      firstName,
-      lastName
-    };
-  
-    console.log(orderData);
-    console.log(paymentData);
-    // axios create order to /order/create
-    axios.post('http://localhost:8080/order/create', orderData)
-      .then((res) => {
-        console.log(res);
-        console.log(res.data);
-        alert('Order created');
-      })
-      .catch((err) => {
-        console.log(err);
-        alert('Order not created');
-      }
-    );
-  };
-  
   const [openCart, setOpenCart] = useState(false);
   // ============================================================================= Cart =======================================================================
   const [cart, setCart] = useState([]);
-
-  useEffect (() => {
-    if (!istoken && openCart ) {
-      //no show cart
-      setOpenCart(false);
-      //go to login
-      window.location.href = "/Login";
-    }
-  }, [istoken, openCart]);
-
-  const handleCheckboxChange = (event, index) => {
-    // selected item
-    const newCart = [...cart];
-    newCart[index].selected = event.target.checked;
-    setCart(newCart);
-  };
-  
-  const handleDeleteItem = (index) => {
-    const newCart = [...cart];
-    newCart.splice(index, 1);
-    setCart(newCart);
-  };
-  
-  const handleDeleteSelectedItems = () => {
-    // const newCart = cart.filter(item => !item.selected);
-    // setCart(newCart);
-    const selected = cart.filter(item => item.selected);
-    handlePayment(selected);
-    console.log(selected);
-  };
-  
-  
-  const getTotalPrice = () => {
-    if (cart.length === 0) {
-      return 0;
-    } else{    
-      let totalPrice = 0;
-      cart.forEach(item => {
-      if (item.selected) {
-          totalPrice += item.product_price * item.product_qty;
-      }
-    });
-    return totalPrice;}
-  };
-  
-
-  const getLastPrice = () => {
-    let lastPrice = getTotalPrice()+shipping ;
-    return lastPrice;
-  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -554,7 +723,6 @@ const MyNavFront = () => {
             ))}
             </Select>
         )}
-
     </nav>
     {/*================================== logo men won brand sale ====================================== */}
       <Container maxWidth="xl">
@@ -746,189 +914,7 @@ const MyNavFront = () => {
         </Toolbar>
       </Container>
     </AppBar>
-    <MyCart
-      className='mycart'
-      fullScreen
-      open={openCart}
-      onClose={e=>setOpenCart(false)}
-    >
-    <Button onClick={e=>setOpenCart(false)}>Close</Button>
-    <Grid container sx={{width:"100%",height:"100%" , bgcolor:'#F1ECE1'}} className='cartbox'>
-      <Grid item xs={12} md={6} lg ={6}>
-        <Box  sx={{ p:10,mt:5, width: 'auto', height: '100%', bgcolor: '#F1ECE1' }}>
-{/*======================================================================================== cart show ===========================================================================*/}
-          <Typography variant="body1" paragraph sx={{ ml:5}}>            
-          {cart.map((item,index) => {
-              return(
-                <Grid container className="cart-item" key={"grid"+index}>
-                  <Grid item xs={1} className="cart-item-checkbox">
-                  <Checkbox
-                    color="primary" 
-                    checked={item.selected}
-                    onChange={(event) => handleCheckboxChange(event, index)}
-                  />
-                  </Grid>
-                  <Grid item xs={3} className="cart-item-image">
-                    <img src={item.product_img} alt={item.product_description} />
-                  </Grid>
-                  <Grid item xs={4} className="cart-item-details">
-                    <Grid item xs={12}>
-                      <p className="name">{item.product_brand} : {item.product_name}</p>
-                      <p>size us: {item.product_size}</p>
-                      <p>amount: {item.product_qty}</p>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Button onClick={() => handleDeleteItem(index)}>
-                        <img className="logobin" src="..\img\bin.png" alt="Logo bin" />
-                      </Button>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={4} className="cart-item-price">
-                    <p>฿ {item.product_price}</p>
-                  </Grid>
-                </Grid>
-
-              )
-            })}
-          </Typography>
-        </Box>
-      </Grid>
-      <Grid item xs={12} md={6} lg ={6}>
-        <Box  sx={{ p:5, mt:5, width: 'auto', height: '100%', bgcolor: '#F1ECE1' }}>
-          <List>
-            <ListItem>
-              <ListItemText primary="Summarize" />
-            </ListItem>
-            <ListItem
-              secondaryAction={
-                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  <a>฿ {getTotalPrice()}</a>
-                </Typography>
-              }
-            >
-              <ListItemText primary="Price" />
-            </ListItem>
-
-            <ListItem
-              secondaryAction={
-                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  <a>฿ {shipping}</a>
-                </Typography>
-              }
-            >
-              <ListItemText primary="Estimated shipping" />
-            </ListItem>
-
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Total" />
-              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                <a>฿ {getLastPrice()}</a>
-              </Typography>
-            </ListItem>
-            <Divider />
-            <ListItem
-            className='PaymentChoice'
-              secondaryAction={
-                <RadioGroup
-                  row
-                  aria-label="payment"
-                  name="row-radio-buttons-group"
-                  value={paymentMethod}
-                  onChange={e=>{setPaymentMethod(e.target.value);console.log(paymentMethod);}}
-                >
-                  <FormControlLabel value="credit" control={<Radio/>} label="Credit Card" />
-                </RadioGroup>
-              }>
-              <ListItemText primary="Payment" />
-            </ListItem>
-
-            <form className='paymentbox'>
-            {/* test card 5555555555554444 : MasterCard
-            Visa : 4012888888881881 
-            JCB : 3566002020360505
-            */}
-            <Grid xs={12} >
-              <TextField
-                label={cardType + " Card Number"}
-                value={cardNumber}
-                onChange={handleCardNumberChange}
-                inputProps={{ maxLength: 16 }}
-                className='cardNumber'
-              />
-              <br />
-            </Grid>
-            <Grid xs={6}>
-            <TextField
-              label="Expiry Date"
-              value={expiryDate}
-              onChange={handleExpiryDateChange}
-              inputProps={{ maxLength: 5 }}
-            />
-            <br />
-            </Grid>
-            <Grid xs={6}>
-            <TextField
-              label="CVV"
-              value={cvv}
-              onChange={handleCvvChange}
-              inputProps={{ maxLength: 3 }}
-            />
-            <br />
-            </Grid>
-            <Grid xs={6}>
-            <TextField
-              label="First Name"
-              value={firstName}
-              onChange={handleFirstNameChange}
-              inputProps={{ maxLength: 30 }}
-            />
-            <br />
-            </Grid>
-            <Grid xs={6}>
-            <TextField
-              label="Last Name"
-              value={lastName}
-              onChange={handleLastNameChange}
-              inputProps={{ maxLength: 30 }}
-            />
-            </Grid>
-            
-          </form>
-
-            <ListItem
-              className='ShippingChoice'
-              secondaryAction={
-                <RadioGroup
-                  row
-                  aria-label="shipping"
-                  name="row-radio-buttons-group"
-                  value={shippingMethod}
-                  onChange={e=>{setShippingMethod(e.target.value);console.log(shippingMethod);}}
-                >
-                  <FormControlLabel value="standard" control={<Radio/>} label="Standard"/>
-                  <FormControlLabel value="ems" control={<Radio/>} label="EMS" />
-                </RadioGroup>
-              }
-            >
-              <ListItemText primary="Shipping" />
-            </ListItem>
-          </List>
-          <Button
-            fullWidth
-            variant="contained"
-            sx={{ mt: 2, ml: 1 }}
-            disabled={!all_messages_cart()}
-            onClick={() => {
-              handleDeleteSelectedItems();
-            }}
-          >
-            Pay now
-          </Button>
-        </Box>
-      </Grid>
-    </Grid>
-    </MyCart>
+    <Cart openCart={openCart} setOpenCart={setOpenCart} cart={cart} setCart={setCart}/>
     
     {location.pathname === '/' && <Front/> }
     {location.pathname === '/Front' && <Front/> }
@@ -982,10 +968,10 @@ const MyNavFront = () => {
       {location.pathname === '/ProductPage/Woman/Accessories/Newbalance' && <ProductPage filter={selectedFilter}/>}
       {location.pathname === '/ProductPage/Woman/Accessories/Converse' && <ProductPage filter={selectedFilter}/>}
 
-    {location.pathname === '/ProductPage/Nike' && <ProductPage filter={selectedFilter} brand={"Nike"}/>}
-    {location.pathname === '/ProductPage/Adidas' && <ProductPage filter={selectedFilter} brand={"Adidas"}/>}
-    {location.pathname === '/ProductPage/Newbalance' && <ProductPage filter={selectedFilter} brand={"Newbalance"}/>}
-    {location.pathname === '/ProductPage/Converse' && <ProductPage filter={selectedFilter} brand={"Converse"}/>}
+    {location.pathname === '/ProductPage/Nike' && <ProductPage filter={selectedFilter}/>}
+    {location.pathname === '/ProductPage/Adidas' && <ProductPage filter={selectedFilter}/>}
+    {location.pathname === '/ProductPage/Newbalance' && <ProductPage filter={selectedFilter}/>}
+    {location.pathname === '/ProductPage/Converse' && <ProductPage filter={selectedFilter} />}
 
     </Box>
   );

@@ -29,7 +29,7 @@ const AdminLogin = () => {
             console.log(token);
             localStorage.setItem('token', token);
             localStorage.setItem('user', username);
-            navigate('/Admin');
+            navigate('/admin');
             alert("Login successful!");
         })
         .catch(error => {
@@ -38,25 +38,14 @@ const AdminLogin = () => {
         });
     }
     return (
-        <ThemeProvider theme={
-            createTheme(
-                {
-                    palette: {
-                    backgroundColor: '#66b3ff',
-                    },
-                }
-            )
-        }>
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
             width: '100%',
             height: '100%',
             background: '#66b3ff',
           }}
         >
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
             <FormControl>
             <Stack spacing={3} alignItems="center">
                 <AccountCircleIcon sx={{ fontSize: 100 }} />
@@ -103,8 +92,8 @@ const AdminLogin = () => {
             </Button>
             </Stack>
             </FormControl>
+            </Box>
         </Box>
-        </ThemeProvider>
     )
 }
 export default AdminLogin

@@ -13,31 +13,6 @@ const Front = () => {
   const location = useLocation();
 
   // Load the selectedFilter state from the URL state on mount
-  const [selectedFilter, setSelectedFilter] = useState(location.state?.selectedFilter || {
-    productType: '',
-    productGender: '',
-    productBrand: '',
-    productPromotion: '',
-  });
-
-  // Update the URL state when the selectedFilter state changes
-  useEffect(() => {
-    console.log(selectedFilter);
-  }, [selectedFilter]);
-  
-  const updateFilter = (propertyName, propertyValue) => {
-    setSelectedFilter((prevFilter) => ({
-      ...prevFilter,
-      [propertyName]: propertyValue,
-    }));
-  };
-
-  /*const handleClick = (propertyName, propertyValue) => {
-    updateFilter(propertyName, propertyValue);
-    const updatedFilter = { ...selectedFilter, [propertyName]: propertyValue };
-    localStorage.setItem('selectedFilter', JSON.stringify(updatedFilter));
-    navigate('/ProductPage');
-  };*/
   return (
     <div>
       <div className="container">
@@ -96,7 +71,6 @@ const Front = () => {
           </Grid>
 
         </Grid>
-        {/* <ProductTable selectedFilter={selectedFilter} /> */}
         </div>
       </div>
     );
