@@ -25,20 +25,15 @@ import ProductDetail from './Front-end/FrontComponent/ProductDetail';
 import OrderStatus_search from './Front-end/Help/OrderStatus_search';
 
 const App = () => {
-
   return (
     <div>
-      {/* <MyNavFront/> */}
       <Routes>
           <Route path="/" element={<MyNavFront/>}>
-
             <Route path="ContactUs" element={<><ContactUs/></>}/>
             <Route path="OrderStatus" element={<><OrderStatus/></>}/>
             <Route path="OrderStatus_search" element={<><OrderStatus_search/></>}/>
             <Route path="OrderHistory" element={<><OrderHistory/></>}/>
-
             <Route path="/Product" element={<ProductDetail/>} />
-
             <Route path="Login" element={<><Login/></>}/>
             <Route path="Front" element={<Front/>}/>
             <Route path="Profile" element={<><Profile/></>}/>

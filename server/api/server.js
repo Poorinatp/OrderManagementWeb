@@ -316,6 +316,18 @@ app.get('/orderline', function(req, res) {
         }
     });
 })
+// retrieve data from order table, product_order table and product table from mysql database by order_id
+app.get('/orderline/:id', function(req, res) {
+    const order_id = parseInt(req.params.id);
+    connection.query('SELECT * FROM `order` INNER JOIN product_order ON `order`.order_id = product_order.order_id INNER JOIN product_detail ON product_order.product_id = product_detail.product_id WHERE `order`.order_id = ?',[order_id],
+    function(error, results, fields){
+        if(results.length > 0) {
+            res.status(200).send(results);
+        }else{
+            res.status(401).send({message: "Order not found" });
+        }
+    });
+})
 
 // update customer data from mysql database by id
 app.put('/profile/:id', function(req, res) {
