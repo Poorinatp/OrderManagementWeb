@@ -21,6 +21,9 @@ const jwt = require('jsonwebtoken');
 const secret = 'mysecret';
 const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
+const path = require('path');
+const { exec } = require('child_process');
+const mysqldump = require('mysqldump');
 const fs = require('fs');
 // set server port
 var port = 8080;
@@ -342,6 +345,30 @@ app.get('/orderline/customer/:id', function(req, res) {
     });
 })
 
+// check email and send cus_id to frontend
+app.get('/checkemail/:email', function(req, res) {
+    const email = req.params.email;
+    console.log('email:', email);
+    connection.query('SELECT username FROM login WHERE email = ?',[email],
+    function(error, results, fields){
+        if(error){
+            res.status(500).send({message: "Error retrieving email" });
+        }
+        else{
+            connection.query('SELECT cus_id FROM customer WHERE username = ?',[results[0].username],
+            function(error, results, fields){
+                if(error){
+                    res.status(500).send({message: "Error retrieving cus_id" });
+                }
+                else{
+                    res.status(200).send(results);
+                }
+            }
+            );
+        }
+    });
+})
+
 
 // update customer data from mysql database by id
 app.put('/profile/:id', function(req, res) {
@@ -409,11 +436,6 @@ app.get('/taxinvoice/:id', function(req, res) {
             const taxRate = 0.07; // Assuming a 7% tax rate
             const taxAmount = (subtotal * taxRate).toFixed(2);
             const total = (parseFloat(subtotal) + parseFloat(taxAmount)).toFixed(2);
-              
-            console.log("subtotal: ", subtotal);
-            console.log("taxAmount: ", taxAmount);
-            console.log("total: ", total);
-            console.log("total"+results[0].product_price*3);
             //const doc = new PDFDocument();
             const fileName = `taxinvoice_${order_id}.pdf`;
             // Send the PDF back to the client
@@ -569,8 +591,43 @@ app.post('/productinventory/add', function(req, res) {
     });
 });
 
+/*app.get('/backup', function(req, res) {
+    // path to backup file
+    const backupFile = path.join(__dirname, 'backupdata', 'backup.sql');
+    const sql = `SELECT * INTO OUTFILE '${backupFile}' FROM product_inventory`;
+    connection.query(sql, function(error, results, fields) {
+        if(error) {
+            res.status(500).send({message: error.message});
+        } else {
+            res.status(200).send({message: "Backup created"});
+        }
+    });
+});*/
+
+app.get('/backup', function(req, res) {
+    const backupPath = path.join(__dirname, 'backupdata', 'backup.sql');
+    const options = {
+        connection: {
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database: 'WebAppDB',
+        },
+        dumpToFile: backupPath
+    };
+    mysqldump(options)
+        .then(() => {
+            res.status(200).send({message: "Backup created"});
+        })
+        .catch(error => {
+            console.error(`Backup error: ${error.message}`);
+            res.status(500).send({ message: error.message });
+        });
+});
+
+
+
 // listen to port
 app.listen(8080, function () {
     console.log('Node app is running on port ' + port);
 })
-
