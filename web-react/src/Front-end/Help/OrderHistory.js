@@ -89,7 +89,7 @@ return (
                         </Grid>
                         <Grid xs = {6}>
                           <div className="product_text">
-                          <p>Name: {order_list.product_description}</p>
+                          <p>{order_list.product_description}</p>
                           <p>Price: {order_list.product_price}</p>
                           <p>Quantity: {order_list.product_quantity}</p>
                           <p>Type: {order_list.product_type}</p>

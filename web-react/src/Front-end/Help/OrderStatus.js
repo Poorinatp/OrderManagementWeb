@@ -8,7 +8,19 @@ import OrderStatus_search from './OrderStatus_search'
 // to check the status of your order,or to start a return , please enter your order number ;
 
 function OrderStatus() {
+
+  // สร้าง  useEffft api get cus_id by email api http://localhost:8080/checkemail/:emal
   
+  const [email, setemail] = useState('');
+  const [cus_id, setcus_id] = useState('');
+
+  useEffect(() => {
+    const data = axios.get("http://localhost:8080/checkemail/"+email)
+
+    console.log(data);
+  }, []);
+  
+ 
   return (
     <div className='OrderStatus'>   
       <h1>View or Manage Your Order</h1>

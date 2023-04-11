@@ -197,7 +197,7 @@ for (var i = 0; i < tables.length; i++) {
     (function(table) {
     if(table==="product_detail"||table==="product_inventory"||table==="product_order"){
         table = table.replace(/_/g, "");
-        console.log(table);
+        // console.log(table);
     }else{}
     app.get('/' + table + '/:id', function(req, res) {
         if(table === "order"){
@@ -264,7 +264,7 @@ for (var i = 0; i < tables.length; i++) {
 // retrieve customer data from mysql database by username
 app.get('/profile/:username', function(req, res) {
     const username = req.params.username;
-    console.log('username:', username);
+    // console.log('username:', username);
     connection.query('SELECT * FROM customer WHERE username = ?', [username],
       function(error, results, fields){
         if (error) {
@@ -348,7 +348,7 @@ app.get('/orderline/customer/:id', function(req, res) {
 // check email and send cus_id to frontend
 app.get('/checkemail/:email', function(req, res) {
     const email = req.params.email;
-    console.log('email:', email);
+    //console.log('email:', email);
     connection.query('SELECT username FROM login WHERE email = ?',[email],
     function(error, results, fields){
         if(error){
