@@ -89,6 +89,7 @@ function ProductPage(props) {
       }
       console.log(order)
     };
+    
 
     function saveProductId(productId) {
       localStorage.setItem('productId', productId);
@@ -97,15 +98,15 @@ function ProductPage(props) {
     return (
       <Box>
         <div>
-        <Button onClick={e=>handleClick(e)} sx={{color:"primary",backgroundColor:"secondary",borderRadius:10,margin:2}}>
+        {/* <Button onClick={e=>handleClick(e)} sx={{color:"primary",backgroundColor:"secondary",borderRadius:10,margin:2}}>
           <Typography variant="h5">Filter</Typography>
-        </Button>
-        <Stack direction="row" alignItems="center" sx={{color:"primary",backgroundColor:"secondary",borderRadius:10,margin:2}}>
+        </Button> */}
+        {/* <Stack direction="row" alignItems="center" sx={{color:"primary",backgroundColor:"secondary",borderRadius:10,margin:2}}>
           <Typography variant="h5">{selectedFilter.productBrand}</Typography>
           <Typography variant="h5">{selectedFilter.productType}</Typography>
           <Typography variant="h5">{selectedFilter.productGender}</Typography>
           <Typography variant="h5">{selectedFilter.productPromotion}</Typography>
-        </Stack>
+        </Stack> */}
             </div>
             <Box sx={{ textColor:"primary" }}>
       <Paper sx={{ p: 2, display: "flex", flexDirection: "column",alignItems:'center',elevation:10 }}>
@@ -126,13 +127,13 @@ function ProductPage(props) {
               <img src="/img/logoAdidas.png" width="100px" alt="logoAdidas" />
             </Grid>
             <Grid item  sx={{ justifyContent: "flex-end" }}>
-            {/*<Stack direction="row" alignItems="center">
-              <Typography>Sort by</Typography>
-              <Select onChange={e=>handleSort(e.target.value)}>
-                <MenuItem value="asc">Low to high</MenuItem>
-                <MenuItem value="desc">High to low</MenuItem>
-              </Select>
-    </Stack>*/}
+              <Stack direction="row" alignItems="center">
+                <Typography>Sort by</Typography>
+                <Select onChange={e=>handleSort(e.target.value)}>
+                  <MenuItem value="asc">Low to high</MenuItem>
+                  <MenuItem value="desc">High to low</MenuItem>
+                </Select>
+              </Stack>
             </Grid>
           </Grid>
         </Paper>

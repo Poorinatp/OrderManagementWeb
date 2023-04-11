@@ -22,6 +22,7 @@ import ContactUs from './Front-end/Help/ContactUs';
 import OrderStatus from './Front-end/Help/OrderStatus';
 import OrderHistory from './Front-end/Help/OrderHistory';
 import ProductDetail from './Front-end/FrontComponent/ProductDetail';
+import OrderStatus_search from './Front-end/Help/OrderStatus_search';
 
 const App = () => {
 
@@ -33,6 +34,7 @@ const App = () => {
 
             <Route path="ContactUs" element={<><ContactUs/></>}/>
             <Route path="OrderStatus" element={<><OrderStatus/></>}/>
+            <Route path="OrderStatus_search" element={<><OrderStatus_search/></>}/>
             <Route path="OrderHistory" element={<><OrderHistory/></>}/>
 
             <Route path="/Product" element={<ProductDetail/>} />

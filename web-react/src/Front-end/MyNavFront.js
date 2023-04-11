@@ -21,6 +21,7 @@ import OrderStatus from './Help/OrderStatus';
 import OrderHistory from './Help/OrderHistory';
 import ProductDetail from './FrontComponent/ProductDetail';
 import axios from 'axios';
+import OrderStatus_search from './Help/OrderStatus_search';
 
 const MyDialog = styled(Dialog)({
   width: '50%',
@@ -916,6 +917,7 @@ const MyNavFront = () => {
 
     {location.pathname === '/ContactUs' && <ContactUs/> }
     {location.pathname === '/OrderStatus' && <OrderStatus/> }
+    {location.pathname === '/OrderStatus_search' && <OrderStatus_search/> }
     {location.pathname === '/OrderHistory' && <OrderHistory/> }
 
     {/* {location.pathname === '/product/:id' && <ProductDetail/> } */}
