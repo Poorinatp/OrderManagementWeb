@@ -209,7 +209,6 @@ const Admin = () => {
       }
       fetchTodos();
     },[]);
-    
 
   const drawerWidth = 240;
   const [open, setOpen] = React.useState(true);

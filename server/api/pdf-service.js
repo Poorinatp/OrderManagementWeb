@@ -47,12 +47,15 @@ function generateCustomerInformation(doc, customerName,
     .font("Tahoma")
     .text(invoicenumber, 150, customerInformationTop)
     .font("Tahoma")
-    .text("Order Date:", 50, customerInformationTop + 15)
-    .text(formatDate(orderDate),150, customerInformationTop + 15)
-    .text("Invoice Date:", 50, customerInformationTop + 30)
-    .text(formatDate(today), 150, customerInformationTop + 30)
-    .text("Balance Due:", 50, customerInformationTop + 45)
-    .text("฿"+total, 150, customerInformationTop + 45)
+    .text("Order Number:", 50, customerInformationTop + 15)
+    .text(order_id,150, customerInformationTop + 15)
+    .font("Tahoma")
+    .text("Order Date:", 50, customerInformationTop + 30)
+    .text(formatDate(orderDate),150, customerInformationTop + 30)
+    .text("Invoice Date:", 50, customerInformationTop + 45)
+    .text(formatDate(today), 150, customerInformationTop + 45)
+    .text("Balance Due:", 50, customerInformationTop + 60)
+    .text("฿"+total, 150, customerInformationTop + 60)
 
     .font("Tahoma")
     .text("ลูกค้า / Customer :", 300, customerInformationTop)
@@ -63,7 +66,7 @@ function generateCustomerInformation(doc, customerName,
     
     .moveDown();
 
-  generateHr(doc, 270);
+  generateHr(doc, 285);
 }
 
 function generateInvoiceTable(doc,
