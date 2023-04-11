@@ -74,7 +74,7 @@ function ProductDetail( props ) {
       localStorage.setItem('cart', JSON.stringify([...props.cart, cartItem]));
     }
   };
-  
+ 
 
   const payNow = () => {
     addToCart();

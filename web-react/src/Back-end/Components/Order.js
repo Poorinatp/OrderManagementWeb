@@ -349,8 +349,11 @@ const Order = (props) => {
   return(
   <Box sx={{ p: 2, width: '100%',backgroundColor:'white' }}>
     <Noti location={location}/>
-      {pages!=="admin"&&
-      <>
+    <Paper sx={{ mb:2,p: 2,width:"100%", height: "100%",fontWeight: 'bold',textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', }}>
+      <Typography component="h2" variant="h3" color="primary" >
+        Order
+      </Typography>
+      </Paper>
       <Paper sx={{ p: 2, width: '100%', mb: 2, elevation:10 }} >
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120}} >
         <InputLabel>Status</InputLabel>
@@ -384,7 +387,6 @@ const Order = (props) => {
           </Grid>
         </Grid>
         </Paper>
-        </>}
       <Paper sx={{ p: 2, width: '100%', mb: 2 , elevation:10 }}>
       <TableContainer>
         <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'} stickyHeader >

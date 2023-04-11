@@ -7,7 +7,6 @@ import { Link, useLocation } from 'react-router-dom';
 function ProductPage(props) {
   const location = useLocation();
     const [selectedFilter, setSelectedFilter] = useState(props.filter);
-    const s = location.state?.selectedFilter;
     const [products, setProducts] = useState([]);
     
     const filteredRows = (selectedFilter.productGender === "" && selectedFilter.productBrand === "" && selectedFilter.productType === "" && selectedFilter.productPromotion === "")
@@ -47,8 +46,6 @@ function ProductPage(props) {
     const [filteredProducts, setFilteredProducts] = useState(filteredRows);
 
     useEffect(() => {
-      console.log("brand: ", props.brand);
-      props.brand?setSelectedFilter({...selectedFilter, productBrand: props.brand}):console.log("");
       const fetchTodos = async () => {
         const results  = await axios.get('http://localhost:8080/product_detail');
           try{
@@ -58,7 +55,6 @@ function ProductPage(props) {
           }
         }
         fetchTodos();
-        console.log(selectedFilter)
       },[]);
     
     useEffect(() => {

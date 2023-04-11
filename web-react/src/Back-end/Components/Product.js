@@ -1,7 +1,6 @@
 import React, { useState,useEffect,useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { alpha, Box, Button, Checkbox, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from "@mui/material"
-import MyOption from "./MyOption"
 import visuallyHidden from "@mui/utils/visuallyHidden"
 import PropTypes from 'prop-types';
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -265,6 +264,11 @@ const Product = (props) => {
     return(
     <Box sx={{ p: 2, width: '100%',backgroundColor:'white' }}>
       <Noti location={location}/>
+      <Paper sx={{ mb:2,p: 2,width:"100%", height: "100%",fontWeight: 'bold',textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', }}>
+      <Typography component="h2" variant="h3" color="primary" >
+        Product Management
+      </Typography>
+      </Paper>
         <Paper sx={{ width: '100%', mb: 2, elevation:10}}>
           <Grid container >
             <Grid item xs={4} sm={4} >

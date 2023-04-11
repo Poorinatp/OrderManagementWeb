@@ -1,9 +1,12 @@
 const PDFDocument = require('pdfkit');
-const PDFTable = require('voilab-pdf-table');
+const path = require('path');
+const fs = require('fs');
 
 function generateHeader(doc) {
+  const imgpath = path.resolve(__dirname, 'img', 'logo192.png');
   doc
-    .image("/Users/poom/OrderManagementWeb/web-react/public/logo192.png", 50, 45, { width: 50 })
+    .image(imgpath, 50, 45, { width: 50 })
+    .font("Tahoma Bold")
     .fillColor("#444444")
     .fontSize(20)
     .text("Voyage lnc.", 110, 57)
@@ -39,11 +42,11 @@ function generateCustomerInformation(doc, customerName,
 
   doc
     .fontSize(10)
-    .font("AngsabUPC")
+    .font("Tahoma")
     .text("Invoice Number:", 50, customerInformationTop)
-    .font("AngsabUPC")
+    .font("Tahoma")
     .text(invoicenumber, 150, customerInformationTop)
-    .font("AngsabUPC")
+    .font("Tahoma")
     .text("Order Date:", 50, customerInformationTop + 15)
     .text(formatDate(orderDate),150, customerInformationTop + 15)
     .text("Invoice Date:", 50, customerInformationTop + 30)
@@ -51,11 +54,11 @@ function generateCustomerInformation(doc, customerName,
     .text("Balance Due:", 50, customerInformationTop + 45)
     .text("฿"+total, 150, customerInformationTop + 45)
 
-    .font("AngsabUPC")
+    .font("Tahoma")
     .text("ลูกค้า / Customer :", 300, customerInformationTop)
-    .font("AngsabUPC")
+    .font("Tahoma")
     .text(customerName, 300, customerInformationTop+15)
-    .font("AngsabUPC")
+    .font("Tahoma")
     .text(customerAddress, 300, customerInformationTop + 30)
     
     .moveDown();
@@ -72,7 +75,7 @@ function generateInvoiceTable(doc,
   let i ;
   let currentPosition = 330;
 
-  doc.font("AngsabUPC");
+  doc.font("Tahoma");
   generateTableRow(
     doc,
     currentPosition,
@@ -84,7 +87,7 @@ function generateInvoiceTable(doc,
     "Line Total"
   );
   generateHr(doc, currentPosition + 20);
-  doc.font("AngsabUPC");
+  doc.font("Tahoma");
   for (i = 0; i < productDetails.length; i++) {
     const item = productDetails[i];
     tablepos = currentPosition + (i + 1) * 30;
@@ -124,7 +127,7 @@ function generateInvoiceTable(doc,
   );
   generateHrHalf(doc, currentPosition + 20);
   currentPosition = currentPosition + 25;
-  doc.font("AngsabUPC");
+  doc.font("Tahoma Bold");
   generateTableRow(
     doc,
     currentPosition,
@@ -135,7 +138,7 @@ function generateInvoiceTable(doc,
     "",
     "฿"+total
   );
-  doc.font("AngsabUPC");
+  doc.font("Tahoma");
 }
 
 function generateFooter(doc) {
@@ -195,6 +198,7 @@ function formatDate(date) {
   return year + "/" + month + "/" + day;
 }
 
+
 function buildPDF(
     //dataCallback,
     res,
@@ -207,8 +211,16 @@ function buildPDF(
     taxAmount,
     total,
     order_id) {
+    // Get the path to the font file relative to the current file
+    const fontPath = path.resolve(__dirname, 'fonts', 'Tahoma Regular font.ttf');
+    const fontPath2 = path.resolve(__dirname, 'fonts', 'tahomabd.ttf');
+    // Read the font file into a buffer
+    const fontBuffer = fs.readFileSync(fontPath); 
+    const fontBuffer2 = fs.readFileSync(fontPath2);
     const doc = new PDFDocument();
-    doc.registerFont('AngsabUPC', '/Users/poom/Library/Fonts/AngsabUPC.ttf');
+    
+    doc.registerFont('Tahoma', fontBuffer);
+    doc.registerFont('Tahoma Bold', fontBuffer2);
     doc.pipe(res);
     generateHeader(doc);
     generateCustomerInformation(doc, customerName,

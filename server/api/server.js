@@ -365,7 +365,7 @@ app.get('/taxinvoice/:id', function(req, res) {
             res.status(401).send({ message: error.message, error: error });
         } else if(results.length > 0) {
             const customerName = results[0].cus_fname+' '+results[0].cus_lname;
-            const customerAddress = results[0].cus_address;
+            const customerAddress = results[0].cus_address+', '+results[0].cus_zipcode;
             const orderDate = results[0].order_date;
             //const orderDate = date.toISOString().slice(0, 10).split('T')[0];
             //console.log(date);
@@ -484,12 +484,17 @@ app.post('/order/create', function(req, res) {
     const { username, order_amount, order_price, order_Shipmethod, order_status, product_id, product_size, product_amount, payment_totalvat, payment_bill, payment_method, payment_status } = req.body;
     const sql = `SELECT cus_id FROM customer WHERE username = '${username}'`;
     console.log("username: ", username);
+    if(username==null||username=="")
+    {
+        res.status(401).send({message: "Username is empty" });
+    }else{
     connection.query(sql, function(error, results, fields) {
         if(error) {
             console.log(error.message);
             res.status(401).send({message: error.message + " Username already exists 1"});
         }else{
             const cus_id = results[0].cus_id;
+            console.log("cus_id: ", cus_id);
             const sql1 = `INSERT INTO \`order\` (cus_id, order_amount, order_price, order_Shipmethod, order_status) VALUES ('${cus_id}', '${order_amount}', '${order_price}', '${order_Shipmethod}', '${order_status}')`;
             console.log("username: ", username);
             console.log("cus_id: ", cus_id);
@@ -522,6 +527,7 @@ app.post('/order/create', function(req, res) {
             });
         }
     });
+    }
 });
 
 // add product inventory to mysql database

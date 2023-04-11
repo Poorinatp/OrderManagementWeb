@@ -42,10 +42,6 @@ const Payment = (props) => {
         ? rows.filter((row) => row.order_id.toString().includes(searchOID) && row.payment_id.toString().includes(searchPID)) // case 7: search by id and brand
         : rows.filter((row) => row.order_id.toString().includes(searchOID) && row.payment_id.toString().includes(searchPID) && row.payment_status.toLowerCase().includes(searchStatus.toLowerCase()));// case 8: search by id, brand and category
   
-  
-  const [openeditList, setOpeneditList] = useState(Array(filteredRows.length).fill(false));
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [newEdit, setNewEdit] = useState("");
   const pageRows = filteredRows.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
 
   useEffect(() => {
@@ -149,6 +145,11 @@ const Payment = (props) => {
   return(
   <Box sx={{ p: 2, width: '100%',backgroundColor:'white' }}>
     <Noti location={location}/>
+    <Paper sx={{ mb:2,p: 2,width:"100%", height: "100%",fontWeight: 'bold',textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', }}>
+      <Typography component="h2" variant="h3" color="primary" >
+        Payment
+      </Typography>
+      </Paper>
       <Paper sx={{ width: '100%', mb: 2, elevation:10}}>
         <Grid container >
           <Grid item xs={4} sm={4} >

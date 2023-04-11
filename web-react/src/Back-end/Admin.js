@@ -13,6 +13,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LogoutIcon from '@mui/icons-material/Logout';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import axios from 'axios';
@@ -30,8 +31,13 @@ export const Dashboard = (props) => {
   const chartdata = props.chartdata;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{  }}>
       <CssBaseline />
+      <Paper sx={{ mb:2,p: 2,width:"100%", height: "100%",fontWeight: 'bold',textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', }}>
+      <Typography component="h2" variant="h3" color="primary" >
+        Dashboard
+      </Typography>
+      </Paper>
       <Grid container spacing={3}>
         <Grid item xs={12} md={12} lg={6}>
           <Paper sx={{ mb:2,p: 2, display: 'flex', flexDirection: 'column', height: 120 }}>
@@ -56,6 +62,9 @@ export const Dashboard = (props) => {
           </Paper>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column'}}>
             <Box sx={{ overflow: 'auto' }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              last 5 orders
+            </Typography>
           <Table>
               <TableHead>
                 <TableRow>
@@ -67,7 +76,7 @@ export const Dashboard = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orderdata.slice(-10).reverse().map((row) => (
+                {orderdata.slice(-5).reverse().map((row) => (
                   <TableRow
                     key={"order"+row.order_id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -95,6 +104,9 @@ export const Dashboard = (props) => {
           </Paper>
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column'}}>
             <Box sx={{ overflow: 'auto' }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              last 5 products
+            </Typography>
           <Table>
               <TableHead>
                 <TableRow>
@@ -105,9 +117,9 @@ export const Dashboard = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {productinventorydata.slice(-10).reverse().map((row) => (
+                {productinventorydata.slice(-5).reverse().map((row) => (
                   <TableRow
-                    key={"product"+row.product_id}
+                    key={"product"+row.product_id+row.product_size}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell align='left'><Typography >{row.product_id}</Typography></TableCell>
@@ -216,7 +228,7 @@ const Admin = () => {
       navigate('/admin/customer');
     } else if (page === 'Payment') {
       navigate('/admin/payment');
-    } else if (page === 'Admin') {
+    } else if (page === 'Dashboard') {
       navigate('/admin');
     } else if (page === 'Stock') {
       navigate('/admin/stock');
@@ -236,8 +248,8 @@ const Admin = () => {
     }
   };
   
-  const menuName = ["Admin", "Order", "Product", "Customer", "Payment", "Stock"]
-  const menuIcon = [<DashboardIcon/>, <ShoppingCartIcon/>, <LayersIcon/>, <PeopleIcon/>,<PaymentsIcon/>,<img src="/img/in-stock.png" alt="stock" width="24" height="24"/>]
+  const menuName = ["Dashboard", "Order", "Product", "Customer", "Payment", "Stock"]
+  const menuIcon = [<DashboardIcon/>, <ShoppingCartIcon/>, <LayersIcon/>, <PeopleIcon/>,<PaymentsIcon/>, <WarehouseIcon/>]
   const chartDuration= ["Current month", "Last Quarter", "Year-end sale"]
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
