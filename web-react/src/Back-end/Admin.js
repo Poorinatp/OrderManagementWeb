@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container,Typography, Badge, Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow} from '@mui/material';
+import { Toolbar, IconButton, Divider, List, Box, CssBaseline, Container,Typography, Badge, Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow, Dialog, ListItem} from '@mui/material';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import {ListItemButton, ListItemIcon, ListItemText} from '@mui/material/';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -131,6 +131,35 @@ export const Dashboard = (props) => {
   );
 };
 
+const Notifications = () => {
+  const [open, setOpen] = useState(false);
+  const myArray = JSON.parse(localStorage.getItem('myArray')) || [];
+  // show array length instead of string length
+  
+  console.log(myArray.length);
+
+  return (
+    <IconButton color="inherit" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <Badge badgeContent={myArray.length} color="secondary">
+        <NotificationsIcon />
+      </Badge>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <Typography variant="h6" sx={{ p: 2 }}>
+          Notifications
+        </Typography>
+        <Divider />
+        <List sx={{ width: 300, maxHeight: 300, overflow: 'auto' }}>
+          {myArray.map((item) => (
+            <ListItem key={item}>
+              <ListItemText primary={item} />
+            </ListItem>
+          ))}
+        </List>
+      </Dialog>
+
+    </IconButton>
+  )
+}
 const Admin = () => {
   const [cusdata, setcusdata] = useState([]);
   const [orderdata, setorderdata] = useState([]);
@@ -296,11 +325,7 @@ const Admin = () => {
             >
               Order Management System
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            <Notifications/>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -366,9 +391,7 @@ const Admin = () => {
           <Toolbar />
           
           <Container maxWidth="lg" sx={{ mt: 10, mb: 4 }}>
-            {location.pathname === '/admin' &&
-              <Dashboard orderdata = {orderdata} chartdata = {productorderdata} type = {reportType} inventorydata={productinventorydata}/>
-            }
+            {location.pathname === '/admin' && <Dashboard orderdata = {orderdata} chartdata = {productorderdata} type = {reportType} inventorydata={productinventorydata}/>}
             {location.pathname === '/admin/order' && <Order data = {orderdata}/>}
             {location.pathname === '/admin/customer' && <Customer data = {cusdata}/>}
             {location.pathname === '/admin/payment' && <Payment data = {paymentdata}/>}

@@ -410,10 +410,10 @@ const MyNavFront = () => {
         alert('Order not created');
       }
     );
-
   };
+  
   const [openCart, setOpenCart] = useState(false);
-  // ==================== Cart ====================
+  // ============================================================================= Cart =======================================================================
   const [cart, setCart] = useState([]);
   /*const [product_id, setProductID] = useState([]);
   const [product_size, setProductSize] = useState([]);
@@ -434,8 +434,8 @@ const MyNavFront = () => {
   };
   
   const handleDeleteSelectedItems = () => {
-    /*const newCart = cart.filter(item => !item.selected);
-    setCart(newCart);*/
+    // const newCart = cart.filter(item => !item.selected);
+    // setCart(newCart);
     const selected = cart.filter(item => item.selected);
     handlePayment(selected);
     console.log(selected);
@@ -725,10 +725,11 @@ const MyNavFront = () => {
       </Container>
     </AppBar>
     <MyCart
+      className='mycart'
       fullScreen
       open={openCart}
       onClose={e=>setOpenCart(false)}
-    >
+    >=
     <Button onClick={e=>setOpenCart(false)}>Close</Button>
     <Grid container sx={{width:"100%",height:"100%" , bgcolor:'#F1ECE1'}} className='cartbox'>
       <Grid item xs={12} md={6} lg ={6}>

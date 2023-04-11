@@ -71,6 +71,13 @@ a:-webkit-any-link {
     height: 100%;
 }
 
+.css-11lq3yg-MuiGrid-root{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    text-align: center;
+}
+
 .cart-item {
     display: flex;
     align-items: center;
@@ -184,3 +191,13 @@ a:-webkit-any-link {
 .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root{
     margin: 5px;
 }
+
+/* .css-11lq3yg-MuiGrid-root {
+    width: 400px;
+}
+
+@media (min-width: 1536px) {
+    .css-1osj8n2-MuiGrid-root {
+        max-width: 100%;
+    }
+} */

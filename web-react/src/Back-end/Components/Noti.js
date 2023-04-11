@@ -4,18 +4,26 @@ import { useLocation } from "react-router-dom";
 
 const Noti = ({location}) => {
     const [showAlert, setShowAlert] = useState(false);
-    const message = location.state && location.state.message;
-    const status = location.state && location.state.status;
+    const [message, setMessage] = useState(location.state?.message || null);
+    const status = location.state? location.state.status : null;
     const severity = status === "success" ? "success" : "error";
     
+    
+    
     useEffect(() => {
+      let myArray = JSON.parse(localStorage.getItem("myArray")) || [];
         if (message) {
-            setShowAlert(true);
-            setTimeout(() => {
-                setShowAlert(false);
-            }, 5000);
+          myArray = [...myArray, message]; // Fix: create a new array with the previous values and add the new message
+          console.log("myArray", myArray);
+          console.log("message", message);
+          localStorage.setItem("myArray", JSON.stringify(myArray));
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false); 
+            setMessage(null);
+          }, 5000);
         }
-    }, [message]);
+      }, [message]);
 
     return (
         <Box>
