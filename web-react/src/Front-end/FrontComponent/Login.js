@@ -20,10 +20,9 @@ const Login = () => {
     const [username, setusername] = useState("");
     const [password, setpassword] = useState("");
     const [email, setemail] = useState("");
-    const [isJoinus, setisJoinus] = useState(false);
+    const [isJoinus, setisJoinus] = useState(localStorage.getItem('isJoinus') === 'true' ? true : false);
     
-const navigate = useNavigate();
-const [check, setCheck] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -50,7 +49,7 @@ const [check, setCheck] = useState(false);
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', username);
                 alert("Login successful!");
-                window.location.href = "/Front";
+                // window.location.href = "/Front";
             })
             .catch(error => {
               console.log(error);
@@ -82,6 +81,7 @@ const [check, setCheck] = useState(false);
                 label="username"
                 id="username"
                 onChange={e => {setusername(e.target.value)}}
+                inputProps={{ maxLength: 255 }}
             />
             <TextField
               margin="normal"
@@ -93,6 +93,7 @@ const [check, setCheck] = useState(false);
               id="password"
               autoComplete="current-password"
               onChange={e => {setpassword(e.target.value)}}
+              inputProps={{ maxLength: 255 }}
             />
             {isJoinus && (
                 <React.Fragment>
@@ -106,6 +107,7 @@ const [check, setCheck] = useState(false);
                     autoComplete="email"
                     autoFocus
                     onChange={e => {setemail(e.target.value)}}
+                    inputProps={{ maxLength: 50 }}
                     />
                 <TextField
                     margin="normal"
@@ -115,6 +117,7 @@ const [check, setCheck] = useState(false);
                     label="name"
                     name="fname"
                     onChange={e => {setfname(e.target.value)}}
+                    inputProps={{ maxLength: 50 }}
                 />
                 <TextField
                     margin="normal"
@@ -124,6 +127,7 @@ const [check, setCheck] = useState(false);
                     label="surname"
                     id="lname"
                     onChange={e => {setlname(e.target.value)}}
+                    inputProps={{ maxLength: 50 }}
                 />
                 <TextField
                     margin="normal"
@@ -134,6 +138,7 @@ const [check, setCheck] = useState(false);
                     name="phone"
                     type="text"
                     onChange={e => {setphone(e.target.value)}}
+                    inputProps={{ maxLength: 10 }}
                 />
                 <TextField
                     margin="normal"
@@ -152,6 +157,7 @@ const [check, setCheck] = useState(false);
                     label="postal code"
                     id="zipcode"
                     onChange={e => {setzipcode(e.target.value)}}
+                    inputProps={{ maxLength: 5} }
                 />
                 </React.Fragment>
             )}
@@ -166,7 +172,7 @@ const [check, setCheck] = useState(false);
             <Typography align='center' variant="h5">
                 {isJoinus ? 
                 <Link href="#" variant="body2" onClick={e=>setisJoinus(false)}>{"Sign in"}</Link>
-                :<Link href="#" variant="body2" onClick={e=>setisJoinus(true)}>{"Join us"} </Link>}
+                :<Link href="#2" variant="body2" onClick={e=>setisJoinus(true)}>{"Join us"} </Link>}
             </Typography>
           </Box>
         </Box>

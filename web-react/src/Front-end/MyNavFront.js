@@ -238,8 +238,8 @@ const MyNavFront = () => {
   const [vat, setVat] = useState(7.00);
   const [shipping, setShipping] = useState(50.00);
   const [total, setTotal] = useState(5050.00);
-  const [paymentMethod, setPaymentMethod] = useState("Credit Card");
-  const [shippingMethod, setShippingMethod] = useState("Standard");
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [shippingMethod, setShippingMethod] = useState('');
 
   //======================================  help/login  ==============================================
   const [istoken,setistoken] = useState(localStorage.getItem('token'));
@@ -256,6 +256,9 @@ const MyNavFront = () => {
   const [helpOption, setHelpOption] = useState("");
   const [signInOption, setSignInOption] = useState("");
   const [LoginInOption, setLoginInOption] = useState("");
+  const setjoinus = (value) =>{
+    localStorage.setItem('isJoinus',value);
+  }
 
   const helpLinks = [
     { title: "Contact Us", url: "/ContactUs" },
@@ -280,7 +283,6 @@ const MyNavFront = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [cardType, setCardType] = useState('');
-  const [isCardNumberValid, setIsCardNumberValid] = useState(false);
 
   function validateCardNumber(cardNumber) {
     let sum = 0;
@@ -297,36 +299,46 @@ const MyNavFront = () => {
     }
     return (sum % 10) === 0;
   }
-  
+  //add shippingMethod paymentMethod
+  const all_messages_cart = () => {
+    if(cardNumber === ''){
+      return false;
+    }else if(expiryDate === ''){
+      return false;
+    }else if(cvv === ''){
+      return false;
+    }else if(firstName === ''){
+      return false;
+    }else if(lastName === ''){
+      return false;
+    }else if(cardType === ''){
+      return false;
+    }else if(paymentMethod === ''){
+      return false;
+    }else if(shippingMethod === ''){
+      return false;
+    }else{
+      return true;
+    }
+
+  }
+
+
   const handleCardNumberChange = (event) => {
     const input = event.target.value.replace(/\D/g, '');
     let type = '';
-    let isValid = false;
     if (/^4/.test(input)) {
       type = 'Visa';
-      if (input.length >= 16 && input.length <= 19 && validateCardNumber(input)) {
-        isValid = true;
-      }
     } else if (/^5[1-5]/.test(input)) {
       type = 'Mastercard';
-      if (input.length >= 16 && input.length <= 19 && validateCardNumber(input)) {
-        isValid = true;
-      }
     } else if (/^3[47]/.test(input)) {
       type = 'American Express';
-      if (input.length >= 15 && input.length <= 19 && validateCardNumber(input)) {
-        isValid = true;
-      }
     } else if (/^35(2[89]|[3-8][0-9])/.test(input)) {
       type = 'JCB';
-      if (input.length >= 16 && input.length <= 19 && validateCardNumber(input)) {
-        isValid = true;
-      }
     }
   
     setCardType(type);
     setCardNumber(input);
-    setIsCardNumberValid(isValid);
   };
   
   const handleExpiryDateChange = (event) => {
@@ -416,10 +428,15 @@ const MyNavFront = () => {
   const [openCart, setOpenCart] = useState(false);
   // ============================================================================= Cart =======================================================================
   const [cart, setCart] = useState([]);
-  /*const [product_id, setProductID] = useState([]);
-  const [product_size, setProductSize] = useState([]);
-  const [product_amount, setProductAmount] = useState([]);*/
 
+  useEffect (() => {
+    if (!istoken && openCart ) {
+      //no show cart
+      setOpenCart(false);
+      //go to login
+      window.location.href = "/Login";
+    }
+  }, [istoken, openCart]);
 
   const handleCheckboxChange = (event, index) => {
     // selected item
@@ -502,8 +519,8 @@ const MyNavFront = () => {
                 Sign In
             </MenuItem>
             {signInLinks.map((link) => (
-                <MenuItem key={link.title} value={link.url}>
-                <Link to={link.url}>{link.title}</Link>
+                <MenuItem key={link.title} value={link.url}  >
+                <Link to={link.url} onClick={() => setjoinus(link.option)} >{link.title}</Link>
                 </MenuItem>
             ))}
             </Select>
@@ -579,6 +596,7 @@ const MyNavFront = () => {
               }}
             >
             </Menu>
+
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -637,7 +655,8 @@ const MyNavFront = () => {
                   fullScreen
                 >
                   <Box key={'box'+index} sx={{ mt:13,width: '100%', height: '100%', bgcolor: '#F1ECE1'}}>
-                  <List key={'list'+index} onMouseLeave={
+                  <List key={'list'+index} 
+                  onMouseLeave={
                   e=>{
                     const openListCopy = [false,false,false,false];
                     openListCopy[index] = false;
@@ -713,7 +732,9 @@ const MyNavFront = () => {
             <IconButton
               size="large"
               color="inherit"
-              onClick={e=>{setOpenCart(!openCart);console.log(openCart);}}
+              onClick={e=>{
+                setOpenCart(!openCart);
+                console.log(openCart);}}
             >
               <Badge badgeContent={4} color="primary">
                 <ShoppingBagIcon />
@@ -730,7 +751,7 @@ const MyNavFront = () => {
       fullScreen
       open={openCart}
       onClose={e=>setOpenCart(false)}
-    >=
+    >
     <Button onClick={e=>setOpenCart(false)}>Close</Button>
     <Grid container sx={{width:"100%",height:"100%" , bgcolor:'#F1ECE1'}} className='cartbox'>
       <Grid item xs={12} md={6} lg ={6}>
@@ -897,7 +918,7 @@ const MyNavFront = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 2, ml: 1 }}
-            disabled={!isCardNumberValid}
+            disabled={!all_messages_cart()}
             onClick={() => {
               handleDeleteSelectedItems();
             }}
@@ -913,7 +934,7 @@ const MyNavFront = () => {
     {location.pathname === '/Front' && <Front/> }
 
     {/* ============================================== help/login ========================================================*/}
-    {location.pathname === '/Login' && <Login/> }
+    {location.pathname === '/Login' && <Login/>}
     {location.pathname === '/Profile' && <Profile/> }
 
     {location.pathname === '/ContactUs' && <ContactUs/> }
@@ -966,9 +987,7 @@ const MyNavFront = () => {
     {location.pathname === '/ProductPage/Newbalance' && <ProductPage filter={selectedFilter} brand={"Newbalance"}/>}
     {location.pathname === '/ProductPage/Converse' && <ProductPage filter={selectedFilter} brand={"Converse"}/>}
 
-    
     </Box>
-
   );
 }
 

@@ -17,7 +17,8 @@ function ProductDetail( props ) {
   const [inventory, setInventory] = useState({});
   const [selectedSize, setSelectedSize] = useState('');
 
-  //console.log(id);
+  const [istoken,setistoken] = useState(localStorage.getItem('token'));
+
   //=============================================== productdetail ==================================================
   useEffect(() => {
     axios.get(api+"productdetail/"+id)
@@ -52,27 +53,31 @@ function ProductDetail( props ) {
 
   const addToCart = () => {
     const quantity = data.find((item) => item.product_size === selectedSize)?.product_quatity;
-  
-    console.log("selectedSize: " + selectedSize);
-    console.log("quantity: " + quantity);
-  
-    if (quantity === 0) {
-      alert('สินค้าหมดแล้ว');
-    } else {
-      const cartItem = {
-        product_id: product.product_id,
-        product_name: product.product_description,
-        product_price: product.product_price,
-        product_size: selectedSize,
-        product_qty: 1,
-        product_img: product.product_urlimg,
-        product_brand: product.product_brand,
-        selected: false
-      };
-      // Update cart state and localStorage
-      props.setCart([...props.cart, cartItem]);
-      localStorage.setItem('cart', JSON.stringify([...props.cart, cartItem]));
+    //ตรวจดูว่าlogin ยัง ถ้ายัง ให้ไปหน้าlogin
+    if(istoken){
+      if (quantity === 0) {
+        alert('สินค้าหมดแล้ว');
+      } else {
+        console.log(quantity);
+        const cartItem = {
+          product_id: product.product_id,
+          product_name: product.product_description,
+          product_price: product.product_price,
+          product_size: selectedSize,
+          product_qty: 1,
+          product_img: product.product_urlimg,
+          product_brand: product.product_brand,
+          selected: false
+        };
+        // Update cart state and localStorage
+        props.setCart([...props.cart, cartItem]);
+        localStorage.setItem('cart', JSON.stringify([...props.cart, cartItem]));
+      }
+    }else{
+      alert('กรุณาเข้าสู่ระบบ');
+      window.location.href = '/Login';
     }
+
   };
   
 
