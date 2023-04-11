@@ -23,6 +23,22 @@ const Login = () => {
     const [isJoinus, setisJoinus] = useState(localStorage.getItem('isJoinus') === 'true' ? true : false);
     
     const navigate = useNavigate();
+    //หาค่า cus_id จาก api  http://localhost:8080/customer แล้วาจากรายชื่อ  แล้วเก็บไว้ในlocalStorage
+    const getCusId = () => {
+        axios
+        .get(api+'customer')
+        .then(response => {
+            const data = response.data;
+            for(let i=0; i<data.length; i++){
+                if(data[i].username === username){
+                    localStorage.setItem('cus_id', data[i].cus_id);
+                    console.log(data[i].cus_id);
+                    break;
+                }
+            }
+        }
+        )
+    }
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -48,8 +64,9 @@ const Login = () => {
                 console.log(token);
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', username);
+                getCusId();
                 alert("Login successful!");
-                // window.location.href = "/Front";
+                window.location.href = "/Front";
             })
             .catch(error => {
               console.log(error);

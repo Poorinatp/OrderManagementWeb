@@ -120,29 +120,45 @@ form {
   margin: 10px;
 }
 
+.order-history{
+  margin: 30px auto;
+  max-width: 1000px;
+  text-align: center;
+  /* background-color: #333; */
+}
+.order-history img {
+  width: 100%;
+  max-width: 180px;
+  margin: 10px;
+}
+.order-history-data{
+  /* background-color: #9f3f3f; */
+  padding: 10px;
+  margin: auto 10px ;
+}
+.order-history-data h1{ 
+  /* background-color: #555; */
+  font-size: 1.7rem;
+  margin: 0px 20px;
+}
+.order-history-data p{
+  font-size: 1.2rem;
+  margin: 0px 20px;
+}
 
-@media screen and (max-width: 700px) {
-    .ContactUs h1 {
-      font-size: 1.8rem;
-      margin-bottom: 50px;
-    }
-    
-    .ContactUs h2 {
-      font-size: 1.2rem;
-    }
-    
-    .ContactUs p,
-    .ContactUs a {
-      font-size: 1rem;
-    }
-    
-    .ContactUs {
-      margin-top: 20px;
-      margin-bottom: 10px;
-    }
-    
-    .ContactUs img {
-      max-width: 70px;
-    }
-  }
-  
+
+.order-history-details{
+  /* background-color: rgb(215, 189, 70); */
+  text-align: left;
+  max-width: 300px;
+  width: 100%h;
+  margin: 20px 10px;
+}
+
+.order-history-tax{
+  /* background-color: rgb(66, 192, 66); */
+  text-align: left;
+  width: 100%h;
+  margin-left: 30px;
+  margin-top: 20%;
+}

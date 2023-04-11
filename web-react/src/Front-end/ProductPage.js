@@ -4,10 +4,9 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-function ProductPage(props) {
+function ProductPage({products,filter}) {
   const location = useLocation();
-    const [selectedFilter, setSelectedFilter] = useState(props.filter);
-    const [products, setProducts] = useState([]);
+    const [selectedFilter, setSelectedFilter] = useState(filter);
     
     const filteredRows = (selectedFilter.productGender === "" && selectedFilter.productBrand === "" && selectedFilter.productType === "" && selectedFilter.productPromotion === "")
     ? (products) // case 1: no search
@@ -46,18 +45,6 @@ function ProductPage(props) {
     const [filteredProducts, setFilteredProducts] = useState(filteredRows);
 
     useEffect(() => {
-      const fetchTodos = async () => {
-        const results  = await axios.get('http://localhost:8080/product_detail');
-          try{
-              setProducts(results.data);
-          }catch(err){
-              console.log(err);
-          }
-        }
-        fetchTodos();
-      },[]);
-    
-    useEffect(() => {
       //setFilteredProducts(filteredRows);
     }, [filteredRows]);
 
@@ -73,20 +60,19 @@ function ProductPage(props) {
     const [sortedProducts, setSortedProducts] = useState([]);
     const [sortOrder, setSortOrder] = useState("asc");
 
+    // sort filteredRows by price
     const handleSort = (order) => {
-      if (order === "asc") {
-        const sorted = [...sortedProducts].sort((a, b) => a.product_price - b.product_price);
-        setSortedProducts(sorted);
-        setSortOrder("asc");
-      } else if (order === "desc") {
-        const sorted = [...sortedProducts].sort((a, b) => b.product_price - a.product_price);
-        setSortedProducts(sorted);
-        setSortOrder("desc");
-      }
-      console.log(order)
+      setSortOrder(order);
+      const sortedRows = filteredProducts.sort((a, b) => {
+        if (order === "asc") {
+          return a.product_price - b.product_price;
+        } else {
+          return b.product_price - a.product_price;
+        }
+      });
+      setSortedProducts(sortedRows);
     };
     
-
     function saveProductId(productId) {
       localStorage.setItem('productId', productId);
     }
@@ -125,7 +111,7 @@ function ProductPage(props) {
             <Grid item  sx={{ justifyContent: "flex-end" }}>
               <Stack direction="row" alignItems="center">
                 <Typography>Sort by</Typography>
-                <Select onChange={e=>handleSort(e.target.value)}>
+                <Select value={sortOrder} onChange={(e) => handleSort(e.target.value)}>
                   <MenuItem value="asc">Low to high</MenuItem>
                   <MenuItem value="desc">High to low</MenuItem>
                 </Select>
@@ -164,8 +150,10 @@ function ProductPage(props) {
               </Grid>
             ))}
           </Grid> */}
+        
+         
           <Grid container spacing={1}>
-            {filteredRows.map((row,index) => (
+            {(filteredRows).map((row,index) => (
               <Grid key={"grid"+index} item xs={12} sm={6} md={4} lg={4}>
                 <Link to={`/Product`}  key={`link${index}`} onClick={() => saveProductId(row.product_id)} >
                   <Paper key={"paper"+index} sx={{ p: 2, display: "flex", flexDirection: "column" }}>

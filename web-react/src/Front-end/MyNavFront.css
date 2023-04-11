@@ -62,6 +62,13 @@ a:-webkit-any-link {
     cursor: pointer;
     text-decoration: none;
 }
+.nav-img-show{
+    display: flex;
+    width: 90%;
+    text-align: center;
+    margin:auto;
+    margin-top: 20px;
+}
 
 /* ======================================== cart ======================================== */
 

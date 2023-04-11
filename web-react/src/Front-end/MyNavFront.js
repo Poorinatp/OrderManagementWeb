@@ -455,6 +455,19 @@ const MyNavFront = () => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+      const fetchTodos = async () => {
+        const results  = await axios.get('http://localhost:8080/product_detail');
+          try{
+              setProducts(results.data);
+          }catch(err){
+              console.log(err);
+          }
+        }
+        fetchTodos();
+      },[]);
+
     const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
     };
@@ -567,7 +580,6 @@ const MyNavFront = () => {
         productPromotion: 'Brands',
       });
     }
-  
   }
   
   const handleClick2 = (gender,type,brand) => {
@@ -609,7 +621,6 @@ const MyNavFront = () => {
     }
   }
   
-
   //======================================  help/login  ==============================================
   const [istoken,setistoken] = useState(localStorage.getItem('token'));
   //const token = 'have';
@@ -632,7 +643,7 @@ const MyNavFront = () => {
   const helpLinks = [
     { title: "Contact Us", url: "/ContactUs" },
     { title: "Order Status", url: "/OrderStatus" },
-    { title: "Order History", url: "/Order_History" },
+    { title: "Order History", url: "/OrderHistory" },
   ];
 
   const signInLinks = [
@@ -657,7 +668,7 @@ const MyNavFront = () => {
           value={helpOption}
           onChange={(e) => {
             setHelpOption(e.target.value);
-            window.location.href = e.target.value;
+            // window.location.href = e.target.value;
           }}
           displayEmpty
           className="select"
@@ -678,7 +689,7 @@ const MyNavFront = () => {
             value={signInOption}
             onChange={(e) => {
                 setSignInOption(e.target.value);
-                window.location.href = e.target.value;
+                // window.location.href = e.target.value;
             }}
             displayEmpty
             className="select"
@@ -700,7 +711,7 @@ const MyNavFront = () => {
             value={LoginInOption}
             onChange={(e) => {
                 setLoginInOption(e.target.value);
-                window.location.href = e.target.value;
+                // window.location.href = e.target.value;
             }}
             displayEmpty
             className="select"
@@ -727,24 +738,10 @@ const MyNavFront = () => {
     {/*================================== logo men won brand sale ====================================== */}
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <MenuItem
-            variant="h6"
-            noWrap
-            component="a"
-            onClick={() => {navigate('/Front')}}
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO 2
-          </MenuItem>
+
+          <IconButton onClick={e => {navigate('/Front')}}>
+            <img src='..\img\logo.png' alt='logo' style={{width: '80px', height: '80px'}}/>
+          </IconButton>
           <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -777,25 +774,7 @@ const MyNavFront = () => {
               <MenuIcon />
             </IconButton>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            onClick={() => {navigate('/Front')}}
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO 1
-          </Typography>
+      
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Stack spacing={2} direction="row">
             {Cat.data.map((item,index) => {
@@ -822,7 +801,7 @@ const MyNavFront = () => {
                   placement="bottom-start"
                   fullScreen
                 >
-                  <Box key={'box'+index} sx={{ mt:13,width: '100%', height: '100%', bgcolor: '#F1ECE1'}}>
+                  <Box key={'box'+index} sx={{ mt:18,width: '100%', height: '100%', bgcolor: '#F1ECE1'}}>
                   <List key={'list'+index} 
                   onMouseLeave={
                   e=>{
@@ -858,7 +837,7 @@ const MyNavFront = () => {
                             </Grid>
                           </Grid>
                           :index===3 && index2=== 2 ?
-                          <img style={{width:"100%"}} src=".\img\Fsale2.jpg" alt="Sale Image"/>
+                          <img className='nav-img-show' src=".\img\Fsale2.jpg" alt="Sale Image"/>
                           :item.subCat.subcat2.map((item3,index3) => {
                             return(
                               <>
@@ -867,7 +846,7 @@ const MyNavFront = () => {
                                   {item3}
                                 </Typography>
                                 </MenuItem>
-                                {index === 2 && index2===1 && index3 === 3 && <img style={{width:"100%"}} src=".\img\3men.jpg" alt="Man Image"/>}
+                                {index === 2 && index2===1 && index3 === 3 && <img className='nav-img-show' src=".\img\3men.jpg" alt="Man Image"/>}
                               </>
                             )
                           })}
@@ -928,50 +907,50 @@ const MyNavFront = () => {
     {location.pathname === '/OrderStatus_search' && <OrderStatus_search/> }
     {location.pathname === '/OrderHistory' && <OrderHistory/> }
 
-    {/* {location.pathname === '/product/:id' && <ProductDetail/> } */}
+    {/* {location.pathname === '/products/:id' && <ProductDetail/> } */}
     {location.pathname === '/Product' && <ProductDetail setOpenCart={setOpenCart} setCart={setCart} cart={cart}/> }
 
     {/* ============================================== help/login ========================================================*/}
-    {location.pathname === '/ProductPage/Men/Shoes' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Shoes/Nike' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Shoes/Adidas' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Shoes/Newbalance' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Shoes/Converse' && <ProductPage filter={selectedFilter}/>}
+    {location.pathname === '/ProductPage/Men/Shoes' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Shoes/Nike' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Shoes/Adidas' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Shoes/Newbalance' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Shoes/Converse' && <ProductPage filter={selectedFilter} products={products}/>}
 
-    {location.pathname === '/ProductPage/Men/Cloth' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Cloth/Nike' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Cloth/Adidas' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Cloth/Newbalance' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Cloth/Converse' && <ProductPage filter={selectedFilter}/>}
+    {location.pathname === '/ProductPage/Men/Cloth' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Cloth/Nike' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Cloth/Adidas' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Cloth/Newbalance' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Cloth/Converse' && <ProductPage filter={selectedFilter} products={products}/>}
 
-    {location.pathname === '/ProductPage/Men/Accessories' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Accessories/Nike' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Accessories/Adidas' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Accessories/Newbalance' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Men/Accessories/Converse' && <ProductPage filter={selectedFilter}/>}
+    {location.pathname === '/ProductPage/Men/Accessories' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Accessories/Nike' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Accessories/Adidas' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Accessories/Newbalance' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Men/Accessories/Converse' && <ProductPage filter={selectedFilter} products={products}/>}
 
-    {location.pathname === '/ProductPage/Woman/Shoes' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Shoes/Nike' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Shoes/Adidas' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Shoes/Newbalance' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Shoes/Converse' && <ProductPage filter={selectedFilter}/>}
+    {location.pathname === '/ProductPage/Woman/Shoes' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Shoes/Nike' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Shoes/Adidas' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Shoes/Newbalance' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Shoes/Converse' && <ProductPage filter={selectedFilter} products={products}/>}
 
-    {location.pathname === '/ProductPage/Woman/Cloth' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Cloth/Nike' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Cloth/Adidas' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Cloth/Newbalance' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Cloth/Converse' && <ProductPage filter={selectedFilter}/>}
+    {location.pathname === '/ProductPage/Woman/Cloth' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Cloth/Nike' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Cloth/Adidas' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Cloth/Newbalance' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Cloth/Converse' && <ProductPage filter={selectedFilter} products={products}/>}
 
-    {location.pathname === '/ProductPage/Woman/Accessories' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Accessories/Nike' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Accessories/Adidas' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Accessories/Newbalance' && <ProductPage filter={selectedFilter}/>}
-      {location.pathname === '/ProductPage/Woman/Accessories/Converse' && <ProductPage filter={selectedFilter}/>}
+    {location.pathname === '/ProductPage/Woman/Accessories' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Accessories/Nike' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Accessories/Adidas' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Accessories/Newbalance' && <ProductPage filter={selectedFilter} products={products}/>}
+      {location.pathname === '/ProductPage/Woman/Accessories/Converse' && <ProductPage filter={selectedFilter} products={products}/>}
 
-    {location.pathname === '/ProductPage/Nike' && <ProductPage filter={selectedFilter}/>}
-    {location.pathname === '/ProductPage/Adidas' && <ProductPage filter={selectedFilter}/>}
-    {location.pathname === '/ProductPage/Newbalance' && <ProductPage filter={selectedFilter}/>}
-    {location.pathname === '/ProductPage/Converse' && <ProductPage filter={selectedFilter} />}
+    {location.pathname === '/ProductPage/Nike' && <ProductPage filter={selectedFilter} products={products}/>}
+    {location.pathname === '/ProductPage/Adidas' && <ProductPage filter={selectedFilter} products={products}/>}
+    {location.pathname === '/ProductPage/Newbalance' && <ProductPage filter={selectedFilter} products={products}/>}
+    {location.pathname === '/ProductPage/Converse' && <ProductPage filter={selectedFilter} products={products} />}
 
     </Box>
   );

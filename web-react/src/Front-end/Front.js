@@ -2,11 +2,7 @@ import { React,useState,useEffect } from 'react';
 import { Link,useLocation } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import './Front.css';
-import ProductPage from './ProductPage';
 import { useNavigate } from 'react-router-dom';
-import ProductTable from './FrontComponent/ProductTable';
-import { Button } from '@mui/material';
-import MyNavFront from './MyNavFront';
 
 const Front = () => {
   const navigate = useNavigate();
@@ -23,22 +19,22 @@ const Front = () => {
       <div className="BoxBrand">
         <Grid container>
           <Grid item xs={3}>
-            <Link onClick={navigate("/ProductPage/Adidas")} >
+            <Link onClick={e=>navigate("/ProductPage/Adidas")} >
               <img className="logo" src=".\img\logoAdidas.png" alt="Logo adidas Image" />
             </Link>
           </Grid>
           <Grid item xs={3}>
-            <Link onClick={navigate("/ProductPage/Nike")}>
+            <Link onClick={e=>navigate("/ProductPage/Nike")}>
               <img className="logo" src=".\img\logoNike.png" alt="Logo nike Image" />
             </Link>
           </Grid>
           <Grid item xs={3}>
-            <Link onClick={navigate("/ProductPage/Converse")}>
+            <Link onClick={e=>navigate("/ProductPage/Converse")}>
               <img className="logo" src=".\img\logoConverse.png" alt="Logo converse Image" />
             </Link>
           </Grid>
           <Grid item xs={3}>
-            <Link onClick={navigate("/ProductPage/Newbalance")}>
+            <Link onClick={e=>navigate("/ProductPage/Newbalance")}>
               <img className="logo" src=".\img\logoNewBalance.png" alt="Logo newbalance Image" />
             </Link>
           </Grid>
