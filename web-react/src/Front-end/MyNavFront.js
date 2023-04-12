@@ -3,7 +3,7 @@ import NavItem from './FrontComponent/NavItem';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel, Select, Checkbox, TextField } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel, Select, Checkbox, TextField, InputAdornment } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -577,30 +577,34 @@ const MyNavFront = () => {
         productPromotion: '',
       });
       navigate('/ProductPage/'+gender+'/'+types);
-    }else if(type === 'Accessories'){
-      setSelectedFilter({
-        productType: 'Accessories',
-        productGender: gender,
-        productBrand: '',
-        productPromotion: '',
-      });
-    }else if(type === 'Popular'){
-      setSelectedFilter({
-        productType: '',
-        productGender: '',
-        productBrand: '',
-        productPromotion: 'Popular',
-      });
-    }else if(type === 'Brands'){
-      setSelectedFilter({
-        productType: '',
-        productGender: '',
-        productBrand: '',
-        productPromotion: 'Brands',
-      });
+    }else if(gender === 'Sale'){
+      if(types === "Men's Product"){
+        setSelectedFilter({
+          productType: '',
+          productGender: 'M',
+          productBrand: '',
+          productPromotion: 1
+        });
+        navigate('/ProductPage/Men');
+      }else if(types === "Woman's Product"){
+        setSelectedFilter({
+          productType: '',
+          productGender: 'F',
+          productBrand: '',
+          productPromotion: 1
+        });
+        navigate('/ProductPage/Woman');
+      }else if(types === "Shop All Sale products"){
+        setSelectedFilter({
+          productType: '',
+          productGender: '',
+          productBrand: '',
+          productPromotion: 1
+        });
+        navigate('/ProductPage');
+      }
     }
   }
-  
   const handleClick2 = (gender,type,brand) => {
     console.log(gender,type,brand);
     let types = '';
@@ -897,10 +901,46 @@ const MyNavFront = () => {
           </Box>
           <Box >
           <Grid container>
-            <Grid item xs={6}>
-              <TextField value={search}  onChange={(e) =>setSearch(e.target.value)} />
+            <Grid item xs={9}>
+            <TextField
+              label="Search products"
+              value={search}
+              onChange={e=>setSearch(e.target.value)}
+              sx={{
+                width: "100%",
+                maxWidth: "400px",
+                margin: "0 auto",
+                borderRadius: "100px",
+                backgroundColor: "#F1ECE1",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "100px",
+                  "& fieldset": {
+                    borderColor: "transparent",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "transparent",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "transparent",
+                  },
+                  "& .MuiOutlinedInput-input": {
+                    borderRadius: "50px",
+                  },
+                }}}
+
+              InputProps={{
+                endAdornment: (
+                  <IconButton>
+                    <SearchIcon />
+                  </IconButton>
+                ),
+              }}
+              InputLabelProps={{
+                style: { color: "black" }
+              }}
+            />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={3}>
             <IconButton
               size="large"
               color="inherit"
@@ -936,13 +976,14 @@ const MyNavFront = () => {
     {location.pathname === '/Product' && <ProductDetail setOpenCart={setOpenCart} setCart={setCart} cart={cart}/> }
     {location.pathname === '/ProductPage' && <ProductPage filter={selectedFilter} products={products}/>}
     {location.pathname === '/ProductPage/SearchProduct' && <SearchProduct search={search} products={products}/>}
-    {/* ============================================== help/login ========================================================*/}
+    {/* ============================================== Product Filter ========================================================*/}
+    {location.pathname === '/ProductPage/Men'&& <ProductPage filter={selectedFilter} products={products}/>}
     {location.pathname === '/ProductPage/Men/Shoes' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Men/Shoes/Nike' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Men/Shoes/Adidas' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Men/Shoes/Newbalance' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Men/Shoes/Converse' && <ProductPage filter={selectedFilter} products={products}/>}
-
+    
     {location.pathname === '/ProductPage/Men/Cloth' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Men/Cloth/Nike' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Men/Cloth/Adidas' && <ProductPage filter={selectedFilter} products={products}/>}
@@ -955,6 +996,7 @@ const MyNavFront = () => {
       {location.pathname === '/ProductPage/Men/Accessories/Newbalance' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Men/Accessories/Converse' && <ProductPage filter={selectedFilter} products={products}/>}
 
+    {location.pathname === '/ProductPage/Woman'&& <ProductPage filter={selectedFilter} products={products}/>}
     {location.pathname === '/ProductPage/Woman/Shoes' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Woman/Shoes/Nike' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Woman/Shoes/Adidas' && <ProductPage filter={selectedFilter} products={products}/>}

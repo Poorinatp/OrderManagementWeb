@@ -58,7 +58,7 @@ function ProductPage({products,filter}) {
     };
 
     const [order, setOrder] = useState('desc');
-    const [orderBy, setOrderBy] = useState('product_id'); 
+    const [orderBy, setOrderBy] = useState('product_price'); 
 
     // sort filteredRows by price
     
@@ -129,18 +129,14 @@ function ProductPage({products,filter}) {
           }
       </Paper>
       <Paper sx={{ mt:5, elevation: 10, marginBottom: 2 }}>
-          <Grid container p={3} justifyContent="space-between" alignItems="center">
-            <Grid item  sx={{ justifyContent: "flex-end" }}>
-              <Stack direction="row" alignItems="center">
-                <Typography>Sort by</Typography>
-                <Select value={orderBy} label="Order By" onChange={event=>handleRequestSort(event,event.target.value)} >
-                  <MenuItem value={"desc"}>Low to High</MenuItem>
-                  <MenuItem value={"asc"}>High to Low</MenuItem>
-                </Select>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Paper>
+          <Paper sx={{ p: 2, display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+            <Typography sx={{ mr: 3}}>Sort by</Typography>
+            <Select value={order} label="Order By" onChange={event=>handleRequestSort(event,event.target.value)} >
+              <MenuItem value={"desc"}>High to Low</MenuItem>
+              <MenuItem value={"asc"}>Low to High</MenuItem>
+            </Select>
+          </Paper>
+      </Paper>
       <Box sx={{padding:'100px'}}>
         <Stack spacing={2} >
           <Typography key="typography" color="#000000" variant="h3"  sx={{
