@@ -22,6 +22,7 @@ import OrderHistory from './Help/OrderHistory';
 import ProductDetail from './FrontComponent/ProductDetail';
 import axios from 'axios';
 import OrderStatus_search from './Help/OrderStatus_search';
+import SearchProduct from './FrontComponent/SearchProduct';
 
 const MyDialog = styled(Dialog)({
   width: '50%',
@@ -143,6 +144,10 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
 
   //============================================================================== createOrder ==================================================================================
   const handlePayment = (item) => {
+  //แสดง popup ว่าเสร็จแล้ว
+
+  alert("Payment Success");
+
     //create payment bill
     const currentDate = new Date();
     // get full year 2 digit
@@ -407,12 +412,11 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
             />
             </Grid>
             
-          </form>
-
             <ListItem
               className='ShippingChoice'
               secondaryAction={
                 <RadioGroup
+                  className='ShippingRadio'
                   row
                   aria-label="shipping"
                   name="row-radio-buttons-group"
@@ -426,10 +430,45 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
             >
               <ListItemText primary="Shipping" />
             </ListItem>
+            <Grid xs={12} >
+                <TextField
+                  label={ "Full name"}
+                  value={sendAddress}
+                  className='cardNumber'
+                />
+                <br />
+              </Grid>
+
+              <Grid xs={12} >
+                <TextField
+                  label={ "Phone"}
+                  value={sendAddress}
+                  className='cardNumber'
+                />
+                <br />
+              </Grid>
+              <Grid xs={12} >
+                <TextField
+                  label={"Delivery Address"}
+                  value={sendAddress}
+                  className='cardNumber'
+                />
+                <br />
+              </Grid>
+              <Grid xs={12} >
+                <TextField
+                  label={ "Zipcode"}
+                  value={sendAddress}
+                  inputProps={{ maxLength: 5 }}
+                  className='cardNumber'
+                />
+                <br />
+            </Grid>
             <Button
+            className='PayButton'
             fullWidth
             variant="contained"
-            sx={{ mt: 2, ml: 1 }}
+            sx={{ mt: 2, ml: 1}}
             disabled={!isCardNumberValid}
             onClick={() => {
               handlePayment();
@@ -439,27 +478,8 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
             Pay now
           </Button>
 
-            {/* <from className='paymentbox'>
-              <Grid xs={12} >
-                <TextField
-                  label={cardType + "Delivery Address"}
-                  value={sendAddress}
-                  // onChange={handleCardNumberChange}
-                  className='cardNumber'
-                />
-                <br />
-              </Grid>
-              <Grid xs={12} >
-                <TextField
-                  label={cardType + " Zipcode"}
-                  value={sendAddress}
-                  onChange={handle}
-                  inputProps={{ maxLength: 5 }}
-                  className='cardNumber'
-                />
-                <br />
-            </Grid>
-            </from> */}
+          </form>
+
           </List>
         </Box>
       </Grid>
@@ -577,19 +597,6 @@ const MyNavFront = () => {
       },
     },
   }));
-
-  //เปิดไปหน้า
-
-  const searchtem = (e) => {
-    let search = e.target.value;
-    let searchResult = [];
-    if(search !== ''){
-      searchResult = products.filter((product) => {
-        return product.productName.toLowerCase().includes(search.toLowerCase());
-      });
-    }
-    console.log(searchResult);
-  }
 
   const [opendialogList, setOpendialogList] = useState([false,false,false,false]);
 
@@ -725,6 +732,20 @@ const MyNavFront = () => {
   // ============================================================================= Cart =======================================================================
   const [cart, setCart] = useState([]);
   const [order, setOrder] = useState([]);
+
+  const [search, setSearch] = useState('');
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+    navigate('/ProductPage/SearchProduct');
+  }
+
+  useEffect(() => {
+    if(search === ''){
+      navigate('/Front');
+    }else
+      navigate('/ProductPage/SearchProduct');
+  }, [search]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -931,15 +952,8 @@ const MyNavFront = () => {
           <Box >
           <Grid container>
             <Grid item xs={6}>
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon/>
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search"
-                  inputProps={{ 'aria-label': 'search' }}
-                />
-              </Search>
+
+              <TextField value={search}  onChange={(e) =>setSearch(e.target.value)} />
             </Grid>
             <Grid item xs={6}>
             <IconButton
@@ -961,8 +975,8 @@ const MyNavFront = () => {
     </AppBar>
     <Cart openCart={openCart} setOpenCart={setOpenCart} cart={cart} setCart={setCart}/>
     
-    {location.pathname === '/' && <Front handleClick2={handleClick2}/> }
-    {location.pathname === '/Front' && <Front handleClick2={handleClick2}/> }
+    {location.pathname === '/' && <Front handleClick1={handleClick1} handleClick2={handleClick2}/> }
+    {location.pathname === '/Front' && <Front handleClick1={handleClick1} handleClick2={handleClick2}/> }
 
     {/* ============================================== help/login ========================================================*/}
     {location.pathname === '/Login' && <Login/>}
@@ -976,6 +990,7 @@ const MyNavFront = () => {
     {/* {location.pathname === '/products/:id' && <ProductDetail/> } */}
     {location.pathname === '/Product' && <ProductDetail setOpenCart={setOpenCart} setCart={setCart} cart={cart}/> }
     {location.pathname === '/ProductPage' && <ProductPage filter={selectedFilter} products={products}/>}
+    {location.pathname === '/ProductPage/SearchProduct' && <SearchProduct search={search} products={products}/>}
     {/* ============================================== help/login ========================================================*/}
     {location.pathname === '/ProductPage/Men/Shoes' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Men/Shoes/Nike' && <ProductPage filter={selectedFilter} products={products}/>}

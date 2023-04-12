@@ -308,6 +308,38 @@ app.get('/productdetail/:id', function(req, res) {
     });
 })
 
+// add promotion to promotion table
+app.post('/promotion', function(req, res) {
+    const promotion_name = req.body.promotion_name;
+    const promotion_description = req.body.promotion_description;
+    const promotion_discount = req.body.promotion_discount;
+    const promotion_url = req.body.promotion_url;
+    connection.query('INSERT INTO promotion (promotion_name, promotion_description, promotion_discount, promotion_url) VALUES (?,?,?,?)',
+    [promotion_name, promotion_description, promotion_discount, promotion_url],
+    function(error, results, fields){
+        if(error) {
+            console.log('Error:', error);
+            res.status(200).send({ message: 'Server error' });
+            return;
+        }
+        res.status(200).send({ message: 'Promotion added successfully' });
+    });
+})
+
+// update promotion_id in product_detail table
+app.put('/productdetail/:id', function(req, res) {
+    const product_id = parseInt(req.params.id);
+    const promotion_id = req.body.promotion_id;
+    connection.query('UPDATE product_detail SET promotion_id = ? WHERE product_id = ?',[promotion_id, product_id],
+    function(error, results, fields){
+        if(results.length > 0) {
+            res.status(200).send(results);
+        }else{
+            res.status(200).send({message: "Product not found" });
+        }
+    });
+})
+
 // retrieve data from order table, product_order table and product table from mysql database
 app.get('/orderline', function(req, res) {
     connection.query('SELECT * FROM `order` INNER JOIN product_order ON `order`.order_id = product_order.order_id INNER JOIN product_detail ON product_order.product_id = product_detail.product_id',

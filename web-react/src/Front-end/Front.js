@@ -5,7 +5,7 @@ import './Front.css';
 import { useNavigate } from 'react-router-dom';
 import { IconButton } from '@mui/material';
 
-const Front = ({ handleClick2 }) => {
+const Front = ({ handleClick1, handleClick2 }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -45,19 +45,19 @@ const Front = ({ handleClick2 }) => {
           <Grid item xs={9.3}>
             <Grid container >
               <Grid item xs={12}>
-              <Link to="/Men">
+              <IconButton onClick={e=>handleClick1("Men","")}>
               <img style={{width:"100%"}} src=".\img\FMen.jpg" alt="Men" />
-            </Link>
+            </IconButton>
               </Grid>
               <Grid item xs={6}>
-              <Link to="/none">
+              <IconButton onClick={e=>handleClick1("Men","")}>
               <img style={{width:"100%"}} src=".\img\3Men.jpg" alt="3Men" />
-            </Link>
+            </IconButton>
               </Grid>
               <Grid item xs={6}>
-              <Link to="/sale">
+              <IconButton onClick={e=>handleClick1("Men","")}>
               <img style={{width:"100%"}} src=".\img\Fsale2.jpg" alt="Sale" />
-            </Link>
+              </IconButton>
               </Grid>
             </Grid>
           </Grid>

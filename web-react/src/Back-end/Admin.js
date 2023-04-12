@@ -149,8 +149,22 @@ const Notifications = () => {
   const [open, setOpen] = useState(false);
   const myArray = JSON.parse(localStorage.getItem('myArray')) || [];
   // show array length instead of string length
-  
+  const array = [];
   console.log(myArray.length);
+  // remove duplicate objects from array 
+  let i =0;
+  let j =0;
+  for(i=0;i<myArray.length;i++){
+    for(j=i+1;j<myArray.length;j++){
+      if(myArray[i] === myArray[j]){
+        
+      }else{
+        array.push(myArray[i]);
+        break;
+      }
+    }
+  }
+
 
   return (
     <IconButton color="inherit" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
@@ -394,13 +408,7 @@ const Admin = () => {
                 }
                 )
             }
-            <Divider sx={{ my: 1 }} />
-            <ListItemButton onClick={e=>handleBackup()}>
-              <ListItemIcon>
-                <BackupIcon />
-              </ListItemIcon>
-              <ListItemText primary="BackUp" />
-            </ListItemButton>
+            
             {/*<ListItemButton onClick={e=>handleRestore()}>
               <ListItemIcon>
                 <RestoreIcon />
@@ -414,10 +422,17 @@ const Admin = () => {
               </ListItemIcon>
               <ListItemText primary="Logout" />
             </ListItemButton>
+
+            <Divider sx={{ my: 1 }} />
+            <ListItemButton onClick={e=>handleBackup()}>
+              <ListItemIcon>
+                <BackupIcon />
+              </ListItemIcon>
+              <ListItemText primary="BackUp" />
+            </ListItemButton>
             </React.Fragment>
           </List>
         </Drawer>
-        
         <Box
           component="main"
           sx={{

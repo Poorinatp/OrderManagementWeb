@@ -23,6 +23,7 @@ import OrderStatus from './Front-end/Help/OrderStatus';
 import OrderHistory from './Front-end/Help/OrderHistory';
 import ProductDetail from './Front-end/FrontComponent/ProductDetail';
 import OrderStatus_search from './Front-end/Help/OrderStatus_search';
+import SearchProduct from './Front-end/FrontComponent/SearchProduct';
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
             <Route path="Front" element={<Front/>}/>
             <Route path="Profile" element={<><Profile/></>}/>
             <Route path="ProductPage" element={<ProductPage/>}>
+              <Route path = "SearchProduct" element={<SearchProduct/>}/>
               <Route path="Men" element={<ProductTable/>}>
                 <Route path="Shoes" element={<ProductTable/>}>
                   <Route path="Nike" element={<ProductTable/>}/>

@@ -68,7 +68,7 @@ return (
                   return (
                 <div className="order-history-box">
                   <Grid container spacing={2} className='order-full-box'>
-                    <Grid item xs={12}className="order_text" >
+                    <Grid item xs={6}className="order_text" >
                       <h2>Order ID: {order.order_id}</h2>
                       <p>Order Date: {new Date(order.order_date).toLocaleDateString()}</p>
                       <p>Order Amount: {order.order_amount}</p> 
@@ -77,7 +77,7 @@ return (
                       <p>Order Price: {order.order_price}</p>
                       <button onClick={() => downloadInvoice(order.order_id)}>Download Tax Invoice</button>
                     </Grid>
-                    <Grid item xs={12} >
+                    <Grid item xs={6} >
                       {order_list.map((order_list) => {
                         if (order_list.order_id == order.order_id){
                           return (
