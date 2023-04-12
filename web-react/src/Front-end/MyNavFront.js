@@ -472,11 +472,14 @@ const MyNavFront = () => {
     const [anchorElUser, setAnchorElUser] = useState(null);
 
     const [products, setProducts] = useState([]);
+    const [productsorder, setProductsorder] = useState([]);
     useEffect(() => {
       const fetchTodos = async () => {
         const results  = await axios.get('http://localhost:8080/product_detail');
+        const resultsorder  = await axios.get('http://localhost:8080/productorderdetail');
           try{
               setProducts(results.data);
+              setProductsorder(resultsorder.data);
           }catch(err){
               console.log(err);
           }
@@ -770,7 +773,6 @@ const MyNavFront = () => {
     {/*================================== logo men won brand sale ====================================== */}
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-
           <IconButton onClick={e => {navigate('/Front')}}>
             <img src='..\img\logo.png' alt='logo' style={{width: '80px', height: '80px'}}/>
           </IconButton>
@@ -918,8 +920,8 @@ const MyNavFront = () => {
     </AppBar>
     <Cart openCart={openCart} setOpenCart={setOpenCart} cart={cart} setCart={setCart}/>
     
-    {location.pathname === '/' && <Front handleClick1={handleClick1} handleClick2={handleClick2}/> }
-    {location.pathname === '/Front' && <Front handleClick1={handleClick1} handleClick2={handleClick2}/> }
+    {location.pathname === '/' && <Front handleClick1={handleClick1} handleClick2={handleClick2} productsorder={productsorder}/> }
+    {location.pathname === '/Front' && <Front handleClick1={handleClick1} handleClick2={handleClick2} productsorder={productsorder}/> }
 
     {/* ============================================== help/login ========================================================*/}
     {location.pathname === '/Login' && <Login/>}

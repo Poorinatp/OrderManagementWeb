@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `product_detail` (
   PRIMARY KEY (`product_id`),
   KEY `promotion_id` (`promotion_id`),
   CONSTRAINT `product_detail_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotion` (`promotion_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 117 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 118 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: product_inventory
@@ -3825,9 +3825,9 @@ VALUES
     5,
     1,
     100050,
-    '2023-04-12 11:55:50',
+    '2023-04-12 19:22:06',
     'standard',
-    'จัดส่งแล้ว'
+    'กำลังจัดส่ง'
   );
 
 # ------------------------------------------------------------
@@ -6475,6 +6475,19 @@ VALUES
     1,
     'pooo'
   );
+INSERT INTO
+  `product_detail` (
+    `product_id`,
+    `product_type`,
+    `product_gender`,
+    `product_brand`,
+    `product_description`,
+    `product_price`,
+    `promotion_id`,
+    `product_urlimg`
+  )
+VALUES
+  (117, 'clothes', 'M', 'Nike', 'Nike', 1000, 1, 'no img');
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: product_inventory
@@ -6974,6 +6987,15 @@ INSERT INTO
     `product_dateadd`
   )
 VALUES
+  (23, 'xxl', 12, '2023-04-12 19:29:14');
+INSERT INTO
+  `product_inventory` (
+    `product_id`,
+    `product_size`,
+    `product_quantity`,
+    `product_dateadd`
+  )
+VALUES
   (24, 'xxl', 20, '2023-04-12 03:07:54');
 INSERT INTO
   `product_inventory` (
@@ -7416,24 +7438,6 @@ INSERT INTO
   )
 VALUES
   (77, 'S', 200, '2023-04-09 01:17:13');
-INSERT INTO
-  `product_inventory` (
-    `product_id`,
-    `product_size`,
-    `product_quantity`,
-    `product_dateadd`
-  )
-VALUES
-  (78, 'M', 200, '2023-04-09 01:19:27');
-INSERT INTO
-  `product_inventory` (
-    `product_id`,
-    `product_size`,
-    `product_quantity`,
-    `product_dateadd`
-  )
-VALUES
-  (78, 'S', 200, '2023-04-09 01:17:13');
 INSERT INTO
   `product_inventory` (
     `product_id`,

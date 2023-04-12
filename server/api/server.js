@@ -282,7 +282,6 @@ app.get('/profile/:username', function(req, res) {
   });
 
 // retrieve product data from mysql database by id
-
 app.get('/productinventory/:id', function(req, res) {
     const product_id = parseInt(req.params.id);
     connection.query('SELECT * FROM product_inventory WHERE product_id = ?',[product_id],
@@ -299,6 +298,18 @@ app.get('/productinventory/:id', function(req, res) {
 app.get('/productdetail/:id', function(req, res) {
     const product_id = parseInt(req.params.id);
     connection.query('SELECT * FROM product_detail WHERE product_id = ?',[product_id],
+    function(error, results, fields){
+        if(results.length > 0) {
+            res.status(200).send(results);
+        }else{
+            res.status(200).send({message: "Product not found" });
+        }
+    });
+})
+
+// retrieve all product_detail and product_order join table
+app.get('/productorderdetail', function(req, res) {
+    connection.query('SELECT * FROM product_order INNER JOIN product_detail ON product_order.product_id = product_detail.product_id',
     function(error, results, fields){
         if(results.length > 0) {
             res.status(200).send(results);
