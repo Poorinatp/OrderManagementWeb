@@ -149,6 +149,7 @@ a:-webkit-any-link {
 }
 
 .paymentbox {
+    justify-content: flex-start;
     padding: 16px;
     border: none;
     text-align: left;
@@ -158,15 +159,26 @@ a:-webkit-any-link {
     max-width: 400px;
     min-width: 400px;
     }
+.paymentbox-1 {
+        padding: 16px;
+        border: none;
+        text-align: left;
+        padding: 0px;
+        margin: 20px 10px;
+        width: 100%;
+        max-width: 400px;
+        min-width: 400px;
+    }
+
 .PaymentChoice{
     align-items: center;
     justify-content: space-between;
     max-width: 240px;
 }
 .ShippingChoice {
-    align-items: center;
-    justify-content: space-between;
-    max-width: 300px;
+    text-align: left;
+    margin: 0px;
+    max-width: 310px;
   }
 
 .paymentbox input[type="text"] {
@@ -178,6 +190,9 @@ a:-webkit-any-link {
     width: 100%;
     }
 
+.cart-item-details{
+    text-align: left;
+}
 .cart-item-details button{
     margin: 0px;
     padding: 0px;
@@ -189,6 +204,12 @@ a:-webkit-any-link {
     height: 100%;
     margin: 10px 10px;
 
+    }
+.PayButton{
+    margin: 0px;
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
     }
 
 .cardNumber{

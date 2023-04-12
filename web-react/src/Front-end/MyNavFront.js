@@ -36,6 +36,8 @@ const MyDialog = styled(Dialog)({
 
 });
 
+const token = localStorage.getItem('token');
+
 const MyCart = styled(Dialog)({
   width:"100%",
   height:"100%",
@@ -62,6 +64,8 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
   const [total, setTotal] = useState(5050.00);
   const [paymentMethod, setPaymentMethod] = useState("Credit Card");
   const [shippingMethod, setShippingMethod] = useState("Standard");
+  const [sendAddress, setsendAddress] = useState("");
+  const [sendZipcode, setsendZipcode] = useState("");
 
   function validateCardNumber(cardNumber) {
     let sum = 0;
@@ -140,6 +144,10 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
 
   //============================================================================== createOrder ==================================================================================
   const handlePayment = (item) => {
+  //แสดง popup ว่าเสร็จแล้ว
+
+  alert("Payment Success");
+
     //create payment bill
     const currentDate = new Date();
     // get full year 2 digit
@@ -223,14 +231,11 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
   };
   
   const handleDeleteSelectedItems = () => {
-    // const newCart = cart.filter(item => !item.selected);
-    // setCart(newCart);
-    const selected = cart.filter(item => item.selected);
-    handlePayment(selected);
-    console.log(selected);
+    const newCart = cart.filter((item) => !item.selected);
+    setCart(newCart);
   };
   
-  
+
   const getTotalPrice = () => {
     if (cart.length === 0) {
       return 0;
@@ -243,7 +248,6 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
     });
     return totalPrice;}
   };
-  
 
   const getLastPrice = () => {
     let lastPrice = getTotalPrice()+shipping ;
@@ -258,6 +262,9 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
       onClose={e=>setOpenCart(false)}
     >
     <Button onClick={e=>setOpenCart(false)}>Close</Button>
+    
+    
+    {token ? (
     <Grid container sx={{width:"100%",height:"100%" , bgcolor:'#F1ECE1'}} className='cartbox'>
       <Grid item xs={12} md={6} lg ={6}>
         <Box  sx={{ p:10,mt:5, width: 'auto', height: '100%', bgcolor: '#F1ECE1' }}>
@@ -265,34 +272,40 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
           <Typography variant="body1" paragraph sx={{ ml:5}}>            
           {cart.map((item,index) => {
               return(
-                <Grid container className="cart-item" key={"grid"+index}>
-                  <Grid item xs={1} className="cart-item-checkbox">
-                  <Checkbox
-                    color="primary" 
-                    checked={item.selected}
-                    onChange={(event) => handleCheckboxChange(event, index)}
-                  />
-                  </Grid>
-                  <Grid item xs={3} className="cart-item-image">
-                    <img src={item.product_img} alt={item.product_description} />
-                  </Grid>
-                  <Grid item xs={4} className="cart-item-details">
-                    <Grid item xs={12}>
-                      <p className="name">{item.product_brand} : {item.product_name}</p>
-                      <p>size us: {item.product_size}</p>
-                      <p>amount: {item.product_qty}</p>
+                //ถ้าcartว่างให้แสดงว่าไม่มีสินค้า
+                cart.length === 0 ? (
+                  <div className="cart-empty">
+                      <p>Cart is empty</p>
+                  </div>
+              ) : (
+                  <Grid container className="cart-item" key={"grid"+index}>
+                    <Grid item xs={1} className="cart-item-checkbox">
+                    <Checkbox
+                      color="primary" 
+                      checked={item.selected}
+                      onChange={(event) => handleCheckboxChange(event, index)}
+                    />
                     </Grid>
-                    <Grid item xs={12}>
-                      <Button onClick={() => handleDeleteItem(index)}>
-                        <img className="logobin" src="..\img\bin.png" alt="Logo bin" />
-                      </Button>
+                    <Grid item xs={3} className="cart-item-image">
+                      <img src={item.product_img} alt={item.product_description} />
+                    </Grid>
+                    <Grid item xs={4} className="cart-item-details">
+                      <Grid item xs={12}>
+                        <p className="name">{item.product_brand} : {item.product_name}</p>
+                        <p>size us: {item.product_size}</p>
+                        <p>amount: {item.product_qty}</p>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Button onClick={() => handleDeleteItem(index)}>
+                          <img className="logobin" src="..\img\bin.png" alt="Logo bin" />
+                        </Button>
+                      </Grid>
+                    </Grid>
+                    <Grid item xs={4} className="cart-item-price">
+                      <p>฿ {item.product_price}</p>
                     </Grid>
                   </Grid>
-                  <Grid item xs={4} className="cart-item-price">
-                    <p>฿ {item.product_price}</p>
-                  </Grid>
-                </Grid>
-
+                )
               )
             })}
           </Typography>
@@ -399,12 +412,11 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
             />
             </Grid>
             
-          </form>
-
             <ListItem
               className='ShippingChoice'
               secondaryAction={
                 <RadioGroup
+                  className='ShippingRadio'
                   row
                   aria-label="shipping"
                   name="row-radio-buttons-group"
@@ -418,21 +430,65 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
             >
               <ListItemText primary="Shipping" />
             </ListItem>
-          </List>
-          <Button
+            <Grid xs={12} >
+                <TextField
+                  label={ "Full name"}
+                  value={sendAddress}
+                  className='cardNumber'
+                />
+                <br />
+              </Grid>
+
+              <Grid xs={12} >
+                <TextField
+                  label={ "Phone"}
+                  value={sendAddress}
+                  className='cardNumber'
+                />
+                <br />
+              </Grid>
+              <Grid xs={12} >
+                <TextField
+                  label={"Delivery Address"}
+                  value={sendAddress}
+                  className='cardNumber'
+                />
+                <br />
+              </Grid>
+              <Grid xs={12} >
+                <TextField
+                  label={ "Zipcode"}
+                  value={sendAddress}
+                  inputProps={{ maxLength: 5 }}
+                  className='cardNumber'
+                />
+                <br />
+            </Grid>
+            <Button
+            className='PayButton'
             fullWidth
             variant="contained"
-            sx={{ mt: 2, ml: 1 }}
+            sx={{ mt: 2, ml: 1}}
             disabled={!isCardNumberValid}
             onClick={() => {
+              handlePayment();
               handleDeleteSelectedItems();
             }}
           >
             Pay now
           </Button>
+
+          </form>
+
+          </List>
         </Box>
       </Grid>
     </Grid>
+          ) : (
+            <div className="order-login-box">
+              <h2> Please <Link to="/Login">Login</Link> to see your order history</h2>
+            </div>
+          )}
     </MyCart>
   )
 }

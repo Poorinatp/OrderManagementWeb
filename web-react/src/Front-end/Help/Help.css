@@ -173,3 +173,22 @@ form {
   font-size: 1.1rem;
   margin: 1px;
 }
+.order-login-box{
+  color: #555;
+  width: 100%;
+  text-align: center;
+  margin: auto;
+}
+.order-login-box:hover{
+  color: #000000;
+}
+.order-login-box-1{
+  color: #555;
+  width: 100%;
+  text-align: center;
+  margin: auto;
+  margin-top: 15%;
+}
+.order-login-box:hover-1{
+  color: #000000;
+}

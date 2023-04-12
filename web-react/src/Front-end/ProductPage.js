@@ -155,21 +155,6 @@ function ProductPage({products,filter}) {
                 :"Women"))}
 
           </Typography>
-          {/* <Grid container spacing={1} >
-            {filteredRows.map((row,index) => (
-              <Grid key={"grid"+index} item xs={12} sm={6} md={4} lg={4}>
-                <Paper key={"paper"+index} sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                  <img style={{ width: '100%',maxHeight:'500px' }} src={row.product_urlimg} alt={row.product_descropton} />
-                  <Typography key={"description"+index}  variant="h8">
-                    {row.product_description}
-                  </Typography>
-                  <Typography key={"price"+index}>{row.product_price}</Typography>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid> */}
-        
-         
           <Grid container spacing={1}>
             {stableSort(filteredRows, getComparator(order, orderBy)).map((row,index) => (
               <Grid key={"grid"+index} item xs={12} sm={6} md={4} lg={4}>

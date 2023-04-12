@@ -40,38 +40,56 @@ const Login = () => {
         )
     }
 
-    const handleSubmit = e => {
-        e.preventDefault();
+    //เช็คว่า กรอดข้อมูลครบไหม 
+    const validate = () => {
+        if(username === "" || password === ""){
+            alert("Please fill in all fields.");
+            return false;
+        }
         if(isJoinus){
-            axios//สมัคร
-            .post(api+'signup', { username:username, password:password, email:email, fname:fname, lname:lname, address:address, phone:phone, zipcode:zipcode })
-            .then(response => {
-              if(response.status === 200){
-                alert(response.data.message);
-                setisJoinus(false);
-              }else{
-                alert(response.data.message);
-              }
-            })
-            .catch(error => {
-              alert(error.response.data.message);
-            });
-        }else{
-            axios//ล็อคอิน
-            .post(api+'login', { username:username, password:password })
-            .then(response => {
-                const token = response.data.token;
-                console.log(token);
-                localStorage.setItem('token', token);
-                localStorage.setItem('user', username);
-                getCusId();
-                alert("Login successful!");
-                window.location.href = "/Front";
-            })
-            .catch(error => {
-              console.log(error);
-              alert("Login failed! Your username or password is incorrect.");
-            });
+            if(email === "" || fname === "" || lname === "" || address === "" || phone === "" || zipcode === ""){
+                alert("Please fill in all fields.");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    const handleSubmit = e => {
+      //ตรวจสอบว่าข้อมูลครบไหม และ สมัครหรือล็อคอิน
+        if(validate()){
+          e.preventDefault();
+          if(isJoinus){
+              axios//สมัคร
+              .post(api+'signup', { username:username, password:password, email:email, fname:fname, lname:lname, address:address, phone:phone, zipcode:zipcode })
+              .then(response => {
+                if(response.status === 200){
+                  alert(response.data.message);
+                  setisJoinus(false);
+                }else{
+                  alert(response.data.message);
+                }
+              })
+              .catch(error => {
+                alert(error.response.data.message);
+              });
+          }else{
+              axios//ล็อคอิน
+              .post(api+'login', { username:username, password:password })
+              .then(response => {
+                  const token = response.data.token;
+                  console.log(token);
+                  localStorage.setItem('token', token);
+                  localStorage.setItem('user', username);
+                  getCusId();
+                  alert("Login successful!");
+                  window.location.href = "/Front";
+              })
+              .catch(error => {
+                console.log(error);
+                alert("Login failed! Your username or password is incorrect.");
+              });
+          }
         }
     }
     return (

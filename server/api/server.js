@@ -32,11 +32,11 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'WebAppDB'
+    database: 'webappdb'
 });
 // set mysql table names
 const tables = ["login", "customer", "order", "payment", "product_detail", "product_inventory", "product_order"];
-// connect to database
+// connect to database 
 connection.connect(function (err) {
     if (err) throw err
     console.log('You are now connected with mysql database...')
