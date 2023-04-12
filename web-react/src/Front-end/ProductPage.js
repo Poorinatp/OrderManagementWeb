@@ -57,22 +57,47 @@ function ProductPage({products,filter}) {
         });
     };
 
-    const [sortedProducts, setSortedProducts] = useState([]);
-    const [sortOrder, setSortOrder] = useState("asc");
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('product_id'); 
 
     // sort filteredRows by price
-    const handleSort = (order) => {
-      setSortOrder(order);
-      const sortedRows = filteredProducts.sort((a, b) => {
-        if (order === "asc") {
-          return a.product_price - b.product_price;
-        } else {
-          return b.product_price - a.product_price;
-        }
-      });
-      setSortedProducts(sortedRows);
-    };
     
+    function descendingComparator(a, b, orderBy) {
+      if (b[orderBy] < a[orderBy]) {
+        return -1;
+      }
+      if (b[orderBy] > a[orderBy]) {
+        return 1;
+      }
+      return 0;
+    }
+    function getComparator(order, orderBy) {
+      return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+    }
+
+    function stableSort(array, comparator) {
+      const stabilizedThis = array.map((el, index) => [el, index]);
+      stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) {
+          return order;
+        }
+        return a[1] - b[1];
+      });
+      return stabilizedThis.map((el) => el[0]);
+    } 
+    
+    const handleRequestSort = (event, property) => {
+      // sort low to high or high to low
+      setOrder(order === 'desc' ? 'asc' : 'desc');
+      setOrderBy("product_price");
+  };
+  const createSortHandler = (property) => (event) => {
+    handleRequestSort(event, property);
+  };
+
     function saveProductId(productId) {
       localStorage.setItem('productId', productId);
     }
@@ -105,15 +130,12 @@ function ProductPage({products,filter}) {
       </Paper>
       <Paper sx={{ mt:5, elevation: 10, marginBottom: 2 }}>
           <Grid container p={3} justifyContent="space-between" alignItems="center">
-            <Grid item  sx={{ justifyContent: "flex-start" }}>
-              <img src="/img/logoAdidas.png" width="100px" alt="logoAdidas" />
-            </Grid>
             <Grid item  sx={{ justifyContent: "flex-end" }}>
               <Stack direction="row" alignItems="center">
                 <Typography>Sort by</Typography>
-                <Select value={sortOrder} onChange={(e) => handleSort(e.target.value)}>
-                  <MenuItem value="asc">Low to high</MenuItem>
-                  <MenuItem value="desc">High to low</MenuItem>
+                <Select value={orderBy} label="Order By" onChange={event=>handleRequestSort(event,event.target.value)} >
+                  <MenuItem value={"desc"}>Low to High</MenuItem>
+                  <MenuItem value={"asc"}>High to Low</MenuItem>
                 </Select>
               </Stack>
             </Grid>
@@ -153,7 +175,7 @@ function ProductPage({products,filter}) {
         
          
           <Grid container spacing={1}>
-            {(filteredRows).map((row,index) => (
+            {stableSort(filteredRows, getComparator(order, orderBy)).map((row,index) => (
               <Grid key={"grid"+index} item xs={12} sm={6} md={4} lg={4}>
                 <Link to={`/Product`}  key={`link${index}`} onClick={() => saveProductId(row.product_id)} >
                   <Paper key={"paper"+index} sx={{ p: 2, display: "flex", flexDirection: "column" }}>

@@ -22,6 +22,7 @@ import OrderHistory from './Help/OrderHistory';
 import ProductDetail from './FrontComponent/ProductDetail';
 import axios from 'axios';
 import OrderStatus_search from './Help/OrderStatus_search';
+import SearchProduct from './FrontComponent/SearchProduct';
 
 const MyDialog = styled(Dialog)({
   width: '50%',
@@ -676,6 +677,20 @@ const MyNavFront = () => {
   const [cart, setCart] = useState([]);
   const [order, setOrder] = useState([]);
 
+  const [search, setSearch] = useState('');
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+    navigate('/ProductPage/SearchProduct');
+  }
+
+  useEffect(() => {
+    if(search === ''){
+      navigate('/Front');
+    }else
+      navigate('/ProductPage/SearchProduct');
+  }, [search]);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
     <AppBar position="sticky"  style={{ background: '#B8AD93' }}  >
@@ -881,15 +896,7 @@ const MyNavFront = () => {
           <Box >
           <Grid container>
             <Grid item xs={6}>
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search…"
-                  inputProps={{ 'aria-label': 'search' }}
-                />
-              </Search>
+              <TextField value={search}  onChange={(e) =>setSearch(e.target.value)} />
             </Grid>
             <Grid item xs={6}>
             <IconButton
@@ -911,8 +918,8 @@ const MyNavFront = () => {
     </AppBar>
     <Cart openCart={openCart} setOpenCart={setOpenCart} cart={cart} setCart={setCart}/>
     
-    {location.pathname === '/' && <Front handleClick2={handleClick2}/> }
-    {location.pathname === '/Front' && <Front handleClick2={handleClick2}/> }
+    {location.pathname === '/' && <Front handleClick1={handleClick1} handleClick2={handleClick2}/> }
+    {location.pathname === '/Front' && <Front handleClick1={handleClick1} handleClick2={handleClick2}/> }
 
     {/* ============================================== help/login ========================================================*/}
     {location.pathname === '/Login' && <Login/>}
@@ -926,6 +933,7 @@ const MyNavFront = () => {
     {/* {location.pathname === '/products/:id' && <ProductDetail/> } */}
     {location.pathname === '/Product' && <ProductDetail setOpenCart={setOpenCart} setCart={setCart} cart={cart}/> }
     {location.pathname === '/ProductPage' && <ProductPage filter={selectedFilter} products={products}/>}
+    {location.pathname === '/ProductPage/SearchProduct' && <SearchProduct search={search} products={products}/>}
     {/* ============================================== help/login ========================================================*/}
     {location.pathname === '/ProductPage/Men/Shoes' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Men/Shoes/Nike' && <ProductPage filter={selectedFilter} products={products}/>}

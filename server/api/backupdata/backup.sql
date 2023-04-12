@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `customer` (
   PRIMARY KEY (`cus_id`),
   KEY `username` (`username`),
   CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`username`) REFERENCES `login` (`username`)
-) ENGINE = InnoDB AUTO_INCREMENT = 17 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 19 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: login
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `order` (
   PRIMARY KEY (`order_id`),
   KEY `cus_id` (`cus_id`),
   CONSTRAINT `order_ibfk_1` FOREIGN KEY (`cus_id`) REFERENCES `customer` (`cus_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 159 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 162 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: payment
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `payment` (
   PRIMARY KEY (`payment_id`),
   KEY `order_id` (`order_id`),
   CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 33 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 36 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: product_detail
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `product_detail` (
   PRIMARY KEY (`product_id`),
   KEY `promotion_id` (`promotion_id`),
   CONSTRAINT `product_detail_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotion` (`promotion_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 115 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 117 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: product_inventory
@@ -395,6 +395,30 @@ INSERT INTO
   )
 VALUES
   (16, 'aaaa', 'aaaa', 'aaa', 11111111, '1111', 11111);
+INSERT INTO
+  `customer` (
+    `cus_id`,
+    `username`,
+    `cus_fname`,
+    `cus_lname`,
+    `cus_phone`,
+    `cus_address`,
+    `cus_zipcode`
+  )
+VALUES
+  (17, 'poom', 'k', 'k', 124, '12', 13456);
+INSERT INTO
+  `customer` (
+    `cus_id`,
+    `username`,
+    `cus_fname`,
+    `cus_lname`,
+    `cus_phone`,
+    `cus_address`,
+    `cus_zipcode`
+  )
+VALUES
+  (18, 'ddddddd', 'k', 'k', 124, '12', 13456);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: login
@@ -444,6 +468,15 @@ VALUES
     '2023-03-10 01:26:52',
     'RCtpI3gT',
     'Coco_loco@email.com'
+  );
+INSERT INTO
+  `login` (`username`, `dateCreate`, `password`, `email`)
+VALUES
+  (
+    'ddddddd',
+    '2023-04-12 11:48:03',
+    '$2a$10$SDupzjkpoMSTaniNaLVcpeXDjtnjNBg5nind8HV1zQvfGQC6lReya',
+    'd'
   );
 INSERT INTO
   `login` (`username`, `dateCreate`, `password`, `email`)
@@ -3736,6 +3769,66 @@ VALUES
     'standard',
     'pending'
   );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    159,
+    16,
+    2,
+    17650,
+    '2023-04-12 11:37:15',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    160,
+    18,
+    2,
+    17650,
+    '2023-04-12 11:51:44',
+    'standard',
+    'จัดส่งแล้ว'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    161,
+    5,
+    1,
+    100050,
+    '2023-04-12 11:55:50',
+    'standard',
+    'จัดส่งแล้ว'
+  );
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: payment
@@ -4093,6 +4186,39 @@ INSERT INTO
   )
 VALUES
   (32, 158, 13550, 23412615, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (33, 159, 17650, 234121137, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (34, 160, 17650, 234121149, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (35, 161, 100050, 234121154, 'Mastercard', 'paid');
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: product_detail
@@ -6314,6 +6440,41 @@ INSERT INTO
   )
 VALUES
   (114, 'a', 's', 's', 's', 1, 1, 's');
+INSERT INTO
+  `product_detail` (
+    `product_id`,
+    `product_type`,
+    `product_gender`,
+    `product_brand`,
+    `product_description`,
+    `product_price`,
+    `promotion_id`,
+    `product_urlimg`
+  )
+VALUES
+  (115, 'a', 'a', 'a', 'a', 1, 1, 'w');
+INSERT INTO
+  `product_detail` (
+    `product_id`,
+    `product_type`,
+    `product_gender`,
+    `product_brand`,
+    `product_description`,
+    `product_price`,
+    `promotion_id`,
+    `product_urlimg`
+  )
+VALUES
+  (
+    116,
+    'shoes',
+    'M',
+    'Onisuka',
+    'Onisuka tiger',
+    100000,
+    1,
+    'pooo'
+  );
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: product_inventory
@@ -6615,7 +6776,7 @@ INSERT INTO
     `product_dateadd`
   )
 VALUES
-  (12, '5.5', 120, '2023-04-09 01:10:47');
+  (12, '5.5', 118, '2023-04-12 11:49:08');
 INSERT INTO
   `product_inventory` (
     `product_id`,
@@ -6633,7 +6794,7 @@ INSERT INTO
     `product_dateadd`
   )
 VALUES
-  (12, '7.5', 21, '2023-04-09 01:10:47');
+  (12, '7.5', 19, '2023-04-12 11:49:08');
 INSERT INTO
   `product_inventory` (
     `product_id`,
@@ -7291,6 +7452,15 @@ INSERT INTO
   )
 VALUES
   (79, 'S', 200, '2023-04-09 01:17:13');
+INSERT INTO
+  `product_inventory` (
+    `product_id`,
+    `product_size`,
+    `product_quantity`,
+    `product_dateadd`
+  )
+VALUES
+  (116, 'xxxl', 199, '2023-04-12 11:54:15');
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: product_order
@@ -8799,6 +8969,51 @@ INSERT INTO
   )
 VALUES
   (158, 6, '6.5', 2);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (159, 12, '5.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (159, 12, '7.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (160, 12, '5.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (160, 12, '7.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (161, 116, 'xxxl', 1);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: promotion
