@@ -3,10 +3,11 @@ import NavItem from './FrontComponent/NavItem';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel, Select, Checkbox, TextField, InputAdornment } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Menu, Toolbar, Typography, Button, Grid, MenuItem, Dialog, List, Badge, Paper, ListItemText, Divider, ListItem, RadioGroup, Radio, FormControlLabel, Select, Checkbox, TextField, InputAdornment, ButtonBase } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 import { Stack } from '@mui/system';
 
 import Front from './Front';
@@ -159,6 +160,7 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
     const product_size = [];
     const product_amount = [];
     // check if id and size is same, if same, add amount
+    console.log("item");
     console.log(item);
     for (let i = 0; i < item.length; i++) {
       if (product_id.includes(item[i].product_id) && product_size.includes(item[i].product_size)) {
@@ -175,9 +177,9 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
         product_amount.push(item[i].product_qty);
       }
     }
-    console.log(product_id);
-    console.log(product_size);
-    console.log(product_amount);
+    console.log("product_id = "+product_id);
+    console.log("product_size = "+product_size);
+    console.log("product_amount = "+product_amount);
 
     const orderData = {
       username: localStorage.getItem('user'),
@@ -297,7 +299,7 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
                       </Grid>
                       <Grid item xs={12}>
                         <Button onClick={() => handleDeleteItem(index)}>
-                          <img className="logobin" src="..\img\bin.png" alt="Logo bin" />
+                          <img className="logobin" src="\img\bin.png" alt="Logo bin" />
                         </Button>
                       </Grid>
                     </Grid>
@@ -471,7 +473,7 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
             sx={{ mt: 2, ml: 1}}
             disabled={!isCardNumberValid}
             onClick={() => {
-              handlePayment();
+              handlePayment(cart);
               handleDeleteSelectedItems();
             }}
           >
@@ -558,51 +560,24 @@ const MyNavFront = () => {
       setAnchorElUser(null);
     };    
 
-  const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('xs')]: {
-      marginLeft: theme.spacing(1),
-      width: 'auto',
-    },
-  }));
-  
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    width: 'auto',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        width: '12ch',
-        '&:focus': {
-          width: '20ch',
+    const ImageButton = styled(ButtonBase)(({ theme }) => ({
+      position: 'relative',
+      '&:hover, &.Mui-focusVisible': {
+        zIndex: 1,
+        '& .MuiImageBackdrop-root': {
+          opacity: 0.15,
+        },
+        '& .MuiImageMarked-root': {
+          opacity: 0,
+        },
+        '& .MuiTypography-root': {
+          border: '4px solid currentColor',
         },
       },
-    },
-  }));
+    }));
 
-  const [opendialogList, setOpendialogList] = useState([false,false,false,false]);
-
+  const [opendialogList1, setopendialogList1] = useState([false,false,false,false]);
+  const [opendialogList2, setopendialogList2] = useState([false,false,false,false]);
   const [selectedFilter, setSelectedFilter] = useState(
     {
       productType: '',
@@ -650,7 +625,7 @@ const MyNavFront = () => {
           productPromotion: 1
         });
         navigate('/ProductPage/Woman');
-      }else if(types === "Shop All Sale products"){
+      }else{
         setSelectedFilter({
           productType: '',
           productGender: '',
@@ -833,9 +808,9 @@ const MyNavFront = () => {
     {/*================================== logo men won brand sale ====================================== */}
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <IconButton onClick={e => {navigate('/Front')}}>
-            <img src='..\img\logo.png' alt='logo' style={{width: '80px', height: '80px'}}/>
-          </IconButton>
+          <ImageButton onClick={e => {navigate('/Front')}}>
+            <img src='\img\logo.png' alt='logo' style={{width: '80px', height: '80px'}}/>
+          </ImageButton>
           <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -854,6 +829,88 @@ const MyNavFront = () => {
                 display: { xs: 'flex', md: 'none' },
               }}
             >
+              {Cat.data.map((item,index) => {
+              return(
+                <div key={"div"+index}>
+                <MenuItem
+                key={"menu"+index}
+                onMouseEnter={
+                  e=>{
+                    const openListCopy = [false,false,false,false];
+                    openListCopy[index] = true;
+                    setopendialogList2(openListCopy);
+                    }
+                }
+                id="composition-button"
+                aria-haspopup="true"
+                color='light'
+                >
+                {item.title}
+                </MenuItem>
+                <MyDialog
+                  key={"dialog"+index}
+                  open={opendialogList2[index]}
+                  placement="bottom-start"
+                  fullScreen
+                >
+                  <Box key={'box'+index} sx={{ mt:18,width: '100%', height: '100%', bgcolor: '#F1ECE1'}}>
+                  <List key={'list'+index} 
+                  onMouseLeave={
+                  e=>{
+                    const openListCopy = [false,false,false,false];
+                    openListCopy[index] = false;
+                    setopendialogList2(openListCopy);
+                    }
+                }>
+                  
+                  {item.subCat.subcat1.map((item2,index2) => {
+                    return(
+                      <>
+                        <MenuItem key={"menu"+index+index2} onClick={e=>handleClick1(item.title, item2)}>
+                        
+                        <Typography key={"typography"+index+index2} color="#000000" variant="h5"  sx={{
+                            fontWeight: 'bold',
+                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                          }} >
+                          {" "}{item2}
+                        </Typography>
+                        </MenuItem>
+                          {index===2 && index2===0 ? 
+                          <Grid container style={{width:"50%"}}>
+                            <Grid item xs={6}>
+                              <ImageButton key={"button adidas"} onClick={e=>handleClick2(item.title,"","Adidas")}>
+                              <img style={{width:"50%"}} src="\img\logoAdidas.png" alt="Logo adidas Image"/>
+                              </ImageButton>
+                            </Grid>
+                            <Grid item xs={6}>
+                              <ImageButton key={"button nike"} onClick={e=>handleClick2(item.title,"","Nike")}>
+                              <img style={{width:"50%"}} src="\img\logoNike.png" alt="Logo nike Image"/>
+                              </ImageButton>
+                            </Grid>
+                          </Grid>
+                          :index===3 && index2=== 2 ?
+                          <img className='nav-img-show' src="\img\Fsale2.jpg" alt="Sale Image"/>
+                          :item.subCat.subcat2.map((item3,index3) => {
+                            return(
+                              <>
+                                <MenuItem key={"menu"+index+index2+index3} onClick={e=>handleClick2(item.title, item2, item3)}>
+                                <Typography key={"typography"+index+index2+index3} color="#707070" variant="h6" >
+                                  {item3}
+                                </Typography>
+                                </MenuItem>
+                                {index === 2 && index2===1 && index3 === 3 && <img className='nav-img-show' src="\img\3men.jpg" alt="Man Image"/>}
+                              </>
+                            )
+                          })}
+                      </>
+                    )
+                  })}
+                  </List>
+                  </Box>
+                </MyDialog>
+                </div>
+              )
+            })}
             </Menu>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -880,7 +937,7 @@ const MyNavFront = () => {
                   e=>{
                     const openListCopy = [false,false,false,false];
                     openListCopy[index] = true;
-                    setOpendialogList(openListCopy);
+                    setopendialogList1(openListCopy);
                     }
                 }
                 id="composition-button"
@@ -891,7 +948,7 @@ const MyNavFront = () => {
                 </MenuItem>
                 <MyDialog
                   key={"dialog"+index}
-                  open={opendialogList[index]}
+                  open={opendialogList1[index]}
                   placement="bottom-start"
                   fullScreen
                 >
@@ -901,7 +958,7 @@ const MyNavFront = () => {
                   e=>{
                     const openListCopy = [false,false,false,false];
                     openListCopy[index] = false;
-                    setOpendialogList(openListCopy);
+                    setopendialogList1(openListCopy);
                     }
                 }>
                   
@@ -920,18 +977,18 @@ const MyNavFront = () => {
                           {index===2 && index2===0 ? 
                           <Grid container style={{width:"50%"}}>
                             <Grid item xs={6}>
-                              <Button key={"button adidas"} onClick={e=>handleClick2(item.title,"","Adidas")}>
-                              <img style={{width:"50%"}} src=".\img\logoAdidas.png" alt="Logo adidas Image"/>
-                              </Button>
+                              <ImageButton key={"button adidas"} onClick={e=>handleClick2(item.title,"","Adidas")}>
+                              <img style={{width:"50%"}} src="\img\logoAdidas.png" alt="Logo adidas Image"/>
+                              </ImageButton>
                             </Grid>
                             <Grid item xs={6}>
-                              <Button key={"button nike"} onClick={e=>handleClick2(item.title,"","Nike")}>
-                              <img style={{width:"50%"}} src=".\img\logoNike.png" alt="Logo nike Image"/>
-                              </Button>
+                              <ImageButton key={"button nike"} onClick={e=>handleClick2(item.title,"","Nike")}>
+                              <img style={{width:"50%"}} src="\img\logoNike.png" alt="Logo nike Image"/>
+                              </ImageButton>
                             </Grid>
                           </Grid>
                           :index===3 && index2=== 2 ?
-                          <img className='nav-img-show' src=".\img\Fsale2.jpg" alt="Sale Image"/>
+                          <img className='nav-img-show' src="\img\Fsale2.jpg" alt="Sale Image"/>
                           :item.subCat.subcat2.map((item3,index3) => {
                             return(
                               <>
@@ -940,7 +997,7 @@ const MyNavFront = () => {
                                   {item3}
                                 </Typography>
                                 </MenuItem>
-                                {index === 2 && index2===1 && index3 === 3 && <img className='nav-img-show' src=".\img\3men.jpg" alt="Man Image"/>}
+                                {index === 2 && index2===1 && index3 === 3 && <img className='nav-img-show' src="\img\3men.jpg" alt="Man Image"/>}
                               </>
                             )
                           })}
@@ -1005,7 +1062,7 @@ const MyNavFront = () => {
                 console.log(openCart);}}
             >
               <Badge badgeContent={cart.length} color="primary">
-                <ShoppingBagIcon />
+                <ShoppingBagOutlinedIcon />
               </Badge>
             </IconButton>
             </Grid>

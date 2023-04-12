@@ -3,8 +3,9 @@ import { Link,useLocation } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import './Front.css';
 import { useNavigate } from 'react-router-dom';
-import { Button, IconButton, MenuItem, Paper, Select, Typography } from '@mui/material';
+import { Button, ButtonBase, MenuItem, Paper, Select, Typography } from '@mui/material';
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
+import styled from '@emotion/styled';
 
 
 const BestSeller = ({ bestSeller }) => {
@@ -78,6 +79,22 @@ const BestSeller = ({ bestSeller }) => {
   );
 };
 
+const ImageButton = styled(ButtonBase)(({ theme }) => ({
+  position: 'relative',
+  '&:hover, &.Mui-focusVisible': {
+    zIndex: 1,
+    '& .MuiImageBackdrop-root': {
+      opacity: 0.15,
+    },
+    '& .MuiImageMarked-root': {
+      opacity: 0,
+    },
+    '& .MuiTypography-root': {
+      border: '4px solid currentColor',
+    },
+  },
+}));
+
 const Front = ({ handleClick1, handleClick2, productsorder}) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -108,30 +125,30 @@ const Front = ({ handleClick1, handleClick2, productsorder}) => {
   return (
     <div>
       <div className="container">
-      <Button onClick={e=>handleClick2("Brand","","Adidas")}>
+      <ImageButton onClick={e=>handleClick2("Brand","","Adidas")}>
         <img className="promotion" src=".\img\F.jpg" alt="Promotion Image" />
-      </Button>
+      </ImageButton>
       <div className="BoxBrand">
         <Grid container>
           <Grid item xs={3}>
-            <IconButton onClick={e=>handleClick2("Brand","","Adidas")}>
+            <ImageButton onClick={e=>handleClick2("Brand","","Adidas")}>
               <img className="logo" src=".\img\logoAdidas.png" alt="Logo adidas Image" />
-            </IconButton>
+            </ImageButton>
           </Grid>
           <Grid item xs={3}>
-            <IconButton onClick={e=>handleClick2("Brand","","Nike")}>
+            <ImageButton onClick={e=>handleClick2("Brand","","Nike")}>
               <img className="logo" src=".\img\logoNike.png" alt="Logo nike Image" />
-            </IconButton>
+            </ImageButton>
           </Grid>
           <Grid item xs={3}>
-            <IconButton onClick={e=>handleClick2("Brand","","Converse")}>
+            <ImageButton onClick={e=>handleClick2("Brand","","Converse")}>
               <img className="logo" src=".\img\logoConverse.png" alt="Logo converse Image" />
-            </IconButton>
+            </ImageButton>
           </Grid>
           <Grid item xs={3}>
-            <IconButton onClick={e=>handleClick2("Brand","","New Balance")}>
+            <ImageButton onClick={e=>handleClick2("Brand","","New Balance")}>
               <img className="logo" src=".\img\logoNewBalance.png" alt="Logo newbalance Image" />
-            </IconButton>
+            </ImageButton>
           </Grid>
         </Grid>
       </div>
@@ -140,33 +157,33 @@ const Front = ({ handleClick1, handleClick2, productsorder}) => {
           <Grid item xs={9.3}>
             <Grid container >
               <Grid item xs={12}>
-              <IconButton onClick={e=>handleClick1("Men","Shoes")}>
+              <ImageButton onClick={e=>handleClick1("Men","Shoes")}>
               <img style={{width:"100%"}} src=".\img\FMen.jpg" alt="Men" />
-            </IconButton>
+            </ImageButton>
               </Grid>
               <Grid item xs={6}>
-              <IconButton onClick={e=>handleClick1("Men","")}>
+              <ImageButton onClick={e=>handleClick1("Men","Shoes")}>
               <img style={{width:"100%"}} src=".\img\3Men.jpg" alt="3Men" />
-            </IconButton>
+            </ImageButton>
               </Grid>
               <Grid item xs={6}>
-              <IconButton onClick={e=>handleClick1("Men","")}>
+              <ImageButton onClick={e=>handleClick1("Sale","")}>
               <img style={{width:"100%"}} src=".\img\Fsale2.jpg" alt="Sale" />
-              </IconButton>
+              </ImageButton>
               </Grid>
             </Grid>
           </Grid>
           <Grid item xs={2.7}>
-            <Link to="/Women">
+            <ImageButton onClick={e=>handleClick1("Woman","Shoes")}>
               <img style={{width:"100%"}} src=".\img\FWomen.jpg" alt="Women" />
-            </Link>
+            </ImageButton>
           </Grid>
         </Grid>
         <Grid container sx={{mb:5}}>
           <Grid item xs={3}>
-            <Button onClick={e=>setOpenSeller(true)} style={{width:"100%",height:"100%"}}>
+            <ImageButton onClick={e=>setOpenSeller(true)} style={{width:"100%",height:"100%"}}>
               <img style={{width:"100%"}} src=".\img\Fbestseller.jpg" alt="Seller" />
-            </Button>
+            </ImageButton>
           </Grid>
           <Grid item xs={9} sx={{ display:'flex', justifyContent: 'flex-end', alignItems:'center'}}>
             <Grid container sx={{ alignItems:'right' }}>

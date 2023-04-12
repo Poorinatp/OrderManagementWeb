@@ -118,7 +118,7 @@ function ProductPage({products,filter}) {
             <Box sx={{ textColor:"primary" }}>
       <Paper sx={{ p: 2, display: "flex", flexDirection: "column",alignItems:'center',elevation:10 }}>
           {selectedFilter.productBrand===""
-          ?<img src="/img/F.jpg" width='80%' alt="F" />
+          ?<img src="/img/promotion3.png" width='80%' alt="F" />
           :selectedFilter.productBrand==='Adidas'
             ?<img src="/img/Fad.jpg" width='80%' alt="Fad" />
             :selectedFilter.productBrand==='Nike'
