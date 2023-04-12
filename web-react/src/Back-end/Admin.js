@@ -14,6 +14,8 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
+import BackupIcon from '@mui/icons-material/Backup';
+import RestoreIcon from '@mui/icons-material/Restore';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import axios from 'axios';
@@ -295,6 +297,22 @@ const Admin = () => {
   );
   const mdTheme = createTheme();
 
+  const handleBackup = () => {
+    axios.get('http://localhost:8080/backup')
+    .then(res => {
+      console.log(res);
+      alert("Backup successfully");
+    })
+  }
+
+  const handleRestore = () => {
+    axios.get('http://localhost:8080/restore')
+    .then(res => {
+      console.log(res);
+      alert("Restore successfully");
+    })
+  }
+
   const logout = () =>{
     // delete the token from localStorage
     localStorage.removeItem('token');
@@ -376,6 +394,19 @@ const Admin = () => {
                 }
                 )
             }
+            <Divider sx={{ my: 1 }} />
+            <ListItemButton onClick={e=>handleBackup()}>
+              <ListItemIcon>
+                <BackupIcon />
+              </ListItemIcon>
+              <ListItemText primary="BackUp" />
+            </ListItemButton>
+            {/*<ListItemButton onClick={e=>handleRestore()}>
+              <ListItemIcon>
+                <RestoreIcon />
+              </ListItemIcon>
+              <ListItemText primary="Restore" />
+          </ListItemButton>*/}
             <Divider sx={{ my: 1 }} />
             <ListItemButton onClick={logout}>
               <ListItemIcon>

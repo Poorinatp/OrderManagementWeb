@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `customer` (
   PRIMARY KEY (`cus_id`),
   KEY `username` (`username`),
   CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`username`) REFERENCES `login` (`username`)
-) ENGINE = InnoDB AUTO_INCREMENT = 16 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: login
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `order` (
   PRIMARY KEY (`order_id`),
   KEY `cus_id` (`cus_id`),
   CONSTRAINT `order_ibfk_1` FOREIGN KEY (`cus_id`) REFERENCES `customer` (`cus_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 138 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 159 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: payment
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `payment` (
   PRIMARY KEY (`payment_id`),
   KEY `order_id` (`order_id`),
   CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 12 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 33 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: product_detail
@@ -383,11 +383,32 @@ VALUES
     '1/1 แยก 1 ซานฟราน ซานฟรานรีเวิลด์ อเมริกา โน่ ',
     11111
   );
+INSERT INTO
+  `customer` (
+    `cus_id`,
+    `username`,
+    `cus_fname`,
+    `cus_lname`,
+    `cus_phone`,
+    `cus_address`,
+    `cus_zipcode`
+  )
+VALUES
+  (16, 'aaaa', 'aaaa', 'aaa', 11111111, '1111', 11111);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: login
 # ------------------------------------------------------------
 
+INSERT INTO
+  `login` (`username`, `dateCreate`, `password`, `email`)
+VALUES
+  (
+    'aaaa',
+    '2023-04-12 04:38:22',
+    '$2a$10$Hk5LKK3Vi20log55sKvmie8Z1c8XDqqC0Y3lkmWTLUetRbOBCvrKq',
+    'aaaa'
+  );
 INSERT INTO
   `login` (`username`, `dateCreate`, `password`, `email`)
 VALUES
@@ -3295,6 +3316,426 @@ VALUES
     'standard',
     'pending'
   );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    138,
+    16,
+    3,
+    13550,
+    '2023-04-12 05:41:40',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    139,
+    16,
+    3,
+    13550,
+    '2023-04-12 05:43:21',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    140,
+    16,
+    3,
+    13550,
+    '2023-04-12 05:47:24',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    141,
+    16,
+    3,
+    13550,
+    '2023-04-12 05:52:25',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    142,
+    16,
+    3,
+    13550,
+    '2023-04-12 05:52:38',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    143,
+    16,
+    3,
+    13550,
+    '2023-04-12 05:54:31',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    144,
+    16,
+    3,
+    13550,
+    '2023-04-12 05:55:14',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    145,
+    16,
+    3,
+    13550,
+    '2023-04-12 05:56:05',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    146,
+    16,
+    3,
+    13550,
+    '2023-04-12 05:56:36',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    147,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:02:07',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    148,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:04:04',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    149,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:06:27',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    150,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:08:20',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    151,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:08:55',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    152,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:10:22',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    153,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:11:39',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    154,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:12:03',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    155,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:12:47',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    156,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:13:02',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    157,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:15:20',
+    'standard',
+    'pending'
+  );
+INSERT INTO
+  `order` (
+    `order_id`,
+    `cus_id`,
+    `order_amount`,
+    `order_price`,
+    `order_date`,
+    `order_ShipMethod`,
+    `order_status`
+  )
+VALUES
+  (
+    158,
+    16,
+    3,
+    13550,
+    '2023-04-12 06:15:54',
+    'standard',
+    'pending'
+  );
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: payment
@@ -3421,6 +3862,237 @@ INSERT INTO
   )
 VALUES
   (11, 137, 22880, 234101741, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (12, 138, 13550, 23412541, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (13, 139, 13550, 23412543, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (14, 140, 13550, 23412547, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (15, 141, 13550, 23412552, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (16, 142, 13550, 23412552, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (17, 143, 13550, 23412554, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (18, 144, 13550, 23412555, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (19, 145, 13550, 23412556, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (20, 146, 13550, 23412556, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (21, 147, 13550, 2341262, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (22, 148, 13550, 2341264, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (23, 149, 13550, 2341266, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (24, 150, 13550, 2341268, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (25, 151, 13550, 2341268, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (26, 152, 13550, 23412610, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (27, 153, 13550, 23412611, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (28, 154, 13550, 23412612, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (29, 155, 13550, 23412612, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (30, 156, 13550, 23412613, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (31, 157, 13550, 23412615, 'Mastercard', 'paid');
+INSERT INTO
+  `payment` (
+    `payment_id`,
+    `order_id`,
+    `payment_totalvat`,
+    `payment_bill`,
+    `payment_method`,
+    `payment_status`
+  )
+VALUES
+  (32, 158, 13550, 23412615, 'Mastercard', 'paid');
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: product_detail
@@ -5781,7 +6453,7 @@ INSERT INTO
     `product_dateadd`
   )
 VALUES
-  (6, '5.5', 20, '2023-04-09 01:10:47');
+  (6, '5.5', 15, '2023-04-12 06:15:54');
 INSERT INTO
   `product_inventory` (
     `product_id`,
@@ -5790,7 +6462,7 @@ INSERT INTO
     `product_dateadd`
   )
 VALUES
-  (6, '6.5', 20, '2023-04-09 01:07:48');
+  (6, '6.5', 11, '2023-04-12 06:15:54');
 INSERT INTO
   `product_inventory` (
     `product_id`,
@@ -6133,6 +6805,15 @@ INSERT INTO
   )
 VALUES
   (22, '7.5', 50, '2023-04-10 15:26:58');
+INSERT INTO
+  `product_inventory` (
+    `product_id`,
+    `product_size`,
+    `product_quantity`,
+    `product_dateadd`
+  )
+VALUES
+  (24, 'xxl', 20, '2023-04-12 03:07:54');
 INSERT INTO
   `product_inventory` (
     `product_id`,
@@ -7992,6 +8673,132 @@ INSERT INTO
   )
 VALUES
   (137, 3, '7.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (138, 6, '5.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (138, 6, '6.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (139, 6, '5.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (139, 6, '6.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (148, 6, '5.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (148, 6, '6.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (155, 6, '5.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (155, 6, '6.5', 2);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (156, 6, '5.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (156, 6, '6.5', 2);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (157, 6, '5.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (157, 6, '6.5', 2);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (158, 6, '5.5', 1);
+INSERT INTO
+  `product_order` (
+    `order_id`,
+    `product_id`,
+    `product_size`,
+    `product_amount`
+  )
+VALUES
+  (158, 6, '6.5', 2);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: promotion

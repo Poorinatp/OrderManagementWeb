@@ -337,6 +337,7 @@ app.get('/orderline/customer/:id', function(req, res) {
     const cus_id = parseInt(req.params.id);
     connection.query('SELECT * FROM `order` INNER JOIN product_order ON `order`.order_id = product_order.order_id INNER JOIN product_detail ON product_order.product_id = product_detail.product_id WHERE `order`.cus_id = ?',[cus_id],
     function(error, results, fields){
+        if(error)   console.log(error);
         if(results.length > 0) {
             res.status(200).send(results);
         }else{
@@ -345,28 +346,36 @@ app.get('/orderline/customer/:id', function(req, res) {
     });
 })
 
-// check email and send cus_id to frontend
-app.get('/checkemail/:email', function(req, res) {
-    const email = req.params.email;
-    //console.log('email:', email);
+// check email and order_id from mysql database
+app.post('/orderlinestatus/', function(req, res) {
+    const { email, order_id } = req.body;
     connection.query('SELECT username FROM login WHERE email = ?',[email],
     function(error, results, fields){
         if(error){
-            res.status(500).send({message: "Error retrieving email" });
+            res.status(500).send({message: "email not found" });
         }
         else{
             connection.query('SELECT cus_id FROM customer WHERE username = ?',[results[0].username],
             function(error, results, fields){
                 if(error){
-                    res.status(500).send({message: "Error retrieving cus_id" });
+                    res.status(500).send({message: "username not found" });
                 }
                 else{
-                    res.status(200).send(results);
+                    connection.query('SELECT * FROM `order` WHERE cus_id = ? AND order_id = ?',[results[0].cus_id, order_id],
+                    function(error, results, fields){
+                        if(results.length > 0) {
+                            res.status(200).send(results);
+                        }else{
+                            res.status(401).send({message: "Order not found" });
+                        }
+                    }
+                    );
                 }
             }
             );
         }
-    });
+    }
+    );
 })
 
 
@@ -531,7 +540,6 @@ app.post('/productinventory/addmultiple', function(req, res) {
 app.post('/order/create', function(req, res) {
     const { username, order_amount, order_price, order_Shipmethod, order_status, product_id, product_size, product_amount, payment_totalvat, payment_bill, payment_method, payment_status } = req.body;
     const sql = `SELECT cus_id FROM customer WHERE username = '${username}'`;
-    console.log("username: ", username);
     if(username==null||username=="")
     {
         res.status(401).send({message: "Username is empty" });
@@ -542,10 +550,7 @@ app.post('/order/create', function(req, res) {
             res.status(401).send({message: error.message + " Username already exists 1"});
         }else{
             const cus_id = results[0].cus_id;
-            console.log("cus_id: ", cus_id);
             const sql1 = `INSERT INTO \`order\` (cus_id, order_amount, order_price, order_Shipmethod, order_status) VALUES ('${cus_id}', '${order_amount}', '${order_price}', '${order_Shipmethod}', '${order_status}')`;
-            console.log("username: ", username);
-            console.log("cus_id: ", cus_id);
             connection.query(sql1, function(error, results, fields) {
                 if(error) {
                     console.log(error.message);
@@ -559,24 +564,53 @@ app.post('/order/create', function(req, res) {
                             console.log(error.message);
                             res.status(401).send({message: error.message + " Username already exists 3"});
                         }else{
+                            const isError = false;
                             for (var i = 0; i < product_id.length; i++) {
-                                const sql3 = `INSERT INTO product_order (order_id, product_id, product_size, product_amount) VALUES ('${order_id}', '${product_id[i]}', '${product_size[i]}', '${product_amount[i]}')`;
-                                connection.query(sql3, function(error, results, fields) {
+                                // use a closure to capture the value of product_id for each iteration
+                                (function(product_id_i,product_size_i,product_amount_i) {
+                                  // check inventory
+                                  const sql3 = `SELECT product_quantity FROM product_inventory WHERE product_id = '${product_id_i}' AND product_size = '${product_size[i]}'`;
+                                  connection.query(sql3, function(error, results, fields) {
                                     if(error) {
-                                        console.log(error.message);
-                                        res.status(401).send({message: error.message + " Username already exists 3"});
+                                        isError = true;
+                                      console.log(error.message);
+                                    }else{
+                                      const product_quantity = results[0].product_quantity;
+                                      if(product_quantity < product_amount[i]) {
+                                        res.status(401).send({message: "Not enough inventory" });
+                                      }else{
+                                        const sql4 = `INSERT INTO product_order (order_id, product_id, product_size, product_amount) VALUES ('${order_id}', '${product_id_i}', '${product_size_i}', '${product_amount_i}')`;
+                                        connection.query(sql4, function(error, results, fields) {
+                                          if(error) {
+                                            isError = true;
+                                            console.log(error.message);
+                                          }else{
+                                            const sql5 = `UPDATE product_inventory SET product_quantity = product_quantity - '${product_amount_i}' WHERE product_id = '${product_id_i}' AND product_size = '${product_size_i}'`;
+                                            connection.query(sql5, function(error, results, fields) {
+                                              if(error) {
+                                                isError = true;
+                                                console.log(error.message);
+                                              }
+                                            });
+                                          }
+                                        });
+                                      }
                                     }
-                                });
-                            }
-                            res.status(200).send({message: "Added" });
+                                  });
+                                })(product_id[i],product_size[i],product_amount[i]); // pass the value of product_id for this iteration to the closure
+                              }                              
+                                if(!isError) {
+                                    res.status(200).send({message: "Order created successfully" });
+                                }
                         }
                     });
                 }
             });
         }
     });
-    }
-});
+}
+})
+
 
 // add product inventory to mysql database
 app.post('/productinventory/add', function(req, res) {
@@ -590,19 +624,6 @@ app.post('/productinventory/add', function(req, res) {
         }
     });
 });
-
-/*app.get('/backup', function(req, res) {
-    // path to backup file
-    const backupFile = path.join(__dirname, 'backupdata', 'backup.sql');
-    const sql = `SELECT * INTO OUTFILE '${backupFile}' FROM product_inventory`;
-    connection.query(sql, function(error, results, fields) {
-        if(error) {
-            res.status(500).send({message: error.message});
-        } else {
-            res.status(200).send({message: "Backup created"});
-        }
-    });
-});*/
 
 app.get('/backup', function(req, res) {
     const backupPath = path.join(__dirname, 'backupdata', 'backup.sql');
@@ -625,6 +646,27 @@ app.get('/backup', function(req, res) {
         });
 });
 
+// restore database from backup file backup.sql in backupdata folder
+app.get('/restore', function(req, res) {
+    const backupPath = path.join(__dirname, 'backupdata', 'backup.sql');
+    const options = {
+            connection: {
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database: 'WebAppDB',
+            },
+            dumpToFile: backupPath
+        };
+    mysqlrestore(options)
+        .then(() => {
+            res.status(200).send({message: "Backup restored"});
+        })
+        .catch(error => {
+            console.error(`Restore error: ${error.message}`);
+            res.status(500).send({ message: error.message });
+        });
+});
 
 
 // listen to port

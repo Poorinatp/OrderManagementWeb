@@ -149,12 +149,27 @@ const Cart = ({cart, setCart, openCart, setOpenCart}) => {
     const product_id = [];
     const product_size = [];
     const product_amount = [];
-    item.forEach((item) => {
-      product_id.push(item.product_id);
-      product_size.push(item.product_size);
-      product_amount.push(item.product_qty);
-    });
-    
+    // check if id and size is same, if same, add amount
+    console.log(item);
+    for (let i = 0; i < item.length; i++) {
+      if (product_id.includes(item[i].product_id) && product_size.includes(item[i].product_size)) {
+        console.log('same');
+        console.log("i = "+i+item[i].product_id);
+        console.log(item[i].product_qty)
+        const index = product_id.indexOf(item[i].product_id);
+        product_amount[index] += item[i].product_qty;
+      } else {
+        console.log('not same');
+        console.log("i = "+i+item[i].product_id);
+        product_id.push(item[i].product_id);
+        product_size.push(item[i].product_size);
+        product_amount.push(item[i].product_qty);
+      }
+    }
+    console.log(product_id);
+    console.log(product_size);
+    console.log(product_amount);
+
     const orderData = {
       username: localStorage.getItem('user'),
       order_amount: item.length,
@@ -492,7 +507,7 @@ const MyNavFront = () => {
     },
     marginLeft: 0,
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('xs')]: {
       marginLeft: theme.spacing(1),
       width: 'auto',
     },
@@ -583,6 +598,7 @@ const MyNavFront = () => {
   }
   
   const handleClick2 = (gender,type,brand) => {
+    console.log(gender,type,brand);
     let types = '';
     let brands = '';
     if(type === 'Clothing')
@@ -658,6 +674,7 @@ const MyNavFront = () => {
   const [openCart, setOpenCart] = useState(false);
   // ============================================================================= Cart =======================================================================
   const [cart, setCart] = useState([]);
+  const [order, setOrder] = useState([]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -869,7 +886,6 @@ const MyNavFront = () => {
                   <SearchIcon />
                 </SearchIconWrapper>
                 <StyledInputBase
-                  className='SeachBox'
                   placeholder="Search…"
                   inputProps={{ 'aria-label': 'search' }}
                 />
@@ -883,7 +899,7 @@ const MyNavFront = () => {
                 setOpenCart(!openCart);
                 console.log(openCart);}}
             >
-              <Badge badgeContent={4} color="primary">
+              <Badge badgeContent={cart.length} color="primary">
                 <ShoppingBagIcon />
               </Badge>
             </IconButton>
@@ -895,21 +911,21 @@ const MyNavFront = () => {
     </AppBar>
     <Cart openCart={openCart} setOpenCart={setOpenCart} cart={cart} setCart={setCart}/>
     
-    {location.pathname === '/' && <Front/> }
-    {location.pathname === '/Front' && <Front/> }
+    {location.pathname === '/' && <Front handleClick2={handleClick2}/> }
+    {location.pathname === '/Front' && <Front handleClick2={handleClick2}/> }
 
     {/* ============================================== help/login ========================================================*/}
     {location.pathname === '/Login' && <Login/>}
     {location.pathname === '/Profile' && <Profile/> }
 
     {location.pathname === '/ContactUs' && <ContactUs/> }
-    {location.pathname === '/OrderStatus' && <OrderStatus/> }
-    {location.pathname === '/OrderStatus_search' && <OrderStatus_search/> }
+    {location.pathname === '/OrderStatus' && <OrderStatus navigate={navigate} order={order} setOrder={setOrder}/> }
+    {location.pathname === '/OrderStatussearch' && <OrderStatus_search order={order}/> }
     {location.pathname === '/OrderHistory' && <OrderHistory/> }
 
     {/* {location.pathname === '/products/:id' && <ProductDetail/> } */}
     {location.pathname === '/Product' && <ProductDetail setOpenCart={setOpenCart} setCart={setCart} cart={cart}/> }
-
+    {location.pathname === '/ProductPage' && <ProductPage filter={selectedFilter} products={products}/>}
     {/* ============================================== help/login ========================================================*/}
     {location.pathname === '/ProductPage/Men/Shoes' && <ProductPage filter={selectedFilter} products={products}/>}
       {location.pathname === '/ProductPage/Men/Shoes/Nike' && <ProductPage filter={selectedFilter} products={products}/>}

@@ -3,8 +3,9 @@ import { Link,useLocation } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import './Front.css';
 import { useNavigate } from 'react-router-dom';
+import { IconButton } from '@mui/material';
 
-const Front = () => {
+const Front = ({ handleClick2 }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -12,31 +13,31 @@ const Front = () => {
   return (
     <div>
       <div className="container">
-      <Link to="/promotion">
+      <Link onClick={e=>handleClick2("Brand","","Adidas")}>
         <img className="promotion" src=".\img\F.jpg" alt="Promotion Image" />
       </Link>
 
       <div className="BoxBrand">
         <Grid container>
           <Grid item xs={3}>
-            <Link onClick={e=>navigate("/ProductPage/Adidas")} >
+            <IconButton onClick={e=>handleClick2("Brand","","Adidas")}>
               <img className="logo" src=".\img\logoAdidas.png" alt="Logo adidas Image" />
-            </Link>
+            </IconButton>
           </Grid>
           <Grid item xs={3}>
-            <Link onClick={e=>navigate("/ProductPage/Nike")}>
+            <IconButton onClick={e=>handleClick2("Brand","","Nike")}>
               <img className="logo" src=".\img\logoNike.png" alt="Logo nike Image" />
-            </Link>
+            </IconButton>
           </Grid>
           <Grid item xs={3}>
-            <Link onClick={e=>navigate("/ProductPage/Converse")}>
+            <IconButton onClick={e=>handleClick2("Brand","","Converse")}>
               <img className="logo" src=".\img\logoConverse.png" alt="Logo converse Image" />
-            </Link>
+            </IconButton>
           </Grid>
           <Grid item xs={3}>
-            <Link onClick={e=>navigate("/ProductPage/Newbalance")}>
+            <IconButton onClick={e=>handleClick2("Brand","","New Balance")}>
               <img className="logo" src=".\img\logoNewBalance.png" alt="Logo newbalance Image" />
-            </Link>
+            </IconButton>
           </Grid>
         </Grid>
       </div>

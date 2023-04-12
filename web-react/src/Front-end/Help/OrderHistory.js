@@ -12,28 +12,21 @@ function OrderHistory() {
 
     //ดึงข้องมูลจาก api http://localhost:8080/orderline/customer/id มาแสดง
 
-    useEffect(() => {
-      axios.get("http://localhost:8080/orderline/customer/" + cus_id)
-        .then((response) => {
-          setorder_list(response.data);
-        })
-        .catch((error) => {
-          alert(error.message);
-          console.error(error);
-        });
-    }, []);
 
-    //ดึงข้องมูลจาก api http://localhost:8080/order มาแสดง
     useEffect(() => {
-      axios.get("http://localhost:8080/order")
-        .then((response) => {
-          setOrders(response.data);
-        })
-        .catch((error) => {
-          alert(error.message);
-          console.error(error);
-        });
-    }, []);         
+      const fetchTodos = async () => {
+      const results1 = await axios.get("http://localhost:8080/orderline/customer/" + cus_id);
+      const results2 = await axios.get("http://localhost:8080/order");
+      try {
+        setorder_list(results1.data);
+        setOrders(results2.data);
+      }
+      catch (error) {
+        console.log(error);
+      }
+    };
+    fetchTodos();
+    }, []); 
 
   const downloadInvoice = (order_id) => {
     axios.get("http://localhost:8080/taxinvoice/" + order_id, {
