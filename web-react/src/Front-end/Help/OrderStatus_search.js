@@ -26,7 +26,7 @@ function OrderStatus_search({ order }) {
         <Grid xs={12} className='box_status'>
             <Grid container spacing={2}>
                 <Grid item xs={3}>
-                    {status === 'จ่ายแล้ว' ? (
+                    {status === 'จ่ายแล้ว' || status === 'pending' ? (
                         <img className='icon_status' src='..\img\status\package.png'></img>
                     ) : (
                         <img className='icon_status_none' src='..\img\status\package.png' ></img>
@@ -34,7 +34,7 @@ function OrderStatus_search({ order }) {
                     <h2>Payment</h2>
                 </Grid>
                 <Grid item xs={3}>
-                    {status === 'กำลังจัดส่ง' ? (
+                    {status === 'กำลังจัดส่ง' || status === 'delivery' ? (
                         <img className='icon_status' src='..\img\status\order-fulfillment.png'></img>
                     ) : (
                         <img className='icon_status_none' src='..\img\status\order-fulfillment.png' ></img>
@@ -50,7 +50,7 @@ function OrderStatus_search({ order }) {
                     <h2>Cancel</h2>
                 </Grid>
                 <Grid item xs={3}>
-                    {status === 'จัดส่งแล้ว' ? (
+                    {status === 'จัดส่งแล้ว' || status === 'succeed' ? (
                         <img className='icon_status' src='..\img\status\location-pin.png'></img>
                     ) : (
                         <img className='icon_status_none' src='..\img\status\location-pin.png' ></img>

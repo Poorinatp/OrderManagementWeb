@@ -60,18 +60,17 @@ function ProductPage({products,filter}) {
     const [sortedProducts, setSortedProducts] = useState([]);
     const [sortOrder, setSortOrder] = useState("asc");
 
-    // sort filteredRows by price
-    const handleSort = (order) => {
-      setSortOrder(order);
-      const sortedRows = filteredProducts.sort((a, b) => {
-        if (order === "asc") {
-          return a.product_price - b.product_price;
-        } else {
-          return b.product_price - a.product_price;
-        }
-      });
+    const handleSort = (type) => {
+      let sortedRows;
+      if (type === "asc") {
+        sortedRows = [...filteredRows].sort((a, b) => a.price - b.price);
+      } else {
+        sortedRows = [...filteredRows].sort((a, b) => b.price - a.price);
+      }
       setSortedProducts(sortedRows);
+      setSortOrder(type);
     };
+    
     
     function saveProductId(productId) {
       localStorage.setItem('productId', productId);
@@ -111,10 +110,10 @@ function ProductPage({products,filter}) {
             <Grid item  sx={{ justifyContent: "flex-end" }}>
               <Stack direction="row" alignItems="center">
                 <Typography>Sort by</Typography>
-                <Select value={sortOrder} onChange={(e) => handleSort(e.target.value)}>
+                {/* <Select value={sortOrder} onChange={(e) => handleSort(e.target.value)}>
                   <MenuItem value="asc">Low to high</MenuItem>
                   <MenuItem value="desc">High to low</MenuItem>
-                </Select>
+                </Select> */}
               </Stack>
             </Grid>
           </Grid>
@@ -137,21 +136,6 @@ function ProductPage({products,filter}) {
                 :"Women"))}
 
           </Typography>
-          {/* <Grid container spacing={1} >
-            {filteredRows.map((row,index) => (
-              <Grid key={"grid"+index} item xs={12} sm={6} md={4} lg={4}>
-                <Paper key={"paper"+index} sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                  <img style={{ width: '100%',maxHeight:'500px' }} src={row.product_urlimg} alt={row.product_descropton} />
-                  <Typography key={"description"+index}  variant="h8">
-                    {row.product_description}
-                  </Typography>
-                  <Typography key={"price"+index}>{row.product_price}</Typography>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid> */}
-        
-         
           <Grid container spacing={1}>
             {(filteredRows).map((row,index) => (
               <Grid key={"grid"+index} item xs={12} sm={6} md={4} lg={4}>

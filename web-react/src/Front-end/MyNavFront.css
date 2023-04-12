@@ -158,6 +158,17 @@ a:-webkit-any-link {
     max-width: 400px;
     min-width: 400px;
     }
+.paymentbox-1 {
+        padding: 16px;
+        border: none;
+        text-align: left;
+        padding: 0px;
+        margin: 20px 10px;
+        width: 100%;
+        max-width: 400px;
+        min-width: 400px;
+    }
+
 .PaymentChoice{
     align-items: center;
     justify-content: space-between;
